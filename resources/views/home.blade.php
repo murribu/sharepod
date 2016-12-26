@@ -3,15 +3,15 @@
 @section('content')
 <home :user="user" inline-template>
     <div class="container">
-        <!-- Application Dashboard -->
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2">
+        <div class="row centered">
+            <h3>Shows</h3>
+        </div>
+            <div class="col-md-4 col-xs-1">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Dashboard</div>
+                <div class="panel-heading">Dashboard</div>
 
-                    <div class="panel-body">
-                        @{{ test }}
-                    </div>
+                <div class="panel-body">
+                    @{{ test }}
                 </div>
             </div>
         </div>

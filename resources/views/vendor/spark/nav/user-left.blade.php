@@ -1,3 +1,7 @@
 <!-- Left Side Of Navbar -->
-<li><a href="/">Home</a></li>
-<li><a href="/shows">Shows</a></li>
+@foreach([
+    ['link' => '/',      'label' => 'Home',  'slug' => 'home'],
+    ['link' => '/shows', 'label' => 'Shows', 'slug' => 'shows'],
+] as $link)
+<li {{$activelink == $link['slug'] ? 'class=active' : ''}}><a href="{{$link['link']}}">{{$link['label']}}</a></li>
+@endforeach

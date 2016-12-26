@@ -25,6 +25,6 @@ class ShowsController extends Controller
      */
     public function show()
     {
-        return view('shows');
+        return view('shows', ['activelink' => 'shows']);
     }
 }
