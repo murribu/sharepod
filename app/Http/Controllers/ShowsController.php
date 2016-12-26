@@ -27,4 +27,12 @@ class ShowsController extends Controller
     {
         return view('shows', ['activelink' => 'shows']);
     }
+    
+    public function listing(){
+        return view('shows.list', ['activelink' => 'shows']);
+    }
+    
+    public function search(){
+        return view('shows.search', ['activelink' => 'shows']);
+    }
 }

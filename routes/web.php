@@ -13,4 +13,11 @@
 
 Route::get('/', 'HomeController@show');
 Route::get('/shows', 'ShowsController@show');
+Route::get('/shows/list', 'ShowsController@listing');
+Route::get('/shows/search', 'ShowsController@search');
 
+$router->group(['middleware' => 'dev'], function ($router) {
+    Route::get('/shows/new', 'ShowsController@getNew');
+    Route::post('/shows/new', 'ShowsController@postNew');
+    
+});

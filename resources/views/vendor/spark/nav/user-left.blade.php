@@ -3,5 +3,5 @@
     ['link' => '/',      'label' => 'Home',  'slug' => 'home'],
     ['link' => '/shows', 'label' => 'Shows', 'slug' => 'shows'],
 ] as $link)
-<li {{$activelink == $link['slug'] ? 'class=active' : ''}}><a href="{{$link['link']}}">{{$link['label']}}</a></li>
+<li {{isset($activelink) && $activelink == $link['slug'] ? 'class=active' : ''}}><a href="{{$link['link']}}">{{$link['label']}}</a></li>
 @endforeach

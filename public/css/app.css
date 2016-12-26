@@ -7391,5 +7391,8 @@ body {
 .with-navbar .container .centered {
   text-align: center;
 }
+.clickable {
+  cursor: pointer;
+}
 
 /*# sourceMappingURL=app.css.map */
