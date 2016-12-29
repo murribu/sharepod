@@ -1,0 +1,172 @@
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreateInitialTables extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('shows', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('slug')->unique();
+            $table->string('name')->nullable();
+            $table->string('feed')->unique();
+            $table->string('url')->nullable();
+            $table->boolean('active')->default(true);
+            $table->string('img_url')->nullable();
+            $table->longText('description');
+            $table->integer('owner_id')->unsigned()->nullable();
+            $table->foreign('owner_id')->references('id')->on('users');
+            $table->timestamps();
+        });
+        Schema::create('episodes', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('slug')->unique();
+            $table->integer('show_id')->unsigned();
+            $table->foreign('show_id')->references('id')->on('shows');
+            $table->string('guid');
+            $table->string('name');
+            $table->index('show_id', 'guid');
+            $table->longText('description');
+            $table->integer('duration');
+            $table->boolean('explicit');
+            $table->integer('filesize');
+            $table->string('img_url');
+            $table->string('link');
+            $table->integer('pubdate');
+            $table->string('url');
+            $table->boolean('active')->default(true);
+            $table->timestamps();
+        });
+        Schema::create('twitter_calls', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('user_id')->unsigned()->nullable();
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->string('function_call');
+            $table->longText('parameters')->nullable();
+            $table->longText('response')->nullable();
+            $table->timestamps();
+        });
+        Schema::create('social_friends', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->string('social_user_id')->index();
+            $table->enum('type', ['twitter', 'facebook']);
+            $table->boolean('active')->default(true);
+            $table->timestamps();
+        });
+        Schema::create('friends', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->integer('friend_id')->unsigned();
+            $table->foreign('friend_id')->references('id')->on('users');
+            $table->timestamps();
+        });
+        Schema::create('likes', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->integer('fk')->unsigned()->index();
+            $table->integer('ordering')->nullable()->index();
+            $table->enum('type', ['episode', 'show', 'playlist']);
+            $table->timestamps();
+        });
+        Schema::create('social_users', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('slug')->unique();
+            $table->string('name')->nullable();
+            $table->string('social_id')->unique();
+            $table->string('screen_name')->nullable();
+            $table->string('description')->nullable();
+            $table->string('url')->nullable();
+            $table->string('utc_offset')->nullable();
+            $table->string('profile_background_image_url')->nullable();
+            $table->string('profile_image_url')->nullable();
+            $table->string('oauth_token')->nullable();
+            $table->string('oauth_token_secret')->nullable();
+            $table->string('token')->nullable();
+            $table->string('nickname')->nullable();
+            $table->string('first_name')->nullable();
+            $table->string('last_name')->nullable();
+            $table->string('email')->nullable();
+            $table->string('avatar')->nullable();
+            $table->string('avatar_original')->nullable();
+            $table->string('gender', 1)->nullable();
+            $table->enum('type', ['twitter', 'facebook']);
+            $table->timestamps();
+        });
+        Schema::create('playlist_types', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->timestamps();
+        });
+        Schema::create('playlists', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('slug');
+            $table->string('name')->nullable();
+            $table->longText('description')->nullable();
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->integer('playlist_type_id')->unsigned();
+            $table->foreign('playlist_type_id')->references('id')->on('playlist_types');
+            $table->timestamps();
+        });
+        Schema::create('playlist_episodes', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('playlist_id')->unsigned();
+            $table->foreign('playlist_id')->references('id')->on('playlists');
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->integer('episode_id')->unsigned();
+            $table->foreign('episode_id')->references('id')->on('episodes');
+            $table->integer('ordering')->nullable();
+            $table->timestamps();
+        });
+        Schema::create('hitcounts', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('request');
+            $table->integer('user_id')->unsigned()->nullable();
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->string('ip')->index();
+            $table->integer('fk')->unsigned()->index()->nullable();
+            $table->timestamps();
+        });
+        Schema::table('users', function (Blueprint $table) {
+            $table->integer('twitter_user_id')->index()->nullable();
+            $table->integer('facebook_user_id')->index()->nullable();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumnIfExists('twitter_user_id');
+            $table->dropColumnIfExists('facebook_user_id');
+        });
+        Schema::dropIfExists('hitcounts');
+        Schema::dropIfExists('playlist_episodes');
+        Schema::dropIfExists('playlists');
+        Schema::dropIfExists('playlist_types');
+        Schema::dropIfExists('social_users');
+        Schema::dropIfExists('likes');
+        Schema::dropIfExists('friends');
+        Schema::dropIfExists('social_friends');
+        Schema::dropIfExists('twitter_calls');
+        Schema::dropIfExists('episodes');
+        Schema::dropIfExists('shows');
+    }
+}
