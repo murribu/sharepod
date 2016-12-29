@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class HomeController extends Controller
+class ShowsController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -25,6 +25,14 @@ class HomeController extends Controller
      */
     public function show()
     {
-        return view('home', ['activelink' => 'home']);
+        return view('shows', ['activelink' => 'shows']);
+    }
+    
+    public function listing(){
+        return view('shows.list', ['activelink' => 'shows']);
+    }
+    
+    public function search(){
+        return view('shows.search', ['activelink' => 'shows']);
     }
 }

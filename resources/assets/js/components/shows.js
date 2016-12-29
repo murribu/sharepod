@@ -1,7 +1,7 @@
-Vue.component('home', {
+Vue.component('shows', {
     props: ['user'],
     computed: {
-        test() { return 'home'; },
+        test() { return 'shows'; },
     },
     mounted() {
         //

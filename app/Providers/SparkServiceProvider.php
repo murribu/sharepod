@@ -13,11 +13,11 @@ class SparkServiceProvider extends ServiceProvider
      * @var array
      */
     protected $details = [
-        'vendor' => 'Your Company',
-        'product' => 'Your Product',
-        'street' => 'PO Box 111',
-        'location' => 'Your Town, NY 12345',
-        'phone' => '555-555-5555',
+        'vendor' => 'Murribu, inc',
+        'product' => 'Sharepod',
+        'street' => '',
+        'location' => 'Franklin, TN 37069',
+        'phone' => '615-555-5555',
     ];
 
     /**
@@ -33,7 +33,7 @@ class SparkServiceProvider extends ServiceProvider
      * @var array
      */
     protected $developers = [
-        //
+        'murribu@gmail.com'
     ];
 
     /**
