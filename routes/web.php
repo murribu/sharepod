@@ -12,6 +12,7 @@
 */
 
 Route::get('/', 'HomeController@show');
+Route::get('/home', 'HomeController@redirectToHome');
 Route::get('/shows', 'ShowsController@show');
 Route::get('/shows/list', 'ShowsController@listing');
 Route::get('/shows/search', 'ShowsController@search');

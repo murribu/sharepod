@@ -27,4 +27,9 @@ class HomeController extends Controller
     {
         return view('home', ['activelink' => 'home']);
     }
+    
+    public function redirectToHome()
+    {
+        return redirect('/');
+    }
 }

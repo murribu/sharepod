@@ -55,7 +55,7 @@
     },
     "repositories": [
         {
-            "type": "vcs",
+            "type": "path",
             "url": "./spark"
         }
     ]
