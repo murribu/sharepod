@@ -6,14 +6,15 @@
                     <form class="p-b-none" role="form" @submit.prevent>
                         <!-- XML Feed Field -->
                         <div class="form-group m-b-none">
-                            <div class="col-xs-10" style="padding:0;">
+                            <div class="col-xs-12 col-sm-10" style="padding:0;">
                                 <input type="text" id="new-show-feed" class="form-control"
                                         name="feed"
+                                        v-model="addForm.feed"
                                         placeholder="http://domain.com/feed.xml"
                                         @keyup.enter="addShow">
                             </div>
-                            <div class="col-xs-2" style="padding:0;">
-                                <button class="btn btn-primary" type="submit" style="float:right;" @click="addShow">Add</button>
+                            <div class="col-xs-12 col-sm-2" style="padding:0;text-align:center;">
+                                <button class="btn btn-primary" type="submit" style="width:100%;" @click="addShow">Add</button>
                             </div>
                         </div>
                     </form>
@@ -23,7 +24,9 @@
             <!-- Feedback -->
             <div class="panel panel-default" v-if="feedback.length > 0">
                 <div class="panel-heading">
-                    Request Feedback
+                    <span v-if="processing">Adding...</span>
+                    <span v-if="!processing && error">Error</span>
+                    <span v-if="!processing && !error">Show Added!</span>
                 </div>
                 <div class="panel-body">
                     @{{feedback}}

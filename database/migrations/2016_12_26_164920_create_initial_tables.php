@@ -15,13 +15,13 @@ class CreateInitialTables extends Migration
     {
         Schema::create('shows', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('slug')->unique();
+            $table->string('slug')->nullable()->unique();
             $table->string('name')->nullable();
             $table->string('feed')->unique();
             $table->string('url')->nullable();
             $table->boolean('active')->default(true);
             $table->string('img_url')->nullable();
-            $table->longText('description');
+            $table->longText('description')->nullable();
             $table->integer('owner_id')->unsigned()->nullable();
             $table->foreign('owner_id')->references('id')->on('users');
             $table->timestamps();
