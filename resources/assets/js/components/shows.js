@@ -1,6 +1,6 @@
-require('./shows/list');
-require('./shows/browse');
 require('./shows/search');
+require('./shows/browse');
+require('./shows/new');
 
 Vue.component('shows', {
     props: ['user'],

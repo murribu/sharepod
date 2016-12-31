@@ -1,8 +1,27 @@
 Vue.component('shows-browse', {
     props: ['user'],
-    methods: {
+    data() {
+        return {
+            shows: [],
+            processing: false,
+            error: false,
+        };
     },
-    mounted() {
-        //
-    }
+    created() {
+        var self = this;
+        
+        this.processing = true;
+        this.error = false;
+        this.$http.get('api/shows?user_id=' + this.user.id)
+            .then(response => {
+                self.processing = false;
+                self.shows = response.data;
+            }, response => {
+                self.processing = false;
+                self.error = true;
+            });
+    },
+    methods: {
+        
+    },
 });

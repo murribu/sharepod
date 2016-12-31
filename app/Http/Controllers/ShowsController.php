@@ -34,6 +34,10 @@ class ShowsController extends Controller
         return view('shows.list', ['activelink' => 'shows']);
     }
     
+    public function apiListing($user_id = null){
+        return Show::orderBy('name')->get();
+    }
+    
     public function search(){
         return view('shows.search', ['activelink' => 'shows']);
     }

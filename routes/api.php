@@ -14,5 +14,6 @@
 Route::group([
     'middleware' => 'auth:api'
 ], function () {
-    //
+    Route::get('shows', 'ShowsController@apiListing');
+    
 });

@@ -1,4 +1,4 @@
-<shows-list :user="user" inline-template>
+<shows-new inline-template>
     <div class="container">
         <div class="col-md-4 col-xs-12">
             <div class="panel panel-default panel-flush" style="border: 0;">
@@ -34,4 +34,4 @@
             </div>
         </div>
     </div>
-</shows-list>
+</shows-new>
