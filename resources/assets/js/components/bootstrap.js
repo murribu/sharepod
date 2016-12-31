@@ -12,4 +12,5 @@
 require('./../spark-components/bootstrap');
 
 require('./home');
+require('./show');
 require('./shows');

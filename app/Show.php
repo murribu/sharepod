@@ -1,13 +1,35 @@
 <?php namespace App;
 
+use DB;
+
 use Illuminate\Database\Eloquent\Model;
 use Exception;
 
 class Show extends Model {
     
     use HasSlug;
+    use HasLikes;
+    
+    protected $slug_reserved_words = ['new', 'list', 'search'];
     
     public $table = 'shows';
+    
+    public function episodes(){
+        return $this->hasMany('App\Episode')->where('active', 1);
+    }
+    
+    public function limitedEpisodes($limit, $pubdate = false){
+        $episodes = Episode::where('show_id', $this->id)
+            ->select('slug', 'name', 'description', 'duration', 'explicit', 'filesize', 'img_url', 'pubdate')
+            ->where('active', 1)
+            ->orderBy('pubdate', 'desc')
+            ->limit($limit);
+        if ($pubdate){
+            $episodes = $episodes->where('pubdate', '<', $pubdate);
+        }
+        
+        return $episodes->get();
+    }
     
     public function parseFeed(){
         $newEpisodes = 0;

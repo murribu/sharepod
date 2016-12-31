@@ -16,8 +16,8 @@
                     </div>
 
                     <div class="panel-body">
-                        <div class="spark-settings-tabs">
-                            <ul class="nav spark-settings-stacked-tabs" role="tablist">
+                        <div class="shows-tabs">
+                            <ul class="nav left-stacked-tabs" role="tablist">
                                 <!-- Search Link -->
                                 <li role="presentation" class="active">
                                     <a href="#search" aria-controls="search" role="tab" data-toggle="tab">

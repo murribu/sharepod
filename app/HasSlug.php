@@ -1,24 +1,22 @@
 <?php
 namespace App;
 
-// ENHANCEMENT TODO:
-// self::$reserved_words, like 'new', 'edit', etc
-
 trait HasSlug{
     
     public static function findSlug($slug = false){
         $field = property_exists( new self, 'slug_field') ? self::$slug_field : 'slug';
+        $reserved_words = property_exists( new self, 'slug_reserved_words') ? self::$slug_reserved_words : ['new'];
         if ($slug){
             $slug = strtolower(preg_replace("/[^a-zA-Z\d]/", "-", $slug));
         }else{
             $slug = self::generateRandomString(32);
         }
         $exists = self::where($field, $slug)->first();
-        if (!$exists && $slug != 'new'){
+        if (!$exists && !in_array($slug, $reserved_words)){
             return $slug;
         }
         $i = 0;
-        while ($exists || $slug == 'new'){
+        while ($exists || in_array($slug, $reserved_words)){
             $exists = self::where($field, $slug."-".++$i)->first();
         }
         return $slug."-".$i;
@@ -26,16 +24,17 @@ trait HasSlug{
     
     public static function findSlugWithPrefix($prefix){
         $field = property_exists( new self, 'slug_field') ? self::$slug_field : 'slug';
+        $reserved_words = property_exists( new self, 'slug_reserved_words') ? self::$slug_reserved_words : ['new'];
         if (strlen($prefix) >= 30){
             throw new Exception("Prefix must be shorter than 30 characters");
         }
         $slug = $prefix . self::generateRandomString(32 - strlen($prefix));
         $exists = self::where($field, $slug)->first();
-        if (!$exists && $slug != 'new'){
+        if (!$exists && !in_array($slug, $reserved_words)){
             return $slug;
         }
         $i = 0;
-        while ($exists || $slug == 'new'){
+        while ($exists || in_array($slug, $reserved_words)){
             $exists = self::where($field, $prefix . self::generateRandomString(32 - strlen($prefix)))->first();
         }
         return $slug."-".$i;

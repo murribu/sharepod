@@ -11,9 +11,9 @@
 |
 */
 
-Route::group([
-    'middleware' => 'auth:api'
-], function () {
-    Route::get('shows', 'ShowsController@apiListing');
+Route::group(['middleware' => 'auth:api'], function () {
     
 });
+Route::get('shows', 'ShowsController@apiListing');
+Route::get('shows/{slug}', 'ShowsController@apiShow');
+Route::get('shows/{slug}/episodes', 'ShowsController@apiShowEpisodes');

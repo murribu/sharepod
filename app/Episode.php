@@ -8,4 +8,11 @@ class Episode extends Model {
     
     public $table = 'episodes';
     
+	public function img_url_default(){
+		if ($this->img_url){
+			return $this->img_url;
+		}else{
+			return $this->podcast->img_url;
+		}
+	}
 }

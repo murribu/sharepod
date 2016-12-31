@@ -16,6 +16,8 @@ Route::get('/home', 'HomeController@redirectToHome');
 Route::get('/shows', 'ShowsController@show');
 Route::get('/shows/list', 'ShowsController@listing');
 Route::get('/shows/search', 'ShowsController@search');
+Route::get('/shows/{slug}', 'ShowsController@display');
+
 
 $router->group(['middleware' => 'dev'], function ($router) {
     Route::post('/shows/new', 'ShowsController@postNew');

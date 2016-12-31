@@ -7394,5 +7394,225 @@ body {
 .clickable {
   cursor: pointer;
 }
+a.clickable:hover {
+  text-decoration: none;
+}
+/** SHOWS SCREEN **/
+.left-stacked-tabs {
+  border-radius: 4px;
+  font-weight: 300;
+}
+.left-stacked-tabs a {
+  border-bottom: 1px solid #e4ecf2;
+  border-left: 3px solid transparent;
+  color: #636b6f;
+}
+.left-stacked-tabs a i {
+  color: #a4aaae;
+  position: relative;
+}
+.left-stacked-tabs li:last-child a {
+  border-bottom: 0;
+}
+.left-stacked-tabs li.active a {
+  border-left: 3px solid #3097D1;
+}
+.left-stacked-tabs li a:active,
+.left-stacked-tabs li a:hover,
+.left-stacked-tabs li a:link,
+.left-stacked-tabs li a:visited {
+  background-color: white;
+}
+/** SHOW SCREEN **/
+.DashboardProfileCard {
+  border: 1px solid #e1e8ed;
+  background: #FFF;
+  border-radius: 6px;
+}
+.DashboardProfileCard-stats {
+  margin-left: 11px;
+  padding: 10px 0;
+}
+.DashboardProfileCard-avatarLink {
+  background-color: #fff;
+  border-radius: 6px;
+  margin: -30px 0 0 8px;
+  padding: 1px;
+  vertical-align: bottom;
+}
+.u-inlineBlock {
+  display: inline-block !important;
+  max-width: 100%;
+}
+.DashboardProfileCard-avatarImage {
+  border-radius: 7px;
+  height: 72px;
+  width: 72px;
+  border: 2px solid #fff;
+  box-sizing: border-box;
+  color: #fff;
+}
+.DashboardProfileCard-userFields {
+  position: absolute;
+  top: 5px;
+  left: 105px;
+  width: 170px;
+}
+.DashboardProfileCard-like {
+  color: #333;
+  background-color: #fff;
+  border: 1px solid #ccc;
+}
+.DashboardProfileCard-like:before {
+  content: "✔ Like";
+}
+.DashboardProfileCard-like:hover,
+.DashboardProfileCard-like:focus {
+  background-color: #ccc;
+}
+.DashboardProfileCard-unlike {
+  color: #fff;
+  background-color: #337ab7;
+  border-color: #2e6da4;
+  padding: 3px 8px;
+}
+.DashboardProfileCard-unlike:before {
+  content: "Liked!";
+}
+.DashboardProfileCard-unlike:hover:before {
+  content: "Unlike";
+}
+.DashboardProfileCard-unlike:hover {
+  background-color: #d9534f;
+  border-color: #d43f3a;
+  color: #fff;
+}
+.DashboardProfileCard-name {
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 21px;
+}
+.DashboardProfileCard-stat {
+  box-sizing: border-box;
+  line-height: 1;
+  -webkit-transition: all 0.15s ease-in-out;
+  transition: all 0.15s ease-in-out;
+  overflow: hidden;
+}
+.DashboardProfileCard-statLabel {
+  color: #8c9ca9;
+  font-size: 10px;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  -webkit-transition: color 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out;
+  overflow: hidden;
+}
+.DashboardProfileCard-statValue {
+  display: block;
+  font-size: 18px;
+  padding-top: 3px;
+  font-weight: 500;
+  -webkit-transition: color 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out;
+}
+.Arrange--equal {
+  table-layout: fixed;
+}
+.Arrange {
+  box-sizing: border-box;
+  display: table;
+  margin: 0;
+  min-width: 100%;
+  padding: 0;
+  table-layout: auto;
+}
+.Arrange-sizeFill,
+.Arrange-sizeFit {
+  display: table-cell;
+  padding: 0;
+  vertical-align: top;
+}
+.stream,
+.stream-container,
+.stream-items {
+  position: relative;
+  margin-left: 0;
+  list-style: none;
+}
+.stream li:first-child,
+.stream-container li:first-child,
+.stream-items li:first-child {
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  border-top: 1px solid #e1e8ed;
+}
+.stream li:last-child,
+.stream-container li:last-child,
+.stream-items li:last-child {
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+.tweet {
+  /*cursor: pointer;*/
+  position: relative;
+  min-height: 51px;
+  padding: 9px 12px;
+}
+.stream-loadmore {
+  text-align: center;
+  padding: 10px;
+  cursor: pointer;
+}
+.stream-item {
+  background: #fff;
+  border-left: 1px solid #e1e8ed;
+  border-right: 1px solid #e1e8ed;
+  background-clip: padding-box;
+  border-bottom: 1px solid #e1e8ed;
+}
+.stream-item .content {
+  margin-left: 58px;
+}
+.stream-item-header .avatar {
+  float: left;
+  margin-top: 3px;
+  margin-left: -58px;
+}
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 5px;
+  -moz-force-broken-image-icon: 1;
+}
+.fullname {
+  font-weight: bold;
+  color: #292f33;
+}
+.username,
+.time,
+.time a {
+  font-size: 13px;
+  color: #8899a6;
+}
+.tweet .js-tweet-text {
+  white-space: pre-wrap;
+}
+.tweet p {
+  word-wrap: break-word;
+}
+.TweetTextSize {
+  font-size: 14px;
+  line-height: 18px;
+}
+.u-hiddenVisually {
+  position: absolute!important;
+  overflow: hidden!important;
+  width: 1px!important;
+  height: 1px!important;
+  padding: 0!important;
+  border: 0!important;
+  clip: rect(1px, 1px, 1px, 1px) !important;
+}
 
 /*# sourceMappingURL=app.css.map */
