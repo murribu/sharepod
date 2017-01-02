@@ -22,7 +22,8 @@ elixir(function(mix) {
                     path.resolve(__dirname, 'vendor/laravel/spark/resources/assets/js'),
                     'node_modules'
                 ]
-            }
+            },
+            // devtool: "source-map"
         })
         .copy('node_modules/sweetalert/dist/sweetalert.min.js', 'public/js/sweetalert.min.js')
         .copy('node_modules/sweetalert/dist/sweetalert.css', 'public/css/sweetalert.css');

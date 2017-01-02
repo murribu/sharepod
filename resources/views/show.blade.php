@@ -34,7 +34,7 @@
             </div>
             <div class="col-xs-12 col-md-9">
                 <ol class="stream-items js-navigable-stream">
-                    <li class="js-stream-item stream-item stream-item expanding-stream-item" v-for="episode in displayEpisodes">
+                    <li class="js-stream-item stream-item stream-item expanding-stream-item" v-for="episode in displayEpisodes" :key="episode.slug">
                         <div class="tweet">
                             <div class="content">
                                 <div class="stream-item-header">

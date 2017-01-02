@@ -24,7 +24,7 @@ Vue.component('show', {
         displayEpisodes() {
             if (this.show.episodes){
                 return this.show.episodes.sort(function(a, b){
-                    return parseInt(a.pubdate) < parseInt(b.pubdate);
+                    return a.pubdate < b.pubdate ? 1 : -1;
                 });
             }else{
                 return [];
@@ -46,7 +46,7 @@ Vue.component('show', {
             var self = this;
             this.$http.get('/api/shows/' + this.slug + '/episodes?pubdate=' + this.oldestPubdate)
                 .then(response => {
-                    self.show.episodes.concat(response.data);
+                    self.show.episodes = self.show.episodes.concat(response.data);
                 }, response => {
                     // alert('error');
                 });

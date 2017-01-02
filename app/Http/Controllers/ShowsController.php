@@ -73,7 +73,7 @@ class ShowsController extends Controller
     public function apiShow($slug){
         $show = Show::where('slug', $slug)
             ->where('active', 1)
-            ->select('id', 'name', 'description', 'img_url', 'url')
+            ->select('id', 'name', 'slug', 'description', 'img_url', 'url')
             ->first();
             
         $show->episodeCount = $show->episodes->count();
@@ -97,7 +97,14 @@ class ShowsController extends Controller
             ->where('active', 1)
             ->first();
         if ($show){
-            return $show->limitedEpisodes(10, Input::get('pubdate'));
+            $episodes = $show->limitedEpisodes(10, Input::get('pubdate'));
+            foreach($episodes as $e){
+                $e->howLongAgo = self::howLongAgo($e->pubdate);
+                $e->pubdate_str = date('g:i A - j M Y', $e->pubdate);
+                $e->description = strip_tags($e->description,"<p></p>");
+            }
+            
+            return $episodes;
         }else{
             return [];
         }
