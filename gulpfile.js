@@ -23,7 +23,7 @@ elixir(function(mix) {
                     'node_modules'
                 ]
             },
-            // devtool: "source-map"
+            devtool: "source-map"
         })
         .copy('node_modules/sweetalert/dist/sweetalert.min.js', 'public/js/sweetalert.min.js')
         .copy('node_modules/sweetalert/dist/sweetalert.css', 'public/css/sweetalert.css');

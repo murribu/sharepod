@@ -51,14 +51,14 @@ class ShowsController extends Controller
     
     public function postNew(){
         if (Input::get('feed') != ""){
-            $show = new Show;
-            $show->feed = Input::get('feed');
-            if (@$show->save()){
-                $show->parseFeed();
-                return $show->name.' was successfully added!';
-            }else{
-                throw new Exception('Feed already exists');
+            $show = Show::where('feed', Input::get('feed'))->first();
+            if (!$show){
+                $show = new Show;
+                $show->feed = Input::get('feed');
             }
+            $show->save();
+            $show->parseFeed();
+            return $show->name.' was successfully added!';
         }else{
             throw new Exception('Empty RSS Feed URL');
         }

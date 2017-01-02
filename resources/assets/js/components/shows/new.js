@@ -14,6 +14,7 @@ Vue.component('shows-new', {
         addShow() {
             this.processing = true;
             this.error = false;
+            this.feedback = '';
             this.$http.post('/shows/new', JSON.stringify(this.addForm))
                 .then(response => {
                     this.processing = false;

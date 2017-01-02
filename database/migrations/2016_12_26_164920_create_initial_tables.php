@@ -31,17 +31,17 @@ class CreateInitialTables extends Migration
             $table->string('slug')->unique();
             $table->integer('show_id')->unsigned();
             $table->foreign('show_id')->references('id')->on('shows');
-            $table->string('guid');
-            $table->string('name');
+            $table->string('guid')->nullable();
+            $table->string('name')->nullable();
             $table->index('show_id', 'guid');
-            $table->longText('description');
-            $table->integer('duration');
-            $table->boolean('explicit');
-            $table->integer('filesize');
-            $table->string('img_url');
-            $table->string('link');
-            $table->integer('pubdate');
-            $table->string('url');
+            $table->longText('description')->nullable();
+            $table->integer('duration')->nullable();
+            $table->boolean('explicit')->default(false);
+            $table->integer('filesize')->nullable();
+            $table->string('img_url')->nullable();
+            $table->string('link')->nullable();
+            $table->integer('pubdate')->nullable();
+            $table->string('url')->nullable();
             $table->boolean('active')->default(true);
             $table->timestamps();
         });
@@ -133,7 +133,7 @@ class CreateInitialTables extends Migration
         });
         Schema::create('hitcounts', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('request');
+            $table->string('request')->index();
             $table->integer('user_id')->unsigned()->nullable();
             $table->foreign('user_id')->references('id')->on('users');
             $table->string('ip')->index();

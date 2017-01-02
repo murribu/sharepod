@@ -27,7 +27,7 @@
 
                                 <!-- Browse Link -->
                                 <li role="presentation">
-                                    <a href="#browse" aria-controls="browse" role="tab" data-toggle="tab">
+                                    <a href="#browse" aria-controls="browse" role="tab" data-toggle="tab" @click="refreshList()">
                                         <i class="fa fa-fw fa-btn fa-bar-chart"></i>Browse
                                     </a>
                                 </li>
