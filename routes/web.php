@@ -11,6 +11,9 @@
 |
 */
 
+Route::get('/auth/twitter', 'Auth\AuthController@redirectToTwitter');
+Route::get('/auth/twitter/callback', 'Auth\AuthController@handleTwitterCallback');
+
 Route::get('/', 'HomeController@show');
 Route::get('/home', 'HomeController@redirectToHome');
 Route::get('/shows', 'ShowsController@show');
