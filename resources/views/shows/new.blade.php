@@ -22,7 +22,7 @@
             </div>
             
             <!-- Feedback -->
-            <div class="panel panel-default" v-if="feedback.length > 0">
+            <div class="panel panel-default" v-if="processing || feedback.length > 0">
                 <div class="panel-heading">
                     <span v-if="processing">Adding...</span>
                     <span v-if="!processing && error">Error</span>

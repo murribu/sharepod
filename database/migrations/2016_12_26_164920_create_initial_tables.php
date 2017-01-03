@@ -154,8 +154,8 @@ class CreateInitialTables extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumnIfExists('twitter_user_id');
-            $table->dropColumnIfExists('facebook_user_id');
+            $table->dropColumn('twitter_user_id');
+            $table->dropColumn('facebook_user_id');
         });
         Schema::dropIfExists('hitcounts');
         Schema::dropIfExists('playlist_episodes');

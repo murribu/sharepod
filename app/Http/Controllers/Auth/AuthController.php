@@ -1,10 +1,14 @@
 <?php
 namespace App\Http\Controllers\Auth;
 
+use Auth;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 use Socialite;
+
+use App\SocialUser;
 
 class AuthController extends Controller
 {
@@ -28,16 +32,14 @@ class AuthController extends Controller
     {
         $twitter_user = Socialite::driver('twitter')->user();
 
+        // dd($twitter_user);
+        
         $user = Auth::user();
+        
         if (!$user){
-            //create an account
-            $user = new User;
-            $user->name = $twitter_user->name;
-            if ($twitter_user->email){
-                $user->email = $twitter_user->email;
-            }else{
-                $user->email = '@'.$twitter_user->nickname;
-            }
+            $user = User::create_from_twitter($twitter_user);
         }
+        
+        $user->link_to_twitter($twitter_user);
     }
 }
