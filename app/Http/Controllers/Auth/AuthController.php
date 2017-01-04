@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Auth;
 
 use Auth;
+use Illuminate\Support\Facades\Input;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -9,6 +10,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Socialite;
 
 use App\SocialUser;
+use App\User;
 
 class AuthController extends Controller
 {
@@ -24,12 +26,15 @@ class AuthController extends Controller
     }
 
     /**
-     * Obtain the user information from Tiwtter.
+     * Obtain the user information from Twitter.
      *
      * @return Response
      */
     public function handleTwitterCallback()
-    {
+    {   
+    
+        $driver = Socialite::driver('twitter');
+        
         $twitter_user = Socialite::driver('twitter')->user();
 
         // dd($twitter_user);
@@ -40,6 +45,6 @@ class AuthController extends Controller
             $user = User::create_from_twitter($twitter_user);
         }
         
-        $user->link_to_twitter($twitter_user);
+        $user->link_to_twitter($twitter_user, Input::all());
     }
 }

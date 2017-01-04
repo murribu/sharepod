@@ -92,8 +92,9 @@ class CreateInitialTables extends Migration
             $table->string('profile_background_image_url')->nullable();
             $table->string('profile_image_url')->nullable();
             $table->string('oauth_token')->nullable();
-            $table->string('oauth_token_secret')->nullable();
+            $table->string('oauth_verifier')->nullable();
             $table->string('token')->nullable();
+            $table->string('token_secret')->nullable();
             $table->string('nickname')->nullable();
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
