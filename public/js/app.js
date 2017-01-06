@@ -20048,7 +20048,12 @@ Vue.component('spark-register-braintree', {
 var base = __webpack_require__(195);
 
 Vue.component('spark-register-stripe', {
-    mixins: [base]
+    mixins: [base],
+    methods: {
+        signInWithTwitter: function signInWithTwitter() {
+            window.open('/auth/twitter','auth','width=500,height=450');
+        }
+    },
 });
 
 

@@ -54,16 +54,17 @@ class User extends SparkUser
         }
     }
     
-    public static function create_from_twitter($twitter_user){
-        $user = new User;
-        $user->name = $twitter_user->name;
-        if ($twitter_user->email){
-            $user->email = $twitter_user->email;
-        }else{
-            $user->email = '@'.$twitter_user->nickname;
-        }
+    public static function first_or_create_from_twitter($twitter_user){
+        $email = $twitter_user->id.'@twitter';
+        
+        $user = User::where('email', $email)->first();
+        if (!$user){
+            $user = new User;
+            $user->name = $twitter_user->name;
+            $user->email = $twitter_user->id.'@twitter';
 
-        $user->save();
+            $user->save();
+        }
 
         return $user;
     }

@@ -20,17 +20,12 @@ class TwitterTest extends TestCase
         Mockery::close();
     }
     
-    /**
-     * Mock the Socialite Factory, so we can hijack the OAuth Request.
-     * @param  string  $email
-     * @param  string  $token
-     * @param  int $id
-     * @return void
-     */
-    public function mockSocialiteFacade($email = 'foo@bar.com', $token = 'foo', $tokenSecret = 'bar')
+    public function mockSocialiteFacade($email = 'foo@bar.com', $id = null, $token = 'foo', $tokenSecret = 'bar')
     {
         $faker = Faker::create();
-        $id = $faker->randomNumber(5);
+        if (!$id){
+            $id = $faker->randomNumber(5);
+        }
         
         $socialiteUser = Mockery::mock(Laravel\Socialite\One\User::class);
         $socialiteUser->token = $token;
@@ -52,7 +47,7 @@ class TwitterTest extends TestCase
             'profile_banner_url' => $faker->imageUrl(), //probably should be https, but whatever
             'url' => $faker->url,
             'location' => $faker->city,
-            'description' => $faker->paragraph(),
+            'description' => $faker->sentence(),
         ];
 
         $provider = Mockery::mock(Laravel\Socialite\One\TwitterProvider::class);
@@ -69,17 +64,45 @@ class TwitterTest extends TestCase
     
     public function test_create_a_new_user_from_twitter_login()
     {
-        $this->mockSocialiteFacade('foo@bar.com');
+        $faker = Faker::create();
+        $userId = $faker->randomNumber(5);
+        
+        $this->mockSocialiteFacade(null, $userId);
 
         $faker = Faker::create();
         $oauth_token = $faker->randomNumber();
         $oauth_verifier = $faker->randomNumber();
         $this->visit('auth/twitter/callback?oauth_token='.$oauth_token.'&oauth_verifier='.$oauth_verifier);
 
-        $user = User::where('email', 'foo@bar.com')->first();
+        $user = User::where('email', $userId.'@twitter')->first();
         $this->assertNotEmpty($user, 'User was not created');
         $this->assertNotEmpty($user->twitter_user(), 'User was not linked to a Twitter SocialUser');
 
+    }
+    
+    public function test_login_as_an_existing_twitter_user(){
+        $faker = Faker::create();
+        $userId = $faker->randomNumber(5);
+        
+        $this->mockSocialiteFacade(null, $userId);
+        $oauth_token = $faker->randomNumber();
+        $oauth_verifier = $faker->randomNumber();
+
+        $cb = $this->visit('auth/twitter/callback?oauth_token='.$oauth_token.'&oauth_verifier='.$oauth_verifier);
+        $this->assertEquals('Login Redirect', $cb->crawler->filterXPath('//html/head/title')->text());
+        $this->visit('auth/me');
+        
+        $user1 = json_decode($this->response->getContent());
+        $this->visit('logout');
+        
+        $this->visit('auth/twitter/callback?oauth_token='.$oauth_token.'&oauth_verifier='.$oauth_verifier);
+        $this->assertEquals('Login Redirect', $cb->crawler->filterXPath('//html/head/title')->text());
+        $this->visit('auth/me');
+        
+        $user2 = json_decode($this->response->getContent());
+        $this->visit('logout');
+        
+        $this->assertEquals($user1->id, $user2->id);
     }
     
     public function test_link_an_existing_user_to_twitter()
@@ -97,7 +120,5 @@ class TwitterTest extends TestCase
             ->visit('auth/twitter/callback?oauth_token='.$oauth_token.'&oauth_verifier='.$oauth_verifier);
             
         $this->assertNotEmpty($user->twitter_user(), 'User was not linked to a Twitter SocialUser');
-        
-        
     }
 }

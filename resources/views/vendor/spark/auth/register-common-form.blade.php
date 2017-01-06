@@ -32,6 +32,28 @@
             </div>
         @endif
     @endif
+    
+    <div class="form-group">
+        <div class="row" style="margin-bottom:15px;margin-top:30px;">
+            <div class="col-xs-6 col-xs-offset-3">
+                <a title="Twitter" class="btn btn-block btn-social btn-twitter" href="/auth/twitter" @click.prevent="signInWithTwitter">
+                    <span class="fa fa-twitter"></span> Sign in with Twitter
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-6 col-xs-offset-3">
+                <a title="Facebook" class="btn btn-block btn-social btn-facebook">
+                    <i class="fa fa-facebook"></i> Sign in with Facebook
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="form-group" style="position:relative;padding:50px;">
+        <div style="border-top: #333 solid;width: 100%;top: 0px;z-index: 1;left: 50%;" ></div>
+        <h4 style="z-index: 2;margin: 2px;background-color: #fff;left: calc(50% - 11px);position: absolute;top: calc(50% - 15px);padding:5px;">OR</h4>
+    </div>
 
     <!-- Name -->
     <div class="form-group" :class="{'has-error': registerForm.errors.has('name')}">

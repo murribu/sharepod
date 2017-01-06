@@ -1,0 +1,3 @@
+function socialAuthChange(){
+    location.reload();
+}

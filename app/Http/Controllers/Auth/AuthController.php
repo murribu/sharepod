@@ -15,36 +15,32 @@ use App\User;
 class AuthController extends Controller
 {
     
-    /**
-     * Redirect the user to the Twitter authentication page.
-     *
-     * @return Response
-     */
     public function redirectToTwitter()
     {
         return Socialite::driver('twitter')->redirect();
     }
 
-    /**
-     * Obtain the user information from Twitter.
-     *
-     * @return Response
-     */
     public function handleTwitterCallback()
     {   
     
         $driver = Socialite::driver('twitter');
         
         $twitter_user = Socialite::driver('twitter')->user();
-
-        // dd($twitter_user);
         
         $user = Auth::user();
         
         if (!$user){
-            $user = User::create_from_twitter($twitter_user);
+            $user = User::first_or_create_from_twitter($twitter_user);
         }
         
         $user->link_to_twitter($twitter_user, Input::all());
+        
+        Auth::login($user);
+        
+        return view('vendor.spark.auth.killwindow');
+    }
+    
+    public function getMe(){
+        return Auth::user();
     }
 }
