@@ -102,6 +102,8 @@ class CreateInitialTables extends Migration
             $table->string('avatar')->nullable();
             $table->string('avatar_original')->nullable();
             $table->string('gender', 1)->nullable();
+            $table->string('code', 1024)->nullable();
+            $table->string('state')->nullable();
             $table->enum('type', ['twitter', 'facebook']);
             $table->timestamps();
         });

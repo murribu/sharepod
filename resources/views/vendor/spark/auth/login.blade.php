@@ -20,7 +20,7 @@
                         </div>
                         <div class="row">
                             <div class="col-xs-6 col-xs-offset-3">
-                                <a title="Facebook" class="btn btn-block btn-social btn-facebook">
+                                <a title="Facebook" class="btn btn-block btn-social btn-facebook" href="/auth/facebook" onclick="window.open('/auth/facebook','auth','width=500,height=450');return false;">
                                     <i class="fa fa-facebook"></i> Sign in with Facebook
                                 </a>
                             </div>

@@ -15,6 +15,31 @@ use App\User;
 class AuthController extends Controller
 {
     
+    public function redirectToFacebook()
+    {
+        return Socialite::driver('facebook')->redirect();
+    }
+
+    public function handleFacebookCallback()
+    {   
+    
+        $driver = Socialite::driver('facebook');
+        
+        $facebook_user = Socialite::driver('facebook')->user();
+        
+        $user = Auth::user();
+        
+        if (!$user){
+            $user = User::first_or_create_from_facebook($facebook_user);
+        }
+        
+        $user->link_to_facebook($facebook_user, Input::all());
+        
+        Auth::login($user);
+        
+        return view('vendor.spark.auth.killwindow');
+    }
+    
     public function redirectToTwitter()
     {
         return Socialite::driver('twitter')->redirect();

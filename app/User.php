@@ -54,6 +54,56 @@ class User extends SparkUser
         }
     }
     
+    public function facebook_user(){
+        if ($this->facebook_user_id){
+            return SocialUser::find($this->facebook_user_id);
+        }
+    }
+    
+    public static function first_or_create_from_facebook($facebook_user){
+        $email = $facebook_user->email;
+        if ($email == ''){
+            $email = $facebook_user->id.'@facebook';
+        }
+        
+        $user = User::where('email', $email)->first();
+        if (!$user){
+            $user = new User;
+            $user->name = $facebook_user->name;
+            $user->email = $email;
+
+            $user->save();
+        }
+
+        return $user;
+    }
+    
+    public function link_to_facebook($facebook_user, $input){
+        $fb = $this->facebook_user();
+        if (!$fb){
+            $fb = new SocialUser;
+            $fb->slug = SocialUser::findSlug();
+        }
+        
+        $fb->name = $facebook_user->name;
+        $fb->email = $facebook_user->email;
+        $fb->social_id = $facebook_user->id;
+        $fb->screen_name = $facebook_user->nickname;
+        $fb->url = $facebook_user->profileUrl;
+        $fb->avatar = $facebook_user->avatar;
+        $fb->avatar_original = $facebook_user->avatar_original;
+        $fb->token = $facebook_user->token;
+        $fb->gender = $facebook_user->user && $facebook_user->user['gender'] ? substr($facebook_user->user['gender'],0,1) : null;
+        $fb->code = $input['code'];
+        $fb->state = $input['state'];
+        $fb->save();
+        
+        $this->facebook_user_id = $fb->id;
+        $this->save();
+        
+        return $fb;
+    }
+    
     public static function first_or_create_from_twitter($twitter_user){
         $email = $twitter_user->id.'@twitter';
         
@@ -61,7 +111,7 @@ class User extends SparkUser
         if (!$user){
             $user = new User;
             $user->name = $twitter_user->name;
-            $user->email = $twitter_user->id.'@twitter';
+            $user->email = $email;
 
             $user->save();
         }
