@@ -40,6 +40,14 @@ class AuthController extends Controller
         return view('vendor.spark.auth.killwindow');
     }
     
+    public function unlinkFacebook(){
+        $user = Auth::user();
+        $user->facebook_user_id = null;
+        $user->save();
+        
+        return $user;
+    }
+    
     public function redirectToTwitter()
     {
         return Socialite::driver('twitter')->redirect();
@@ -65,7 +73,11 @@ class AuthController extends Controller
         return view('vendor.spark.auth.killwindow');
     }
     
-    public function getMe(){
-        return Auth::user();
+    public function unlinkTwitter(){
+        $user = Auth::user();
+        $user->twitter_user_id = null;
+        $user->save();
+        
+        return $user;
     }
 }

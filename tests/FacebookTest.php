@@ -89,14 +89,14 @@ class FacebookTest extends TestCase
 
         $cb = $this->visit('auth/facebook/callback?code='.$code.'&state='.$state);
         $this->assertEquals('Login Redirect', $cb->crawler->filterXPath('//html/head/title')->text());
-        $this->visit('auth/me');
+        $this->visit('user/current');
         
         $user1 = json_decode($this->response->getContent());
         $this->visit('logout');
         
         $this->visit('auth/facebook/callback?code='.$code.'&state='.$state);
         $this->assertEquals('Login Redirect', $cb->crawler->filterXPath('//html/head/title')->text());
-        $this->visit('auth/me');
+        $this->visit('user/current');
         
         $user2 = json_decode($this->response->getContent());
         $this->visit('logout');

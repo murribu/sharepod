@@ -13,9 +13,10 @@
 
 Route::get('/auth/twitter', 'Auth\AuthController@redirectToTwitter');
 Route::get('/auth/twitter/callback', 'Auth\AuthController@handleTwitterCallback');
+Route::get('/auth/twitter/unlink', 'Auth\AuthController@unlinkTwitter');
 Route::get('/auth/facebook', 'Auth\AuthController@redirectToFacebook');
 Route::get('/auth/facebook/callback', 'Auth\AuthController@handleFacebookCallback');
-Route::get('/auth/me', 'Auth\AuthController@getMe');
+Route::get('/auth/facebook/unlink', 'Auth\AuthController@unlinkFacebook');
 
 Route::get('/', 'HomeController@show');
 Route::get('/home', 'HomeController@redirectToHome');

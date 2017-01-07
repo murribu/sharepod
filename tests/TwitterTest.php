@@ -90,14 +90,14 @@ class TwitterTest extends TestCase
 
         $cb = $this->visit('auth/twitter/callback?oauth_token='.$oauth_token.'&oauth_verifier='.$oauth_verifier);
         $this->assertEquals('Login Redirect', $cb->crawler->filterXPath('//html/head/title')->text());
-        $this->visit('auth/me');
+        $this->visit('user/current');
         
         $user1 = json_decode($this->response->getContent());
         $this->visit('logout');
         
         $this->visit('auth/twitter/callback?oauth_token='.$oauth_token.'&oauth_verifier='.$oauth_verifier);
         $this->assertEquals('Login Redirect', $cb->crawler->filterXPath('//html/head/title')->text());
-        $this->visit('auth/me');
+        $this->visit('user/current');
         
         $user2 = json_decode($this->response->getContent());
         $this->visit('logout');
