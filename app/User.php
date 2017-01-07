@@ -81,8 +81,13 @@ class User extends SparkUser
     public function link_to_facebook($facebook_user, $input){
         $fb = $this->facebook_user();
         if (!$fb){
-            $fb = new SocialUser;
-            $fb->slug = SocialUser::findSlug();
+            $fb = SocialUser::where('type', 'facebook')
+                ->where('social_id', $facebook_user->id)
+                ->first();
+            if (!$fb){
+                $fb = new SocialUser;
+                $fb->slug = SocialUser::findSlug();
+            }
         }
         
         $fb->name = $facebook_user->name;
@@ -96,6 +101,7 @@ class User extends SparkUser
         $fb->gender = $facebook_user->user && $facebook_user->user['gender'] ? substr($facebook_user->user['gender'],0,1) : null;
         $fb->code = $input['code'];
         $fb->state = $input['state'];
+        $fb->type = 'facebook';
         $fb->save();
         
         $this->facebook_user_id = $fb->id;
@@ -122,8 +128,15 @@ class User extends SparkUser
     public function link_to_twitter($twitter_user, $input){
         $twit = $this->twitter_user();
         if (!$twit){
-            $twit = new SocialUser;
-            $twit->slug = SocialUser::findSlug();
+            if (!$twit){
+                $twit = SocialUser::where('type', 'twitter')
+                    ->where('social_id', $twitter_user->id)
+                    ->first();
+                if (!$twit){
+                    $twit = new SocialUser;
+                    $twit->slug = SocialUser::findSlug();
+                }
+            }
         }
         $twit->name = $twitter_user->name;
         $twit->social_id = $twitter_user->id;

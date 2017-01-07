@@ -121,4 +121,27 @@ class FacebookTest extends TestCase
             
         $this->assertNotEmpty($user->facebook_user(), 'User was not linked to a Facebook SocialUser');
     }
+    
+    public function test_link_an_existing_user_to_an_existing_facebook_user(){
+        $faker = Faker::create();
+        $email = $faker->email;
+        $this->mockSocialiteFacade($email);
+        
+        $user = new User;
+        $user->email = $email;
+        $user->save();
+        
+        $code = $faker->randomNumber();
+        $state = $faker->randomNumber();
+        $this->actingAs($user)
+            ->visit('auth/facebook/callback?code='.$code.'&state='.$state);
+            
+        $this->assertNotEmpty($user->facebook_user(), 'User was not linked to a Facebook SocialUser');
+        
+        $this->actingAs($user)
+            ->visit('auth/facebook/unlink')
+            ->visit('auth/facebook/callback?code='.$code.'&state='.$state);
+            
+        $this->assertNotEmpty($user->facebook_user(), 'User was not linked to a Facebook SocialUser');
+    }
 }

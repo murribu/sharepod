@@ -121,4 +121,27 @@ class TwitterTest extends TestCase
             
         $this->assertNotEmpty($user->twitter_user(), 'User was not linked to a Twitter SocialUser');
     }
+    
+    public function test_link_an_existing_user_to_an_existing_twitter_user()
+    {
+        $faker = Faker::create();
+        $email = $faker->email;
+        $this->mockSocialiteFacade($email);
+        
+        $user = new User;
+        $user->email = $email;
+        $user->save();
+        $oauth_token = $faker->randomNumber();
+        $oauth_verifier = $faker->randomNumber();
+        $this->actingAs($user)
+            ->visit('auth/twitter/callback?oauth_token='.$oauth_token.'&oauth_verifier='.$oauth_verifier);
+            
+        $this->assertNotEmpty($user->twitter_user(), 'User was not linked to a Twitter SocialUser');
+        
+        $this->actingAs($user)
+            ->visit('auth/twitter/unlink')
+            ->visit('auth/twitter/callback?oauth_token='.$oauth_token.'&oauth_verifier='.$oauth_verifier);
+            
+        $this->assertNotEmpty($user->twitter_user(), 'User was not linked to a Twitter SocialUser');
+    }
 }
