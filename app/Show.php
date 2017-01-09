@@ -1,5 +1,6 @@
 <?php namespace App;
 
+use Auth;
 use DB;
 
 use Illuminate\Database\Eloquent\Model;
@@ -18,17 +19,43 @@ class Show extends Model {
         return $this->hasMany('App\Episode')->where('active', 1);
     }
     
-    public function limitedEpisodes($limit, $pubdate = false){
-        $episodes = Episode::where('show_id', $this->id)
-            ->select('slug', 'name', 'description', 'duration', 'explicit', 'filesize', 'img_url', 'pubdate')
+    public function limitedEpisodes($user = null, $limit = 10, $pubdate = false){
+        $episodes = Episode::leftJoin('likes as total_likes', function($join) use ($user){
+                $join->on('total_likes.fk', '=', 'episodes.id');
+                $join->on('total_likes.type', '=', DB::raw("'episode'"));
+            })
+            ->leftJoin('likes as this_user_likes', function($join) use ($user){
+                $join->on('this_user_likes.user_id', '=', $user ? $user->id : DB::raw("-1"));
+                $join->on('this_user_likes.fk', '=', 'episodes.id');
+                $join->on('this_user_likes.type', '=', DB::raw("'episode'"));
+            })
+            ->where('show_id', $this->id)
+            ->selectRaw('episodes.id, slug, name, description, duration, explicit, filesize, img_url, pubdate, count(total_likes.id) as total_likes, count(this_user_likes.id) as this_user_likes')
             ->where('active', 1)
             ->orderBy('pubdate', 'desc')
+            ->groupBy('episodes.id')
+            ->groupBy('episodes.slug')
+            ->groupBy('episodes.name')
+            ->groupBy('episodes.description')
+            ->groupBy('episodes.duration')
+            ->groupBy('episodes.explicit')
+            ->groupBy('episodes.filesize')
+            ->groupBy('episodes.img_url')
+            ->groupBy('episodes.pubdate')
             ->limit($limit);
         if ($pubdate){
             $episodes = $episodes->where('pubdate', '<', $pubdate);
         }
         
-        return $episodes->get();
+        $ret = $episodes->get();
+        
+        foreach($ret as $e){
+            $e->howLongAgo = self::howLongAgo($e->pubdate);
+            $e->pubdate_str = date('g:i A - j M Y', $e->pubdate);
+            $e->description = strip_tags($e->description,"<p></p>");
+        }
+        
+        return $ret;
     }
     
     public function parseFeed(){
@@ -125,6 +152,42 @@ class Show extends Model {
 			}
         }else{
             throw new Exception('Empty RSS Feed URL');
+        }
+    }
+    
+    public static function howLongAgo($pubdate){
+        $short = false;
+        $etime = time() - $pubdate;
+
+        if ($etime < 1)      {
+            return '0s';
+        }
+
+        $a = array( 365 * 24 * 60 * 60  =>  'year',
+                   30 * 24 * 60 * 60  =>  'month',
+                        24 * 60 * 60  =>  'day',
+                             60 * 60  =>  'hour',
+                                  60  =>  'minute',
+                                   1  =>  'second'
+                  );
+        $a_units = array( 'year'   => array('short' => 'y', 'long' => 'year', 'longplural' => 'years'),
+                         'month'  => array('short' => 'm', 'long' => 'month', 'longplural' => 'months'),
+                         'day'    => array('short' => 'd', 'long' => 'day', 'longplural' => 'days'),
+                         'hour'   => array('short' => 'h', 'long' => 'hour', 'longplural' => 'hours'),
+                         'minute' => array('short' => 'm', 'long' => 'minute', 'longplural' => 'minutes'),
+                         'second' => array('short' => 's', 'long' => 'second', 'longplural' => 'seconds')
+                  );
+
+        foreach ($a as $secs => $str){
+            $d = $etime / $secs;
+            if ($d >= 1){
+                $r = round($d);
+                if ($short){
+                    return $r.$a_units[$str]['short'];
+                }else{
+                    return $r.' '.$a_units[$str][$r > 1 ? 'longplural' : 'long'].' ago';
+                }
+            }
         }
     }
 }

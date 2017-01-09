@@ -42,6 +42,9 @@ Vue.component('show', {
             });
     },
     methods: {
+        likeEpisode() {
+            
+        },
         showMore() {
             var self = this;
             this.$http.get('/api/shows/' + this.slug + '/episodes?pubdate=' + this.oldestPubdate)

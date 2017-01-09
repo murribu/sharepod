@@ -61,16 +61,17 @@ class User extends SparkUser
     }
     
     public static function first_or_create_from_facebook($facebook_user){
-        $email = $facebook_user->email;
-        if ($email == ''){
-            $email = $facebook_user->id.'@facebook';
-        }
+        $id = $facebook_user->id;
         
-        $user = User::where('email', $email)->first();
+        $fb = SocialUser::where('social_id', $id)->where('type', 'facebook')->first();
+        $user = false;
+        if ($fb){
+            $user = $fb->user;
+        }
         if (!$user){
             $user = new User;
             $user->name = $facebook_user->name;
-            $user->email = $email;
+            $user->email = $facebook_user->email;
 
             $user->save();
         }
@@ -104,6 +105,9 @@ class User extends SparkUser
         $fb->type = 'facebook';
         $fb->save();
         
+        if ($fb->email != null && $fb->email != ''){
+            $this->email = $fb->email;
+        }
         $this->facebook_user_id = $fb->id;
         $this->save();
         
@@ -111,13 +115,17 @@ class User extends SparkUser
     }
     
     public static function first_or_create_from_twitter($twitter_user){
-        $email = $twitter_user->id.'@twitter';
+        $id = $twitter_user->id;
         
-        $user = User::where('email', $email)->first();
+        $twit = SocialUser::where('social_id', $id)->where('type', 'twitter')->first();
+        $user = false;
+        if ($twit){
+            $user = $twit->user;
+        }
         if (!$user){
             $user = new User;
             $user->name = $twitter_user->name;
-            $user->email = $email;
+            $user->email = $twitter_user->email;
 
             $user->save();
         }

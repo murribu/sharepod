@@ -84,7 +84,7 @@ class CreateInitialTables extends Migration
             $table->increments('id');
             $table->string('slug')->unique();
             $table->string('name')->nullable();
-            $table->string('social_id')->unique();
+            $table->string('social_id')->index();
             $table->string('screen_name')->nullable();
             $table->string('description')->nullable();
             $table->string('url')->nullable();
@@ -105,6 +105,7 @@ class CreateInitialTables extends Migration
             $table->string('code', 1024)->nullable();
             $table->string('state')->nullable();
             $table->enum('type', ['twitter', 'facebook']);
+            $table->unique(['social_id', 'type']);
             $table->timestamps();
         });
         Schema::create('playlist_types', function (Blueprint $table) {

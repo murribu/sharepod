@@ -1,3 +1,6 @@
+@episode-gray: #aab8c2;
+@episode-red: #e81c4f;
+
 .with-navbar {
     .container {
         h3 {
@@ -238,3 +241,80 @@ a.clickable:hover {
   border: 0!important;
   clip: rect(1px, 1px, 1px, 1px) !important;
 }
+
+.stream-item-footer{
+    display: table;
+    width: 100%;
+    
+    .ProfileTweet-action{
+        display: inline-block;
+        min-width: 80px;
+    
+        button.ProfileTweet-actionButton{
+            border: 0;
+            color: @episode-gray;
+            display: inline-block;
+            font-size: 16px;
+            line-height: 1;
+            padding: 0 2px;
+            position: relative;
+            background: transparent;
+            -webkit-appearance: button;
+            cursor: pointer;
+            text-transform: none;
+            font: inherit;
+            margin: 0;
+            .IconContainer{
+                display: inline-block;
+    
+                .HeartAnimationContainer{
+                    height: 16px;
+                    left: .1rem;
+                    overflow: hidden;
+                    padding-right: 1px;
+                    position: relative;
+                    width: 16px;
+                    .HeartAnimation{
+                        position: absolute;
+                        background: url(/img/web_heart_animation.png);
+                        background-position: left;
+                        background-repeat: no-repeat;
+                        background-size: 2900%;
+                        height: 50px;
+                        width: 50px;
+                        left: -100%;
+                        top: -100%;
+                    }
+                }
+            }
+            .IconTextContainer{
+                display: inline-block;
+    
+                .ProfileTweet-actionCount{
+                    color: @episode-gray;
+                    display: inline-block;
+                    font-size: 12px;
+                    font-weight: bold;
+                    margin-left: 6px;
+                    position: relative;
+                    top: -2px;
+                }
+            }
+        }
+        button.ProfileTweet-actionButton:hover, button.ProfileTweet-actionButtonUndo{
+            .IconContainer{
+                .HeartAnimationContainer{
+                    .HeartAnimation{
+                        background-position: right;
+                    }
+                }
+            }
+            .IconTextContainer{
+                .ProfileTweet-actionCount{
+                    color: @episode-red;
+                }
+            }
+        }
+    }
+}
+

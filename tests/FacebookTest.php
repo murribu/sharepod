@@ -72,13 +72,15 @@ class FacebookTest extends TestCase
         $state = $faker->randomNumber();
         $this->visit('auth/facebook/callback?code='.$code.'&state='.$state);
 
-        $user = User::where('email', $email)->first();
+        $facebook_user = SocialUser::where('type', 'facebook')->where('social_id', $userId)->first();
+
+        $user = $facebook_user->user;
         $this->assertNotEmpty($user, 'User was not created');
         $this->assertNotEmpty($user->facebook_user(), 'User was not linked to a Facebook SocialUser');
 
     }
     
-    public function test_login_as_an_existing_facebook_user(){
+    public function test_login_as_an_existing_facebook_user_and_a_subsequent_user(){
         $faker = Faker::create();
         $userId = $faker->randomNumber(5);
         $email = $faker->email;
@@ -102,6 +104,21 @@ class FacebookTest extends TestCase
         $this->visit('logout');
         
         $this->assertEquals($user1->id, $user2->id);
+        
+        $userId = $faker->randomNumber(5);
+        $email = $faker->email;
+        
+        $this->mockSocialiteFacade($email, $userId);
+        $code = $faker->randomNumber();
+        $state = $faker->randomNumber();
+
+        $cb = $this->visit('auth/facebook/callback?code='.$code.'&state='.$state);
+        $this->assertEquals('Login Redirect', $cb->crawler->filterXPath('//html/head/title')->text());
+        $this->visit('user/current');
+        
+        $user3 = json_decode($this->response->getContent());
+        
+        $this->assertNotEmpty($user3, 'A subsequent user was not created');
     }
     
     public function test_link_an_existing_user_to_facebook()

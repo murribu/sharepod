@@ -1,5 +1,6 @@
 <?php namespace App\Http\Controllers;
 
+use Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Http\Request;
 use Exception;
@@ -78,12 +79,7 @@ class ShowsController extends Controller
             
         $show->episodeCount = $show->episodes->count();
         $show->likesCount = $show->likesCount();
-        $episodes = $show->limitedEpisodes(10);
-        foreach($episodes as $e){
-            $e->howLongAgo = self::howLongAgo($e->pubdate);
-            $e->pubdate_str = date('g:i A - j M Y', $e->pubdate);
-            $e->description = strip_tags($e->description,"<p></p>");
-        }
+        $episodes = $show->limitedEpisodes(Auth::user(), 10);
         
         unset($show->id);
         unset($show->episodes);
@@ -94,55 +90,20 @@ class ShowsController extends Controller
     
     public function apiShowEpisodes($slug){
         $show = Show::where('slug', $slug)
-            ->where('active', 1)
-            ->first();
+            ->where('active', 1);
+        $user = Auth::user();
+        if ($user){
+            $show = $show->leftJoin('likes', function($join){
+                $join->on('likes.user_id', '=', $user->id);
+                $join->on('likes.fk', '=', 'show.id');
+                $join->on('likes.type', '=', 'show');
+            });
+        }
+        $show->first();
         if ($show){
-            $episodes = $show->limitedEpisodes(10, Input::get('pubdate'));
-            foreach($episodes as $e){
-                $e->howLongAgo = self::howLongAgo($e->pubdate);
-                $e->pubdate_str = date('g:i A - j M Y', $e->pubdate);
-                $e->description = strip_tags($e->description,"<p></p>");
-            }
-            
-            return $episodes;
+            return $show->limitedEpisodes(Auth::user(), 10, Input::get('pubdate'));
         }else{
             return [];
-        }
-    }
-    
-    public static function howLongAgo($pubdate){
-        $short = false;
-        $etime = time() - $pubdate;
-
-        if ($etime < 1)      {
-            return '0s';
-        }
-
-        $a = array( 365 * 24 * 60 * 60  =>  'year',
-                   30 * 24 * 60 * 60  =>  'month',
-                        24 * 60 * 60  =>  'day',
-                             60 * 60  =>  'hour',
-                                  60  =>  'minute',
-                                   1  =>  'second'
-                  );
-        $a_units = array( 'year'   => array('short' => 'y', 'long' => 'year', 'longplural' => 'years'),
-                         'month'  => array('short' => 'm', 'long' => 'month', 'longplural' => 'months'),
-                         'day'    => array('short' => 'd', 'long' => 'day', 'longplural' => 'days'),
-                         'hour'   => array('short' => 'h', 'long' => 'hour', 'longplural' => 'hours'),
-                         'minute' => array('short' => 'm', 'long' => 'minute', 'longplural' => 'minutes'),
-                         'second' => array('short' => 's', 'long' => 'second', 'longplural' => 'seconds')
-                  );
-
-        foreach ($a as $secs => $str){
-            $d = $etime / $secs;
-            if ($d >= 1){
-                $r = round($d);
-                if ($short){
-                    return $r.$a_units[$str]['short'];
-                }else{
-                    return $r.' '.$a_units[$str][$r > 1 ? 'longplural' : 'long'].' ago';
-                }
-            }
         }
     }
 }

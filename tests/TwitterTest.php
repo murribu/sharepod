@@ -74,7 +74,8 @@ class TwitterTest extends TestCase
         $oauth_verifier = $faker->randomNumber();
         $this->visit('auth/twitter/callback?oauth_token='.$oauth_token.'&oauth_verifier='.$oauth_verifier);
 
-        $user = User::where('email', $userId.'@twitter')->first();
+        $twitter_user = SocialUser::where('type', 'twitter')->where('social_id', $userId)->first();
+        $user = $twitter_user->user;
         $this->assertNotEmpty($user, 'User was not created');
         $this->assertNotEmpty($user->twitter_user(), 'User was not linked to a Twitter SocialUser');
 

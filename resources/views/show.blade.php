@@ -49,6 +49,23 @@
                                     </small>
                                 </div>
                                 <div class="TweetTextSize  js-tweet-text tweet-text" lang="en" data-aria-label-part="0" v-html="episode.description" ></div>
+                                <div class="stream-item-footer">
+                                    <div :class="{'ProfileTweet-action--like': episode.isLiked}" class="ProfileTweet-action">
+                                        <button class="ProfileTweet-actionButton" type="button" @click.prevent="likeEpisode(episode)">
+                                            <div class="IconContainer" title="Like">
+                                                <div class="HeartAnimationContainer">
+                                                    <div class="HeartAnimation"></div>
+                                                </div>
+                                                <span class="u-hiddenVisually">Like</span>
+                                            </div>
+                                            <div class="IconTextContainer">
+                                                <span class="ProfileTweet-actionCount">
+                                                  <span class="ProfileTweet-actionCountForPresentation" aria-hidden="true">@{{episode.total_likes}}</span>
+                                                </span>
+                                            </div>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </li>
