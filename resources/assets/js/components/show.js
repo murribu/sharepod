@@ -3,6 +3,7 @@ Vue.component('show', {
     data() {
         return {
             show: {},
+            selectedEpisode: {},
         };
     },
     computed: {
@@ -42,6 +43,26 @@ Vue.component('show', {
             });
     },
     methods: {
+        sendEpisode(episode) {
+            this.selectedEpisode = episode;
+            $('#modal-send-episode-1').modal('show');
+        },
+        sendEpisodeViaEmailDialog() {
+            $('#modal-send-episode-1').modal('hide');
+            $('#modal-send-episode-via-email').modal('show');
+        },
+        sendEpisodeViaTwitterDialog() {
+            $('#modal-send-episode-1').modal('hide');
+            $('#modal-send-episode-via-twitter').modal('show');
+        },
+        sendEpisodeViaEmail() {
+            this.$http.post('/send', {slug: selectedEpisode.slug})
+                .then(response => {
+                    
+                }, response => {
+                    
+                });
+        },
         likeEpisode(episode) {
             var self = this;
             this.$http.post('/api/episodes/like', {slug: episode.slug})

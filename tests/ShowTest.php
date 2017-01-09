@@ -1,8 +1,10 @@
 <?php
+namespace Tests;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Faker\Factory as Faker;
 
+use Tests\Traits\MockSocialite;
 use Laravel\Socialite\Contracts\Factory as Socialite;
 
 use App\Episode;
@@ -13,49 +15,7 @@ use App\User;
 class ShowTest extends TestCase
 {
     use DatabaseTransactions;
-    
-    public function tearDown(){
-        Mockery::close();
-    }
-    
-    public function mockSocialiteFacade($email = 'foo@bar.com', $id = null)
-    {
-        $faker = Faker::create();
-        if (!$id){
-            $id = $faker->randomNumber(5);
-        }
-        $name = $faker->name;
-        $url = $faker->url;
-        
-        $socialiteUser = Mockery::mock(Laravel\Socialite\Two\User::class);
-        $socialiteUser->token = $faker->randomNumber(5);
-        $socialiteUser->id = $id;
-        $socialiteUser->nickname = $faker->userName;
-        $socialiteUser->name = $name;
-        $socialiteUser->email = $email;
-        $socialiteUser->avatar = $faker->imageUrl();
-        $socialiteUser->avatar_original = $faker->imageUrl();
-        $socialiteUser->profileUrl = $url;
-        $socialiteUser->user = [
-            'name' => $name,
-            'email' => $email,
-            'gender' => $faker->word,
-            'verified' => true,
-            'link' => $url,
-            'id' => $id,
-        ];
-
-        $provider = Mockery::mock(Laravel\Socialite\Two\FacebookProvider::class);
-        $provider->shouldReceive('user')
-            ->andReturn($socialiteUser);
-
-        $stub = Mockery::mock(Socialite::class);
-        $stub->shouldReceive('driver')->with('facebook')
-            ->andReturn($provider);
-
-        // Replace Socialite Instance with our mock
-        $this->app->instance(Socialite::class, $stub);
-    }
+    use MockSocialite;
     
     public function test_create_a_new_user_and_like_an_episode()
     {
@@ -72,7 +32,7 @@ class ShowTest extends TestCase
         
         $userId = $faker->randomNumber(5);
 
-        $this->mockSocialiteFacade($faker->email, $userId);
+        $this->mockSocialiteFacadeFacebook($faker->email, $userId);
 
         $code = $faker->randomNumber();
         $state = $faker->randomNumber();
@@ -85,9 +45,9 @@ class ShowTest extends TestCase
         $this->assertNotEmpty($user->facebook_user(), 'User was not linked to a Facebook SocialUser');
 
         $this->actingAs($user)
-            ->post('/api/show/like', ['slug' => $episode->slug])
-            ->seeJson(['success' => '1'], 'Error in liking an episode')
-            ->post('/api/show/unlike', ['slug' => $episode->slug])
-            ->seeJson(['success' => '1'], 'Error in unliking an episode');
+            ->post('/api/shows/like', ['slug' => $show->slug])
+            ->seeJson(['success' => '1'], 'Error in liking a show')
+            ->post('/api/shows/unlike', ['slug' => $show->slug])
+            ->seeJson(['success' => '1'], 'Error in unliking a show');
     }
 }

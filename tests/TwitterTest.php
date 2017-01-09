@@ -1,8 +1,10 @@
 <?php
+namespace Tests;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Faker\Factory as Faker;
 
+use Tests\Traits\MockSocialite;
 use Laravel\Socialite\Contracts\Factory as Socialite;
 
 use App\SocialUser;
@@ -11,63 +13,14 @@ use App\User;
 class TwitterTest extends TestCase
 {
     use DatabaseTransactions;
-    
-    // Sources of help
-    // https://stefanzweifel.io/posts/how-i-write-integration-tests-for-laravel-socialite-powered-apps
-    // https://laracasts.com/lessons/mock-that-thang
-    
-    public function tearDown(){
-        Mockery::close();
-    }
-    
-    public function mockSocialiteFacade($email = 'foo@bar.com', $id = null, $token = 'foo', $tokenSecret = 'bar')
-    {
-        $faker = Faker::create();
-        if (!$id){
-            $id = $faker->randomNumber(5);
-        }
-        
-        $socialiteUser = Mockery::mock(Laravel\Socialite\One\User::class);
-        $socialiteUser->token = $token;
-        $socialiteUser->tokenSecret = $tokenSecret;
-        $socialiteUser->email = $email;
-        $socialiteUser->nickname = $faker->userName;
-        $socialiteUser->avatar = $faker->imageUrl();
-        $socialiteUser->avatar_original = $faker->imageUrl();
-        $socialiteUser->id = $id;
-        $socialiteUser->user = [
-            'id_str' => $id,
-            'followers_count' => $faker->randomNumber(),
-            'friends_count' => $faker->randomNumber(),
-            'utc_offset' => '-21600',
-            'time_zone' => $faker->timezone,
-            'profile_background_color' => $faker->randomNumber(6),
-            'profile_background_image_url' => $faker->imageUrl(),
-            'profile_image_url' => $faker->imageUrl(),
-            'profile_banner_url' => $faker->imageUrl(), //probably should be https, but whatever
-            'url' => $faker->url,
-            'location' => $faker->city,
-            'description' => $faker->sentence(),
-        ];
-
-        $provider = Mockery::mock(Laravel\Socialite\One\TwitterProvider::class);
-        $provider->shouldReceive('user')
-            ->andReturn($socialiteUser);
-
-        $stub = Mockery::mock(Socialite::class);
-        $stub->shouldReceive('driver')->with('twitter')
-            ->andReturn($provider);
-
-        // Replace Socialite Instance with our mock
-        $this->app->instance(Socialite::class, $stub);
-    }
+    use MockSocialite;
     
     public function test_create_a_new_user_from_twitter_login()
     {
         $faker = Faker::create();
         $userId = $faker->randomNumber(5);
         
-        $this->mockSocialiteFacade(null, $userId);
+        $this->mockSocialiteFacadeTwitter(null, $userId);
 
         $faker = Faker::create();
         $oauth_token = $faker->randomNumber();
@@ -85,7 +38,7 @@ class TwitterTest extends TestCase
         $faker = Faker::create();
         $userId = $faker->randomNumber(5);
         
-        $this->mockSocialiteFacade(null, $userId);
+        $this->mockSocialiteFacadeTwitter(null, $userId);
         $oauth_token = $faker->randomNumber();
         $oauth_verifier = $faker->randomNumber();
 
@@ -110,7 +63,7 @@ class TwitterTest extends TestCase
     {
         $faker = Faker::create();
         $email = $faker->email;
-        $this->mockSocialiteFacade($email);
+        $this->mockSocialiteFacadeTwitter($email);
         
         $user = new User;
         $user->email = $email;
@@ -127,7 +80,7 @@ class TwitterTest extends TestCase
     {
         $faker = Faker::create();
         $email = $faker->email;
-        $this->mockSocialiteFacade($email);
+        $this->mockSocialiteFacadeTwitter($email);
         
         $user = new User;
         $user->email = $email;

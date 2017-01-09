@@ -19860,6 +19860,7 @@ Vue.component('show', {
     data: function data() {
         return {
             show: {},
+            selectedEpisode: {},
         };
     },
     computed: {
@@ -19901,6 +19902,26 @@ Vue.component('show', {
             });
     },
     methods: {
+        sendEpisode: function sendEpisode(episode) {
+            this.selectedEpisode = episode;
+            $('#modal-send-episode-1').modal('show');
+        },
+        sendEpisodeViaEmailDialog: function sendEpisodeViaEmailDialog() {
+            $('#modal-send-episode-1').modal('hide');
+            $('#modal-send-episode-via-email').modal('show');
+        },
+        sendEpisodeViaTwitterDialog: function sendEpisodeViaTwitterDialog() {
+            $('#modal-send-episode-1').modal('hide');
+            $('#modal-send-episode-via-twitter').modal('show');
+        },
+        sendEpisodeViaEmail: function sendEpisodeViaEmail() {
+            this.$http.post('/send', {slug: selectedEpisode.slug})
+                .then(function (response) {
+                    
+                }, function (response) {
+                    
+                });
+        },
         likeEpisode: function likeEpisode(episode) {
             var self = this;
             this.$http.post('/api/episodes/like', {slug: episode.slug})
