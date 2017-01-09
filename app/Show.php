@@ -25,7 +25,7 @@ class Show extends Model {
                 $join->on('total_likes.type', '=', DB::raw("'episode'"));
             })
             ->leftJoin('likes as this_user_likes', function($join) use ($user){
-                $join->on('this_user_likes.user_id', '=', $user ? $user->id : DB::raw("-1"));
+                $join->on('this_user_likes.user_id', '=', DB::raw($user ? $user->id : DB::raw("-1")));
                 $join->on('this_user_likes.fk', '=', 'episodes.id');
                 $join->on('this_user_likes.type', '=', DB::raw("'episode'"));
             })

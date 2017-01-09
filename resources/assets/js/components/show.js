@@ -42,8 +42,23 @@ Vue.component('show', {
             });
     },
     methods: {
-        likeEpisode() {
-            
+        likeEpisode(episode) {
+            var self = this;
+            this.$http.post('/api/episodes/like', {slug: episode.slug})
+                .then(response => {
+                    self.updateEpisode(episode.slug, response.data.total_likes, response.data.this_user_likes);
+                }, response => {
+                    //alert('error');
+                })
+        },
+        unlikeEpisode(episode) {
+            var self = this;
+            this.$http.post('/api/episodes/unlike', {slug: episode.slug})
+                .then(response => {
+                    self.updateEpisode(episode.slug, response.data.total_likes, response.data.this_user_likes);
+                }, response => {
+                    //alert('error');
+                })
         },
         showMore() {
             var self = this;
@@ -53,6 +68,14 @@ Vue.component('show', {
                 }, response => {
                     // alert('error');
                 });
+        },
+        updateEpisode(slug, total_likes, this_user_likes){
+            for(var e in this.show.episodes){
+                if (this.show.episodes[e].slug == slug){
+                    this.show.episodes[e].total_likes = total_likes;
+                    this.show.episodes[e].this_user_likes = this_user_likes;
+                }
+            }
         }
     }
 });

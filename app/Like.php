@@ -6,4 +6,5 @@ class Like extends Model {
     
     public $table = 'likes';
     
+    protected $fillable = ['user_id', 'fk', 'type'];
 }

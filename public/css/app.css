@@ -7622,7 +7622,8 @@ a.clickable:hover {
   display: inline-block;
   min-width: 80px;
 }
-.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButton {
+.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButton,
+.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButtonUndo {
   border: 0;
   color: #aab8c2;
   display: inline-block;
@@ -7637,10 +7638,12 @@ a.clickable:hover {
   font: inherit;
   margin: 0;
 }
-.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButton .IconContainer {
+.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButton .IconContainer,
+.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButtonUndo .IconContainer {
   display: inline-block;
 }
-.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButton .IconContainer .HeartAnimationContainer {
+.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButton .IconContainer .HeartAnimationContainer,
+.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButtonUndo .IconContainer .HeartAnimationContainer {
   height: 16px;
   left: .1rem;
   overflow: hidden;
@@ -7648,7 +7651,8 @@ a.clickable:hover {
   position: relative;
   width: 16px;
 }
-.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButton .IconContainer .HeartAnimationContainer .HeartAnimation {
+.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButton .IconContainer .HeartAnimationContainer .HeartAnimation,
+.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButtonUndo .IconContainer .HeartAnimationContainer .HeartAnimation {
   position: absolute;
   background: url(/img/web_heart_animation.png);
   background-position: left;
@@ -7659,10 +7663,12 @@ a.clickable:hover {
   left: -100%;
   top: -100%;
 }
-.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButton .IconTextContainer {
+.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButton .IconTextContainer,
+.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButtonUndo .IconTextContainer {
   display: inline-block;
 }
-.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButton .IconTextContainer .ProfileTweet-actionCount {
+.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButton .IconTextContainer .ProfileTweet-actionCount,
+.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButtonUndo .IconTextContainer .ProfileTweet-actionCount {
   color: #aab8c2;
   display: inline-block;
   font-size: 12px;

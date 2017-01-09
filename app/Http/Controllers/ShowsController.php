@@ -94,7 +94,7 @@ class ShowsController extends Controller
         $user = Auth::user();
         if ($user){
             $show = $show->leftJoin('likes', function($join){
-                $join->on('likes.user_id', '=', $user->id);
+                $join->on('likes.user_id', '=', DB::raw($user->id));
                 $join->on('likes.fk', '=', 'show.id');
                 $join->on('likes.type', '=', 'show');
             });

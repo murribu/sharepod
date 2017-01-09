@@ -12,8 +12,12 @@
 */
 
 Route::group(['middleware' => 'auth:api'], function () {
+
+    Route::post('episodes/like', 'EpisodesController@apiLike');
+    Route::post('episodes/unlike', 'EpisodesController@apiUnlike');
     
+    Route::get('shows', 'ShowsController@apiListing');
+    Route::get('shows/{slug}', 'ShowsController@apiShow');
+    Route::get('shows/{slug}/episodes', 'ShowsController@apiShowEpisodes');
+
 });
-Route::get('shows', 'ShowsController@apiListing');
-Route::get('shows/{slug}', 'ShowsController@apiShow');
-Route::get('shows/{slug}/episodes', 'ShowsController@apiShowEpisodes');
