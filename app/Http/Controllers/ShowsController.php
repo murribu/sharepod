@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers;
 
 use Auth;
+use DB;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Http\Request;
 use Exception;
@@ -72,13 +73,25 @@ class ShowsController extends Controller
     }
     
     public function apiShow($slug){
-        $show = Show::where('slug', $slug)
+        $user = Auth::user();
+        $show = Show::leftJoin('likes as this_user_likes', function($join) use ($user){
+                $join->on('this_user_likes.user_id', '=', DB::raw($user ? $user->id : DB::raw("-1")));
+                $join->on('this_user_likes.fk', '=', 'shows.id');
+                $join->on('this_user_likes.type', '=', DB::raw("'show'"));
+            })
+            ->where('slug', $slug)
             ->where('active', 1)
-            ->select('id', 'name', 'slug', 'description', 'img_url', 'url')
+            ->selectRaw('shows.id, shows.name, shows.slug, shows.description, shows.img_url, shows.url, count(this_user_likes.id) this_user_likes')
+            ->groupBy('shows.id')
+            ->groupBy('shows.name')
+            ->groupBy('shows.slug')
+            ->groupBy('shows.description')
+            ->groupBy('shows.img_url')
+            ->groupBy('shows.url')
             ->first();
             
         $show->episodeCount = $show->episodes->count();
-        $show->likesCount = $show->likesCount();
+        $show->total_likes = $show->likeCount();
         $episodes = $show->limitedEpisodes(Auth::user(), 10);
         
         unset($show->id);
@@ -104,6 +117,26 @@ class ShowsController extends Controller
             return $show->limitedEpisodes(Auth::user(), 10, Input::get('pubdate'));
         }else{
             return [];
+        }
+    }
+    
+    public function apiLike(){
+        $user = Auth::user();
+        if ($user){
+            $s = Show::where('slug', Input::get('slug'))->first();
+            if ($s->like($user)){
+                return ['success' => 1, 'total_likes' => $s->likeCount(), 'this_user_likes' => 1];
+            }
+        }
+    }
+    
+    public function apiUnlike(){
+        $user = Auth::user();
+        if ($user){
+            $s = Show::where('slug', Input::get('slug'))->first();
+            if ($s->unlike($user)){
+                return ['success' => 1, 'total_likes' => $s->likeCount(), 'this_user_likes' => 0];
+            }
         }
     }
 }

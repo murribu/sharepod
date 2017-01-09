@@ -15,6 +15,8 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::post('episodes/like', 'EpisodesController@apiLike');
     Route::post('episodes/unlike', 'EpisodesController@apiUnlike');
+    Route::post('shows/like', 'ShowsController@apiLike');
+    Route::post('shows/unlike', 'ShowsController@apiUnlike');
     
     Route::get('shows', 'ShowsController@apiListing');
     Route::get('shows/{slug}', 'ShowsController@apiShow');

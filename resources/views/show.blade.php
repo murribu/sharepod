@@ -14,6 +14,12 @@
                             <div class="DashboardProfileCard-name u-textTruncate">
                                 <a class="u-textInheritColor" :href="'/shows/' + show.slug">@{{show.name}}</a>
                             </div>
+							<button class="DashboardProfileCard-like btn btn-sm" v-if="user && !show.this_user_likes" @click.prevent="likeShow"></button>
+                            
+                            <button class="DashboardProfileCard-unlike btn btn-sm" v-if="user && !!show.this_user_likes" @click.prevent="unlikeShow"></button>
+
+                            
+                            
                             <span class="DashboardProfileCard-screenname u-inlineBlock u-dir" dir="ltr"></span>
                         </div>
                         <div class="DashboardProfileCard-stats">
@@ -25,7 +31,7 @@
                               </li>
                                 <li class="DashboardProfileCard-stat Arrange-sizeFit">
                                     <span class="DashboardProfileCard-statLabel u-block">Likes</span>
-                                    <span class="DashboardProfileCard-statValue likeCount" data-is-compact="false">@{{show.likesCount}}</span>
+                                    <span class="DashboardProfileCard-statValue likeCount" data-is-compact="false">@{{show.total_likes}}</span>
                                 </li>
                             </ul>
                         </div>

@@ -12,6 +12,7 @@ class Show extends Model {
     use HasLikes;
     
     protected static $slug_reserved_words = ['new', 'list', 'search', 'undefined'];
+    public static $like_type = 'show';
     
     public $table = 'shows';
     

@@ -60,6 +60,24 @@ Vue.component('show', {
                     //alert('error');
                 })
         },
+        likeShow() {
+            var self = this;
+            this.$http.post('/api/shows/like', {slug: this.show.slug})
+                .then(response => {
+                    self.updateShow(response.data.total_likes, response.data.this_user_likes);
+                }, response => {
+                    //alert('error');
+                })
+        },
+        unlikeShow() {
+            var self = this;
+            this.$http.post('/api/shows/unlike', {slug: this.show.slug})
+                .then(response => {
+                    self.updateShow(response.data.total_likes, response.data.this_user_likes);
+                }, response => {
+                    //alert('error');
+                })
+        },
         showMore() {
             var self = this;
             this.$http.get('/api/shows/' + this.slug + '/episodes?pubdate=' + this.oldestPubdate)
@@ -76,6 +94,10 @@ Vue.component('show', {
                     this.show.episodes[e].this_user_likes = this_user_likes;
                 }
             }
+        },
+        updateShow(total_likes, this_user_likes){
+            this.show.total_likes = total_likes;
+            this.show.this_user_likes = this_user_likes;
         }
     }
 });

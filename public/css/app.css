@@ -7462,6 +7462,9 @@ a.clickable:hover {
   color: #333;
   background-color: #fff;
   border: 1px solid #ccc;
+  font-weight: inherit;
+  text-transform: none;
+  margin-top: 2px;
 }
 .DashboardProfileCard-like:before {
   content: "✔ Like";
@@ -7475,6 +7478,9 @@ a.clickable:hover {
   background-color: #337ab7;
   border-color: #2e6da4;
   padding: 3px 8px;
+  font-weight: inherit;
+  text-transform: none;
+  margin-top: 2px;
 }
 .DashboardProfileCard-unlike:before {
   content: "Liked!";
