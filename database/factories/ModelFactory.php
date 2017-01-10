@@ -22,3 +22,20 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'remember_token' => str_random(10),
     ];
 });
+
+$factory->define(App\Episode::class, function(Faker\Generator $faker){
+    return [
+        'slug' => App\Episode::findSlug(),
+        'show_id' => function() {
+            return factory(App\Show::class)->create()->id;
+        }
+    ];
+});
+
+
+$factory->define(App\Show::class, function(Faker\Generator $faker){
+    return [
+        'slug' => App\Show::findSlug(),
+        'feed' => $faker->url
+    ];
+});

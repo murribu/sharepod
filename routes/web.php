@@ -25,6 +25,10 @@ Route::get('/shows/list', 'ShowsController@listing');
 Route::get('/shows/search', 'ShowsController@search');
 Route::get('/shows/{slug}', 'ShowsController@display');
 
+$router->group(['middleware' => 'auth'], function ($router) {
+    Route::post('/send', 'EpisodesController@send');
+});
+
 
 $router->group(['middleware' => 'dev'], function ($router) {
     Route::post('/shows/new', 'ShowsController@postNew');

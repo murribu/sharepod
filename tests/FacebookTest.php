@@ -23,7 +23,6 @@ class FacebookTest extends TestCase
         
         $this->mockSocialiteFacadeFacebook($email, $userId);
 
-        $faker = Faker::create();
         $code = $faker->randomNumber();
         $state = $faker->randomNumber();
         $this->visit('auth/facebook/callback?code='.$code.'&state='.$state);

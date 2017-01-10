@@ -4,6 +4,10 @@ Vue.component('show', {
         return {
             show: {},
             selectedEpisode: {},
+            sendToEmailAddress: '',
+            sendForm: {
+                busy: false
+            }
         };
     },
     computed: {
@@ -56,7 +60,8 @@ Vue.component('show', {
             $('#modal-send-episode-via-twitter').modal('show');
         },
         sendEpisodeViaEmail() {
-            this.$http.post('/send', {slug: selectedEpisode.slug})
+            this.sendForm.busy = true;
+            this.$http.post('/send', {slug: this.selectedEpisode.slug, email_address: this.sendToEmailAddress})
                 .then(response => {
                     
                 }, response => {
