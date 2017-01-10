@@ -29,3 +29,6 @@ Route::get('/shows/{slug}', 'ShowsController@display');
 $router->group(['middleware' => 'dev'], function ($router) {
     Route::post('/shows/new', 'ShowsController@postNew');
 });
+
+
+Route::get('sendhtmlemail/{email_address}/{to_name}/{subject}','MailController@html_email');
