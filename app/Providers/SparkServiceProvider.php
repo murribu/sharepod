@@ -5,6 +5,8 @@ namespace App\Providers;
 use Laravel\Spark\Spark;
 use Laravel\Spark\Providers\AppServiceProvider as ServiceProvider;
 
+use Laravel\Spark\Events\Profile\ContactInformationUpdated;
+
 class SparkServiceProvider extends ServiceProvider
 {
     /**
@@ -50,17 +52,27 @@ class SparkServiceProvider extends ServiceProvider
      */
     public function booted()
     {
-        Spark::useStripe()->noCardUpFront()->trialDays(10);
-
         Spark::freePlan()
             ->features([
                 'First', 'Second', 'Third'
             ]);
 
-        Spark::plan('Basic', 'provider-id-1')
+        Spark::plan('Basic', 'basic-1')
             ->price(10)
             ->features([
                 'First', 'Second', 'Third'
             ]);
+            
+        Spark::swap('UpdateContactInformation@handle', function($user, array $data){
+            $user->forceFill([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'verified' => 0
+            ])->save();
+
+            event(new ContactInformationUpdated($user));
+
+            return $user;
+        });
     }
 }

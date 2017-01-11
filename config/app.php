@@ -165,6 +165,7 @@ return [
 
         
         Laravel\Socialite\SocialiteServiceProvider::class,
+        Jrean\UserVerification\UserVerificationServiceProvider::class,
         /*
          * Package Service Providers...
          */
@@ -232,6 +233,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+        'UserVerification' => Jrean\UserVerification\Facades\UserVerification::class
     ],
 
 ];

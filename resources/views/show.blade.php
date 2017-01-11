@@ -15,9 +15,9 @@
                                 <div class="DashboardProfileCard-name u-textTruncate">
                                     <a class="u-textInheritColor" :href="'/shows/' + show.slug">@{{show.name}}</a>
                                 </div>
-                                <button class="DashboardProfileCard-like btn btn-sm" v-if="user && !show.this_user_likes" @click.prevent="likeShow"></button>
+                                <button class="DashboardProfileCard-like btn btn-sm" v-if="user && user.verified && !show.this_user_likes" @click.prevent="likeShow"></button>
                                 
-                                <button class="DashboardProfileCard-unlike btn btn-sm" v-if="user && !!show.this_user_likes" @click.prevent="unlikeShow"></button>
+                                <button class="DashboardProfileCard-unlike btn btn-sm" v-if="user && user.verified && !!show.this_user_likes" @click.prevent="unlikeShow"></button>
                                 
                                 <span class="DashboardProfileCard-screenname u-inlineBlock u-dir" dir="ltr"></span>
                             </div>
@@ -54,7 +54,7 @@
                                         </small>
                                     </div>
                                     <div class="TweetTextSize  js-tweet-text tweet-text" lang="en" data-aria-label-part="0" v-html="episode.description" ></div>
-                                    <div class="stream-item-footer">
+                                    <div class="stream-item-footer" v-if="user.verified">
                                         <div class="ProfileTweet-action ProfileTweet-action--send">
                                             <button class="ProfileTweet-actionButton" type="button" @click.prevent="sendEpisode(episode)">
                                                 <div class="IconContainer" title="Send">

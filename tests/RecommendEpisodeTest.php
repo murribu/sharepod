@@ -13,7 +13,7 @@ use App\Show;
 use App\SocialUser;
 use App\User;
 
-class SendTest extends TestCase
+class RecommendEpisodeTest extends TestCase
 {
     use DatabaseTransactions;
     use MockSocialite;
@@ -43,7 +43,12 @@ class SendTest extends TestCase
         $this->seeMessageFor($email2);
         $this->assertTrue($this->lastMessage()->contains('sent you a podcast episode'));
         
+        //Create a new user
         $user2 = User::where('email', $email2)->first();
         $this->assertNotNull($user2);
+        $this->assertNotNull($user2->verification_token);
+        $this->assertEquals($user2->verified, 0);
+        
+        
     }
 }

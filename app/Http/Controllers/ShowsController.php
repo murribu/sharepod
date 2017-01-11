@@ -20,7 +20,7 @@ class ShowsController extends Controller
     {
         // $this->middleware('auth');
 
-        // $this->middleware('subscribed');
+        $this->middleware('verified')->only(['apiLike', 'apiUnlike']);
     }
 
     /**
@@ -65,8 +65,6 @@ class ShowsController extends Controller
             throw new Exception('Empty RSS Feed URL');
         }
     }
-    
-    
     
     public function apiListing($user_id = null){
         return Show::orderBy('name')->get();

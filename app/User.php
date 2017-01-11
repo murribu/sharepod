@@ -14,6 +14,7 @@ class User extends SparkUser
     protected $fillable = [
         'name',
         'email',
+        'verified',
     ];
 
     /**
@@ -36,6 +37,11 @@ class User extends SparkUser
         'billing_zip',
         'billing_country',
         'extra_billing_information',
+        'facebook_user_id',
+        'twitter_user_id',
+        'extra_billing_information',
+        'verified',
+        'verification_token',
     ];
 
     /**
@@ -72,6 +78,7 @@ class User extends SparkUser
             $user = new User;
             $user->name = $facebook_user->name;
             $user->email = $facebook_user->email;
+            $user->verified = 1;
 
             $user->save();
         }
@@ -126,6 +133,7 @@ class User extends SparkUser
             $user = new User;
             $user->name = $twitter_user->name;
             $user->email = $twitter_user->email;
+            $user->verified = 1;
 
             $user->save();
         }

@@ -43,7 +43,7 @@
         </div>
         <div class="row">
             <div class="col-xs-6 col-xs-offset-3">
-                <a title="Facebook" class="btn btn-block btn-social btn-facebook">
+                <a title="Facebook" class="btn btn-block btn-social btn-facebook" href="/auth/facebook" @click.prevent="signInWithFacebook">
                     <i class="fa fa-facebook"></i> Sign in with Facebook
                 </a>
             </div>
