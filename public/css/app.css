@@ -7397,6 +7397,11 @@ body {
 a.clickable:hover {
   text-decoration: none;
 }
+/** NAV BAR **/
+.verification-alert a {
+  color: white !important;
+  background-color: #e81c4f;
+}
 /** SHOWS SCREEN **/
 .left-stacked-tabs {
   border-radius: 4px;

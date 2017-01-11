@@ -18,6 +18,9 @@ Route::get('/auth/facebook', 'Auth\AuthController@redirectToFacebook');
 Route::get('/auth/facebook/callback', 'Auth\AuthController@handleFacebookCallback');
 Route::get('/auth/facebook/unlink', 'Auth\AuthController@unlinkFacebook');
 
+Route::get('/send_verification_email', 'Auth\AuthController@sendVerificationEmail');
+Route::get('/email-verification/check/{token}', 'Auth\AuthController@getVerification')->name('email-verification.check');
+
 Route::get('/', 'HomeController@show');
 Route::get('/home', 'HomeController@redirectToHome');
 Route::get('/shows', 'ShowsController@show');
@@ -25,10 +28,7 @@ Route::get('/shows/list', 'ShowsController@listing');
 Route::get('/shows/search', 'ShowsController@search');
 Route::get('/shows/{slug}', 'ShowsController@display');
 
-$router->group(['middleware' => 'auth'], function ($router) {
-    Route::post('/send', 'EpisodesController@send');
-});
-
+Route::post('/send', 'EpisodesController@send');
 
 $router->group(['middleware' => 'dev'], function ($router) {
     Route::post('/shows/new', 'ShowsController@postNew');

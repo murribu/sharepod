@@ -20308,7 +20308,22 @@ Vue.component('spark-kiosk-users', {
 var base = __webpack_require__(210);
 
 Vue.component('spark-navbar', {
-    mixins: [base]
+    mixins: [base],
+    data: function data() {
+        return {
+            verification_email_sent: false,
+        }
+    },
+    methods: {
+        sendVerificationEmail: function sendVerificationEmail() {
+            var vm = this;
+            this.$http.get('/send_verification_email').then(function (response) {
+                vm.verification_email_sent = true;
+            }, function (response) {
+                // alert('error');
+            })
+        }
+    }
 });
 
 

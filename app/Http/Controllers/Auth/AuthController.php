@@ -8,12 +8,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 use Socialite;
+use Jrean\UserVerification\Facades\UserVerification;
+use Jrean\UserVerification\Traits\VerifiesUsers;
 
 use App\SocialUser;
 use App\User;
 
 class AuthController extends Controller
-{
+{    
+    use VerifiesUsers;
     
     public function redirectToFacebook()
     {
@@ -78,5 +81,12 @@ class AuthController extends Controller
         $user->save();
         
         return $user;
+    }
+    
+    public function sendVerificationEmail(){
+        $user = Auth::user();
+        
+        UserVerification::generate($user);
+        UserVerification::send($user, 'Verify your email for Shaarepod');
     }
 }

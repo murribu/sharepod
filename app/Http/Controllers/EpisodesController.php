@@ -17,21 +17,13 @@ class EpisodesController extends Controller
     
     public function send(){
         $user = Auth::user();
-        
-        $to_name        = Input::get('email_address');
-        $email_address  = Input::get('email_address');
-        $from_name      = $user->name;
-        $subject        = $user->name.' has recommended a podcast episode';
-        $link           = env('APP_URL').'/accept_recommendation?token=asdf';
-        if (Input::has('to_name')){
-            $to_name = Input::get('to_name');
+        $ep = Episode::where('slug', Input::get('slug'))->first();
+        if (Input::has('email_address')){
+            return $ep->send_via_email(Input::get('email_address'));
+        }else if (Input::has('twitter_handle')){
+            return $ep->send_via_twitter(Input::get('twitter_handle'));
         }
-        Mail::send('emails.send_episode', compact('to_name', 'from_name', 'link'), function($message) use ($email_address, $to_name, $subject) {
-            $message->to($email_address, $to_name)
-            ->subject($subject);
-            $message->from(env('MAILGUN_FROM_EMAIL_ADDRESS', 'shaare.pod@gmail.com'), env('APP_NAME'));
-        });
-        return ['success', '1'];
+        
     }
     
     public function apiLike(){

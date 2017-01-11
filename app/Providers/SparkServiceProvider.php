@@ -7,6 +7,8 @@ use Laravel\Spark\Providers\AppServiceProvider as ServiceProvider;
 
 use Laravel\Spark\Events\Profile\ContactInformationUpdated;
 
+use Jrean\UserVerification\Facades\UserVerification;
+
 class SparkServiceProvider extends ServiceProvider
 {
     /**
@@ -69,6 +71,9 @@ class SparkServiceProvider extends ServiceProvider
                 'email' => $data['email'],
                 'verified' => 0
             ])->save();
+            
+            UserVerification::generate($user);
+            UserVerification::send($user, 'Verify your email for Shaarepod');
 
             event(new ContactInformationUpdated($user));
 

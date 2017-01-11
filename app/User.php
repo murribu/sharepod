@@ -40,7 +40,6 @@ class User extends SparkUser
         'facebook_user_id',
         'twitter_user_id',
         'extra_billing_information',
-        'verified',
         'verification_token',
     ];
 
