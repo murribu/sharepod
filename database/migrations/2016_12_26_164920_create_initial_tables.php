@@ -108,11 +108,6 @@ class CreateInitialTables extends Migration
             $table->unique(['social_id', 'type']);
             $table->timestamps();
         });
-        Schema::create('playlist_types', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->timestamps();
-        });
         Schema::create('playlists', function (Blueprint $table) {
             $table->increments('id');
             $table->string('slug');
@@ -120,8 +115,7 @@ class CreateInitialTables extends Migration
             $table->longText('description')->nullable();
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
-            $table->integer('playlist_type_id')->unsigned();
-            $table->foreign('playlist_type_id')->references('id')->on('playlist_types');
+            $table->enum('type', ['mixtape', 'recommendations']);
             $table->timestamps();
         });
         Schema::create('playlist_episodes', function (Blueprint $table) {
@@ -147,6 +141,19 @@ class CreateInitialTables extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->integer('twitter_user_id')->index()->nullable();
             $table->integer('facebook_user_id')->index()->nullable();
+            $table->string('slug')->unique();
+        });
+        Schema::create('recommendations', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('slug')->unique();
+            $table->integer('recommender_id')->unsigned();
+            $table->foreign('recommender_id')->references('id')->on('users');
+            $table->integer('recommendee_id')->unsigned();
+            $table->foreign('recommendee_id')->references('id')->on('users');
+            $table->integer('episode_id')->unsigned();
+            $table->foreign('episode_id')->references('id')->on('episodes');
+            $table->enum('action', ['viewed', 'accepted', 'rejected'])->nullable();
+            $table->timestamps();
         });
     }
 
@@ -157,9 +164,11 @@ class CreateInitialTables extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('recommendations');
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('twitter_user_id');
             $table->dropColumn('facebook_user_id');
+            $table->dropColumn('slug');
         });
         Schema::dropIfExists('hitcounts');
         Schema::dropIfExists('playlist_episodes');

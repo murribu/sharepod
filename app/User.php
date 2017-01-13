@@ -6,6 +6,8 @@ use Laravel\Spark\User as SparkUser;
 
 class User extends SparkUser
 {
+    use HasSlug;
+    
     /**
      * The attributes that are mass assignable.
      *
@@ -75,6 +77,7 @@ class User extends SparkUser
         }
         if (!$user){
             $user = new User;
+            $user->slug = User::findSlug($facebook_user->name);
             $user->name = $facebook_user->name;
             $user->email = $facebook_user->email;
             $user->verified = 1;
@@ -130,6 +133,7 @@ class User extends SparkUser
         }
         if (!$user){
             $user = new User;
+            $user->slug = User::findSlug($twitter_user->nickname);
             $user->name = $twitter_user->name;
             $user->email = $twitter_user->email;
             $user->verified = 1;
@@ -176,5 +180,18 @@ class User extends SparkUser
         $this->save();
         
         return $twit;
+    }
+    
+    public static function first_or_create_to_send_via_email($email_address){
+        $user = User::where('email', $email_address)->first();
+        
+        if (!$user){
+            $user = new User;
+            $user->email = $email_address;
+            $user->slug = User::findSlug($email_address);
+            $user->save();
+        }
+        
+        return $user;
     }
 }

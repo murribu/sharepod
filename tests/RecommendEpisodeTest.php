@@ -1,6 +1,8 @@
 <?php
 namespace Tests;
 
+use Auth;
+
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Faker\Factory as Faker;
 
@@ -9,15 +11,16 @@ use Laravel\Socialite\Contracts\Factory as Socialite;
 use MailThief\Testing\InteractsWithMail;
 
 use App\Episode;
+use App\Recommendation;
 use App\Show;
 use App\SocialUser;
 use App\User;
 
 class RecommendEpisodeTest extends TestCase
 {
-    use DatabaseTransactions;
     use MockSocialite;
     use InteractsWithMail;
+    use DatabaseTransactions;
     
     public function test_send_an_episode_via_email(){
         $faker = Faker::create();
@@ -35,11 +38,12 @@ class RecommendEpisodeTest extends TestCase
 
         $user1 = $facebook_user->user;
         
-        $episode = factory(\App\Episode::class)->make();
-        
+        $episode = factory(\App\Episode::class)->create();
+
         // if the receiving user doesn't already exist
         
-            $this->post('/send', ['slug' => $episode->slug, 'email_address' => $email2])
+            $this->actingAs($user1)
+                ->post('/send', ['slug' => $episode->slug, 'email_address' => $email2])
                 ->seeJson(['success' => '1'], 'Error in sending an episode');
                 
             $this->seeMessageFor($email2);
@@ -48,8 +52,16 @@ class RecommendEpisodeTest extends TestCase
             // Check that a user was created
             $user2 = User::where('email', $email2)->first();
             $this->assertNotNull($user2);
-            $this->assertNotNull($user2->verification_token);
             $this->assertEquals($user2->verified, 0);
+
+            $recommendation = Recommendation::where('recommender_id', $user1->id)
+                ->where('recommendee_id', $user2->id)
+                ->orderBy('id', 'desc')
+                ->first();
+            
+            $this->assertNotNull($recommendation);
+            
+            Auth::logout();
         
         // if the receiving user already exists
             

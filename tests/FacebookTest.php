@@ -84,6 +84,7 @@ class FacebookTest extends TestCase
         
         $user = new User;
         $user->email = $email;
+        $user->slug = User::findSlug($email);
         $user->save();
         
         $code = $faker->randomNumber();
@@ -101,6 +102,7 @@ class FacebookTest extends TestCase
         
         $user = new User;
         $user->email = $email;
+        $user->slug = User::findSlug($email);
         $user->save();
         
         $code = $faker->randomNumber();

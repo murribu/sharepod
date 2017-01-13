@@ -67,6 +67,7 @@ class TwitterTest extends TestCase
         
         $user = new User;
         $user->email = $email;
+        $user->slug = User::findSlug($email);
         $user->save();
         $oauth_token = $faker->randomNumber();
         $oauth_verifier = $faker->randomNumber();
@@ -84,6 +85,7 @@ class TwitterTest extends TestCase
         
         $user = new User;
         $user->email = $email;
+        $user->slug = User::findSlug($email);
         $user->save();
         $oauth_token = $faker->randomNumber();
         $oauth_verifier = $faker->randomNumber();

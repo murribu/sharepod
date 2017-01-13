@@ -130,7 +130,7 @@
                         <h4 class="modal-title">Send via Email</h4>
                     </div>
                     <div class="modal-body">
-                        <input class="form-control" name="" :value="sendToEmailAddress" placeholder="sam@example.com" />
+                        <input class="form-control" name="" v-model="sendToEmailAddress" placeholder="sam@example.com" />
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-primary" @click="sendEpisodeViaEmail">

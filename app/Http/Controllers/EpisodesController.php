@@ -4,7 +4,6 @@ use Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Http\Request;
 use Exception;
-use Mail;
 
 use App\Episode;
 
@@ -19,11 +18,10 @@ class EpisodesController extends Controller
         $user = Auth::user();
         $ep = Episode::where('slug', Input::get('slug'))->first();
         if (Input::has('email_address')){
-            return $ep->send_via_email(Input::get('email_address'));
+            return $ep->send_via_email(Input::all());
         }else if (Input::has('twitter_handle')){
-            return $ep->send_via_twitter(Input::get('twitter_handle'));
+            return $ep->send_via_twitter(Input::all());
         }
-        
     }
     
     public function apiLike(){
