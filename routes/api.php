@@ -26,3 +26,4 @@ Route::group(['middleware' => 'auth:api'], function () {
 });
 
 Route::get('users/{slug}', 'UsersController@apiGetUser');
+Route::get('recommendation/{slug}', 'RecommendationsController@apiGetRecommendation');

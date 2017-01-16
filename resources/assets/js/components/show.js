@@ -48,47 +48,58 @@ Vue.component('show', {
             response => {
                 // alert('error');
             });
-        this.$http.get('/recent_recommendees')
-            .then(response => {
-                self.recentRecommendees = response.data;
-            }, response => {
-                // alert('error');
-            })
+        this.getRecentRecommendees();
     },
     methods: {
+        getRecentRecommendees(){
+            var self = this;
+            this.$http.get('/recent_recommendees')
+                .then(response => {
+                    self.recentRecommendees = response.data;
+                }, response => {
+                    // alert('error');
+                })
+        },
         recommendEpisodeToExistingUser(user_slug) {
             this.recommendForm.busy = true;
             this.$http.post('/recommend', {slug: this.selectedEpisode.slug, user_slug: user_slug})
                 .then(response => {
                     this.recommendForm.busy = false;
                     this.showSuccessModal();
+                    this.getRecentRecommendees();
                 }, response => {
                     // alert('error');
                 });
         },
+        recommendEpisode(episode) {
+            this.selectedEpisode = episode;
+            if (this.recentRecommendees.length == 0){
+                $('#modal-recommend-episode-2').modal('show');
+            }else{
+                $('#modal-recommend-episode-1').modal('show');
+            }
+        },
         recommendEpisodeToSomeoneElse(){
             $('#modal-recommend-episode-1').modal('hide');
             $('#modal-recommend-episode-2').modal('show');
-        },
-        recommendEpisode(episode) {
-            this.selectedEpisode = episode;
-            $('#modal-recommend-episode-1').modal('show');
         },
         sendRecommendation(){
             this.$http.post('/recommend', {slug: this.selectedEpisode.slug, email_address: this.recommendEmail, twitter_handle: this.recommendTwitter})
                 .then(response => {
                     this.recommendForm.busy = false;
                     this.showSuccessModal();
+                    this.getRecentRecommendees();
                 }, response => {
                     // alert('error');
                 });
         },
         showSuccessModal(){
+            $('#modal-recommend-episode-1').modal('hide');
             $('#modal-recommend-episode-2').modal('hide');
             $('#modal-recommend-success').modal('show');
             setTimeout(function(){
                 $('#modal-recommend-success').modal('hide');
-            }, 1000);
+            }, 2500);
         },
         likeEpisode(episode) {
             var self = this;

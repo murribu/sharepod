@@ -12,7 +12,7 @@ class RecommendationsController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('verified');
+        $this->middleware('verified')->only('getRecentRecommendees');
     }
     
     public function getRecommendation($slug){
@@ -27,9 +27,6 @@ class RecommendationsController extends Controller
                 if ($recommendation->recommendee_id == $user->id){
                     $recommendation->action = 'viewed';
                     $recommendation->save();
-                }elseif ($recommendation->recommender_id != $user->id){
-                    // This recommendation doesn't belong to the current user
-                    $msg = 'This recommendation does not belong to you';
                 }
             }else{
                 if (!$recommendee->verified){
@@ -37,7 +34,11 @@ class RecommendationsController extends Controller
                     $recommendee->verified = true;
                     $recommendee->save();
                 }
-                Auth::login($recommendee);
+                if ($recommendation->action == null){
+                    Auth::login($recommendee);
+                    $recommendation->action = 'viewed';
+                    $recommendation->save();
+                }
             }
         }else{
             // Recommendation doesn't exist.
@@ -50,5 +51,15 @@ class RecommendationsController extends Controller
         $user = Auth::user();
         
         return $user->recent_recommendees();
+    }
+    
+    public function apiGetRecommendation($slug){
+        $r = Recommendation::where('slug', $slug)->first();
+        $ret = [];
+        $ret['slug'] = $r['slug'];
+        $ret['recommender'] = $r->recommender->name;
+        $ret['recommendee'] = $r->recommendee->name;
+        
+        return $ret;
     }
 }

@@ -63,13 +63,14 @@ class RecommendEpisodeTest extends TestCase
             
             Auth::logout();
             
-            // $this->actingAs($user2)
-                // ->visit('/recommendation/'.$recommendation->slug)
-                // ->see($user1->name)
-                // ->see($episode->name)
-                // ->see('link your Facebook account or set a password');
-                
-            // $this->assertEquals($user2->verified, 1);
+            $this->visit('/recommendation/'.$recommendation->slug)
+                ->see($user1->name)
+                ->see($episode->name)
+                ->see('link your Facebook account or set a password');
+            
+            $this->assertEquals(Auth::user()->id, $user2->id);
+            
+            $this->assertEquals($user2->verified, 1);
             
             
         // if the receiving user already exists
