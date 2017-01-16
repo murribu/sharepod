@@ -55,14 +55,14 @@
                                     </div>
                                     <div class="TweetTextSize  js-tweet-text tweet-text" lang="en" data-aria-label-part="0" v-html="episode.description" ></div>
                                     <div class="stream-item-footer" v-if="user.verified">
-                                        <div class="ProfileTweet-action ProfileTweet-action--send">
-                                            <button class="ProfileTweet-actionButton" type="button" @click.prevent="sendEpisode(episode)">
-                                                <div class="IconContainer" title="Send">
+                                        <div class="ProfileTweet-action ProfileTweet-action--recommend">
+                                            <button class="ProfileTweet-actionButton" type="button" @click.prevent="recommendEpisode(episode)">
+                                                <div class="IconContainer" title="Recommend">
                                                     <i class="fa fa-reply"></i>
                                                 </div>
                                                 <div class="IconTextContainer">
                                                     <span class="ProfileTweet-actionCount">
-                                                      <span class="ProfileTweet-actionCountForPresentation">@{{episode.total_sends}}</span>
+                                                      <span class="ProfileTweet-actionCountForPresentation">@{{episode.total_recommends}}</span>
                                                     </span>
                                                 </div>
                                             </button>
@@ -104,55 +104,64 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="modal-send-episode-1" tabindex="-1" role="dialog">
+        <div class="modal fade" id="modal-recommend-episode-1" tabindex="-1" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        
-                        <h4 class="modal-title">@{{selectedEpisode.name}}</h4>
+                        <h4 class="modal-title">@{{show.name}}<br>@{{selectedEpisode.name}}</h4>
                     </div>
                     <div class="modal-body">
-                        Would you like to send this episode via
-                        <button class="btn btn-primary" @click="sendEpisodeViaEmailDialog">Email</button>
-                        or
-                        <button class="btn btn-primary" @click="sendEpisodeViaTwitterDialog">Twitter</button>
+                        <div>
+                            Recommend this episode to:
+                        </div>
+                        <button class="btn btn-primary" v-for="user in recentRecommendees" @click.prevent="recommendEpisodeToExistingUser(user.slug)">@{{user.name}}</button>
+                        <button class="btn btn-primary" @click.prevent="recommendEpisodeToSomeoneElse">Someone else</button>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="modal-send-episode-via-email" tabindex="-1" role="dialog">
+        <div class="modal fade" id="modal-recommend-episode-2" tabindex="-1" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        
-                        <h4 class="modal-title">Send via Email</h4>
+                        <h4 class="modal-title">@{{show.name}}<br>@{{selectedEpisode.name}}</h4>
                     </div>
                     <div class="modal-body">
-                        <input class="form-control" name="" v-model="sendToEmailAddress" placeholder="sam@example.com" />
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-primary" @click="sendEpisodeViaEmail">
-                            <span>
-                                <i class="fa fa-btn" :class="{'fa-spinner fa-spin': sendForm.busy, 'fa-check-circle': !sendForm.busy}"></i>Send!
-                            </span>
-                        </button>
+                        <div>
+                            Recommend this episode via email or twitter:
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <input class="form-control" v-model="recommendEmail" placeholder="sam@example.com" />
+                            </div>
+                            <div class="col-xs-6">
+                                <input class="form-control" v-model="recommendTwitter" placeholder="@twitter" />
+                            </div>
+                        </div>
+                        <div class="row" style="margin:top:10px;">
+                            <button class="btn btn-primary pull-right" style="margin-right: 15px;" @click="sendRecommendation()">
+                                <span>
+                                    <i class="fa fa-btn" :class="{'fa-spinner fa-spin': recommendForm.busy, 'fa-check-circle': !recommendForm.busy}"></i>Send recommendation
+                                </span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="modal-send-episode-via-twitter" tabindex="-1" role="dialog">
+        <div class="modal fade" id="modal-recommend-success" tabindex="-1" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        
-                        <h4 class="modal-title">Send via Twitter</h4>
+                        <h4 class="modal-title">@{{show.name}}<br>@{{selectedEpisode.name}}</h4>
                     </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-default" type="button" data-dismiss="modal">No, Go Back</button>
-                        <button class="btn btn-danger">Yes, unlink</button>
+                    <div class="modal-body">
+                        <div>
+                            Success! You have recommended this podcast episode
+                        </div>
                     </div>
                 </div>
             </div>

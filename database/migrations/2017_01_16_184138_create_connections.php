@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRecommendationsTable extends Migration
+class CreateConnections extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,13 @@ class CreateRecommendationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('recommendations', function (Blueprint $table) {
+        Schema::create('connections', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('slug')->unique();
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('users');
             $table->integer('recommender_id')->unsigned();
             $table->foreign('recommender_id')->references('id')->on('users');
-            $table->integer('recommendee_id')->unsigned();
-            $table->foreign('recommendee_id')->references('id')->on('users');
-            $table->integer('episode_id')->unsigned();
-            $table->foreign('episode_id')->references('id')->on('episodes');
-            $table->enum('action', ['viewed', 'accepted', 'rejected'])->nullable();
+            $table->enum('status', ['approved','blocked'])->nullable()->index();
             $table->timestamps();
         });
     }
@@ -34,6 +31,6 @@ class CreateRecommendationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('recommendations');
+        Schema::dropIfExists('connections');
     }
 }

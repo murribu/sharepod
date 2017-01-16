@@ -4,10 +4,13 @@ Vue.component('show', {
         return {
             show: {},
             selectedEpisode: {},
-            sendToEmailAddress: '',
-            sendForm: {
+            recommendToEmailAddress: '',
+            recommendForm: {
                 busy: false
-            }
+            },
+            recentRecommendees: [],
+            recommendEmail: '',
+            recommendTwitter: ''
         };
     },
     computed: {
@@ -45,28 +48,47 @@ Vue.component('show', {
             response => {
                 // alert('error');
             });
+        this.$http.get('/recent_recommendees')
+            .then(response => {
+                self.recentRecommendees = response.data;
+            }, response => {
+                // alert('error');
+            })
     },
     methods: {
-        sendEpisode(episode) {
-            this.selectedEpisode = episode;
-            $('#modal-send-episode-1').modal('show');
-        },
-        sendEpisodeViaEmailDialog() {
-            $('#modal-send-episode-1').modal('hide');
-            $('#modal-send-episode-via-email').modal('show');
-        },
-        sendEpisodeViaTwitterDialog() {
-            $('#modal-send-episode-1').modal('hide');
-            $('#modal-send-episode-via-twitter').modal('show');
-        },
-        sendEpisodeViaEmail() {
-            this.sendForm.busy = true;
-            this.$http.post('/send', {slug: this.selectedEpisode.slug, email_address: this.sendToEmailAddress})
+        recommendEpisodeToExistingUser(user_slug) {
+            this.recommendForm.busy = true;
+            this.$http.post('/recommend', {slug: this.selectedEpisode.slug, user_slug: user_slug})
                 .then(response => {
-                    
+                    this.recommendForm.busy = false;
+                    this.showSuccessModal();
                 }, response => {
-                    
+                    // alert('error');
                 });
+        },
+        recommendEpisodeToSomeoneElse(){
+            $('#modal-recommend-episode-1').modal('hide');
+            $('#modal-recommend-episode-2').modal('show');
+        },
+        recommendEpisode(episode) {
+            this.selectedEpisode = episode;
+            $('#modal-recommend-episode-1').modal('show');
+        },
+        sendRecommendation(){
+            this.$http.post('/recommend', {slug: this.selectedEpisode.slug, email_address: this.recommendEmail, twitter_handle: this.recommendTwitter})
+                .then(response => {
+                    this.recommendForm.busy = false;
+                    this.showSuccessModal();
+                }, response => {
+                    // alert('error');
+                });
+        },
+        showSuccessModal(){
+            $('#modal-recommend-episode-2').modal('hide');
+            $('#modal-recommend-success').modal('show');
+            setTimeout(function(){
+                $('#modal-recommend-success').modal('hide');
+            }, 1000);
         },
         likeEpisode(episode) {
             var self = this;

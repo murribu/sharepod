@@ -19861,10 +19861,13 @@ Vue.component('show', {
         return {
             show: {},
             selectedEpisode: {},
-            sendToEmailAddress: '',
-            sendForm: {
+            recommendToEmailAddress: '',
+            recommendForm: {
                 busy: false
-            }
+            },
+            recentRecommendees: [],
+            recommendEmail: '',
+            recommendTwitter: ''
         };
     },
     computed: {
@@ -19904,28 +19907,51 @@ Vue.component('show', {
             function (response) {
                 // alert('error');
             });
+        this.$http.get('/recent_recommendees')
+            .then(function (response) {
+                self.recentRecommendees = response.data;
+            }, function (response) {
+                // alert('error');
+            })
     },
     methods: {
-        sendEpisode: function sendEpisode(episode) {
-            this.selectedEpisode = episode;
-            $('#modal-send-episode-1').modal('show');
-        },
-        sendEpisodeViaEmailDialog: function sendEpisodeViaEmailDialog() {
-            $('#modal-send-episode-1').modal('hide');
-            $('#modal-send-episode-via-email').modal('show');
-        },
-        sendEpisodeViaTwitterDialog: function sendEpisodeViaTwitterDialog() {
-            $('#modal-send-episode-1').modal('hide');
-            $('#modal-send-episode-via-twitter').modal('show');
-        },
-        sendEpisodeViaEmail: function sendEpisodeViaEmail() {
-            this.sendForm.busy = true;
-            this.$http.post('/send', {slug: this.selectedEpisode.slug, email_address: this.sendToEmailAddress})
+        recommendEpisodeToExistingUser: function recommendEpisodeToExistingUser(user_slug) {
+            var this$1 = this;
+
+            this.recommendForm.busy = true;
+            this.$http.post('/recommend', {slug: this.selectedEpisode.slug, user_slug: user_slug})
                 .then(function (response) {
-                    
+                    this$1.recommendForm.busy = false;
+                    this$1.showSuccessModal();
                 }, function (response) {
-                    
+                    // alert('error');
                 });
+        },
+        recommendEpisodeToSomeoneElse: function recommendEpisodeToSomeoneElse(){
+            $('#modal-recommend-episode-1').modal('hide');
+            $('#modal-recommend-episode-2').modal('show');
+        },
+        recommendEpisode: function recommendEpisode(episode) {
+            this.selectedEpisode = episode;
+            $('#modal-recommend-episode-1').modal('show');
+        },
+        sendRecommendation: function sendRecommendation(){
+            var this$1 = this;
+
+            this.$http.post('/recommend', {slug: this.selectedEpisode.slug, email_address: this.recommendEmail, twitter_handle: this.recommendTwitter})
+                .then(function (response) {
+                    this$1.recommendForm.busy = false;
+                    this$1.showSuccessModal();
+                }, function (response) {
+                    // alert('error');
+                });
+        },
+        showSuccessModal: function showSuccessModal(){
+            $('#modal-recommend-episode-2').modal('hide');
+            $('#modal-recommend-success').modal('show');
+            setTimeout(function(){
+                $('#modal-recommend-success').modal('hide');
+            }, 1000);
         },
         likeEpisode: function likeEpisode(episode) {
             var self = this;

@@ -22,7 +22,7 @@ class RecommendEpisodeTest extends TestCase
     use InteractsWithMail;
     use DatabaseTransactions;
     
-    public function test_send_an_episode_via_email(){
+    public function test_recommend_an_episode_via_email(){
         $faker = Faker::create();
         $code = $faker->randomNumber();
         $state = $faker->randomNumber();
@@ -43,7 +43,7 @@ class RecommendEpisodeTest extends TestCase
         // if the receiving user doesn't already exist
         
             $this->actingAs($user1)
-                ->post('/send', ['slug' => $episode->slug, 'email_address' => $email2])
+                ->post('/recommend', ['slug' => $episode->slug, 'email_address' => $email2])
                 ->seeJson(['success' => '1'], 'Error in sending an episode');
                 
             $this->seeMessageFor($email2);
@@ -62,9 +62,22 @@ class RecommendEpisodeTest extends TestCase
             $this->assertNotNull($recommendation);
             
             Auth::logout();
-        
+            
+            // $this->actingAs($user2)
+                // ->visit('/recommendation/'.$recommendation->slug)
+                // ->see($user1->name)
+                // ->see($episode->name)
+                // ->see('link your Facebook account or set a password');
+                
+            // $this->assertEquals($user2->verified, 1);
+            
+            
         // if the receiving user already exists
             
-            
+        Auth::logout();
+        
+        $this->actingAs($user1)
+            ->visit('recent_recommendees')
+            ->see($user2->name);
     }
 }

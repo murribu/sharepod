@@ -1,7 +1,7 @@
 <?php
-
 namespace App;
 
+use DB;
 use Laravel\Spark\User as SparkUser;
 
 class User extends SparkUser
@@ -54,6 +54,101 @@ class User extends SparkUser
         'trial_ends_at' => 'date',
         'uses_two_factor_auth' => 'boolean',
     ];
+    
+    public function recommend($input){
+        $user = $this;
+        $ep = Episode::where('slug', $input['slug'])->first();
+        if ($ep){
+            if (isset($input['user_slug'])){
+                $recommendee = User::where('slug', $input['user_slug'])
+                    ->first();
+            }elseif (isset($input['email_address'])){
+                $recommendee = User::where('email', $input['email_address'])
+                    ->first();
+                    
+                if (!$recommendee){
+                    $recommendee = new User;
+                    $recommendee->name = $input['email_address'];
+                    $recommendee->email = $input['email_address'];
+                    $recommendee->slug = User::findSlug($input['email_address']);
+                    $recommendee->verified = 0;
+                    $recommendee->save();
+                }
+            }elseif (isset($input['twitter_handle'])){
+                $recommendee = User::whereIn('twitter_user_id', function($query){
+                    $query->select('id')
+                        ->from('social_users')
+                        ->where('screen_name', $input['twitter_handle'])
+                        ->where('type', DB::raw('twitter'));
+                    })->first();
+                
+                if (!$recommendee){
+                    $social_user = new SocialUser;
+                    $social_user->type = 'twitter';
+                    $social_user->slug = SocialUser::findSlug();
+                    $social_user->screen_name = $input['twitter_handle'];
+                    $social_user->save();
+                    
+                    $recommendee = new User;
+                    $recommendee->slug = User::findSlug($input['twitter_handle']);
+                    $recommendee->name = $input['twitter_handle'];
+                    $recommendee->twitter_user_id = $social_user->id;
+                    $recommendee->verified = 0;
+                    $recommendee->save();
+                }
+            }else{
+                return ['message' => 'Must provide a User, Email Address, or Twitter Handle', 'error' => 400];
+            }
+            if (!$recommendee){
+                return ['message' => 'User does not exist', 'error' => 404];
+            }
+            $connection = Connection::where('user_id', $recommendee->id)
+                ->where('recommender_id', $this->id)
+                ->first();
+                
+            if (!$connection){
+                $connection = new Connection;
+                $connection->user_id = $recommendee->id;
+                $connection->recommender_id = $this->id;
+                $connection->save();
+            }
+            switch ($connection->status){
+                case 'approved':
+                    $status = 'accepted';
+                    break;
+                case 'blocked':
+                    $status = 'rejected';
+                    break;
+                default:
+                    //null
+                    $status = null;
+                    break;
+            }
+            $recommendation = Recommendation::firstOrCreate([
+                    'recommender_id'    => $this->id,
+                    'recommendee_id'    => $recommendee->id,
+                    'episode_id'        => $ep->id,
+                    'action'            => $status
+                ]);
+            
+            if ($status == null){
+                if (isset($input['email_address'])){
+                    $recommendation->send_via_email();
+                }else if (isset($input['twitter_handle'])){
+                    $recommendation->send_via_twitter();
+                }
+            }
+            
+            return $recommendation;
+        }else{
+            return ['message' => 'Episode does not exist', 'error' => 404];
+        }
+    }
+    
+    public function recent_recommendees(){
+        $user = $this;
+        return DB::select('select name, slug from users inner join (select distinct recommendee_id from recommendations where recommender_id = ? order by id desc limit 5) r on r.recommendee_id = users.id', [$this->id]);
+    }
     
     public function twitter_user(){
         if ($this->twitter_user_id){

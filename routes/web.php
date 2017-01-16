@@ -28,14 +28,17 @@ Route::get('/shows/list', 'ShowsController@listing');
 Route::get('/shows/search', 'ShowsController@search');
 Route::get('/shows/{slug}', 'ShowsController@display');
 
-Route::post('/send', 'EpisodesController@send');
+Route::post('/recommend', 'EpisodesController@recommend');
+Route::get('/recommendation/{slug}', 'RecommendationsController@getRecommendation');
+Route::get('/recent_recommendees', 'RecommendationsController@getRecentRecommendees');
+
 
 $router->group(['middleware' => 'dev'], function ($router) {
     Route::post('/shows/new', 'ShowsController@postNew');
 });
 
 
-Route::get('sendhtmlemail/{email_address}/{to_name}/{subject}','MailController@html_email');
+// Route::get('sendhtmlemail/{email_address}/{to_name}/{subject}','MailController@html_email');
 
 // Route::get('test', function(){
     // return $_ENV;

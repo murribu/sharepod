@@ -45,7 +45,7 @@ trait HasSlug{
     }
     
     public static function generateRandomString($length = 10) {
-	    $characters = '0123456789abcdefghijklmnopqrstuvwxyz';
+	    $characters = '0123456789abcdefghijklmnopqrstuvwxyz_-.';
 	    $charactersLength = strlen($characters);
 	    $randomString = '';
 
