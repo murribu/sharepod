@@ -6,7 +6,7 @@
         <div class="row centered">
             <h3>Shows</h3>
         </div>
-            <div class="col-md-4 col-xs-1">
+            <div class="col-md-4 col-xs-12">
                 <div class="panel panel-default">
                 <div class="panel-heading">Dashboard</div>
 

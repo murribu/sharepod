@@ -152,7 +152,18 @@ class CreateInitialTables extends Migration
             $table->foreign('recommendee_id')->references('id')->on('users');
             $table->integer('episode_id')->unsigned();
             $table->foreign('episode_id')->references('id')->on('episodes');
+            $table->text('comment')->nullable();
+            $table->boolean('public')->default(true);
             $table->enum('action', ['viewed', 'accepted', 'rejected'])->nullable();
+            $table->timestamps();
+        });
+        Schema::create('connections', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->integer('recommender_id')->unsigned();
+            $table->foreign('recommender_id')->references('id')->on('users');
+            $table->enum('status', ['approved','blocked'])->nullable()->index();
             $table->timestamps();
         });
     }
@@ -164,6 +175,7 @@ class CreateInitialTables extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('connections');
         Schema::dropIfExists('recommendations');
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('twitter_user_id');

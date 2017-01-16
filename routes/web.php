@@ -32,6 +32,9 @@ Route::post('/recommend', 'EpisodesController@recommend');
 Route::get('/recommendation/{slug}', 'RecommendationsController@getRecommendation');
 Route::get('/recent_recommendees', 'RecommendationsController@getRecentRecommendees');
 
+Route::get('/users/{slug}', 'UsersController@getUser');
+
+
 
 $router->group(['middleware' => 'dev'], function ($router) {
     Route::post('/shows/new', 'ShowsController@postNew');

@@ -22,4 +22,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('shows/{slug}', 'ShowsController@apiShow');
     Route::get('shows/{slug}/episodes', 'ShowsController@apiShowEpisodes');
 
+    
 });
+
+Route::get('users/{slug}', 'UsersController@apiGetUser');
