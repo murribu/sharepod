@@ -7,7 +7,7 @@ Vue.component('recommendation', {
     },
     created() {
         var self = this;
-        this.$http.get('/api/recommendation/' + this.slug)
+        this.$http.get('/api/recommendations/' + this.slug)
             .then(response => {
                 self.recommendation = response.data;
             },

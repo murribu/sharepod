@@ -79,7 +79,7 @@ class RecommendEpisodeTest extends TestCase
         Auth::logout();
         
         $this->actingAs($user1)
-            ->visit('recent_recommendees')
+            ->visit('api/recent_recommendees')
             ->see($user2->name);
     }
 }

@@ -12,7 +12,11 @@ class RecommendationsController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('verified')->only('getRecentRecommendees');
+        $this->middleware('verified')->only('getRecentRecommendees', 'apiGetRecentRecommendationsGiven');
+    }
+    
+    public function getRecommendations(){
+        return view('recommendations', ['activelink' => 'recommendations']);
     }
     
     public function getRecommendation($slug){
@@ -44,22 +48,41 @@ class RecommendationsController extends Controller
             // Recommendation doesn't exist.
         }
         
-        return view('recommendation');
+        return view('recommendation', ['activelink' => 'recommendations']);
     }
     
-    public function getRecentRecommendees(){
-        $user = Auth::user();
-        
-        return $user->recent_recommendees();
+    public function apiGetRecentRecommendees(){
+        return Auth::user()->recent_recommendees();
     }
     
     public function apiGetRecommendation($slug){
         $r = Recommendation::where('slug', $slug)->first();
         $ret = [];
         $ret['slug'] = $r['slug'];
-        $ret['recommender'] = $r->recommender->name;
-        $ret['recommendee'] = $r->recommendee->name;
+        $ret['recommender']         = $r->recommender->name;
+        $ret['recommender_slug']    = $r->recommender->slug;
+        $ret['recommendee']         = $r->recommendee->name;
+        $ret['recommendee_slug']    = $r->recommendee->slug;
+        $ret['episode_name']        = $r->episode->name;
+        $ret['episode_slug']        = $r->episode->slug;
+        $ret['comment']             = $r->comment;
         
         return $ret;
+    }
+    
+    public function apiGetRecommendationsGiven(){
+        return Auth::user()->recent_recommendations_given(Input::has('date') ? Input::get('date') : '2199-12-31 23:23:59', Input::has('episodes') ? Input::get('episodes') : '-1');
+    }
+    
+    public function apiGetRecommendationsGivenCount(){
+        return Auth::user()->recommendations_given_count();
+    }
+    
+    public function apiGetRecommendationsReceived(){
+        return Auth::user()->recent_recommendations_received(Input::has('date') ? Input::get('date') : '2199-12-31 23:23:59', Input::has('episodes') ? Input::get('episodes') : '-1');
+    }
+    
+    public function apiGetRecommendationsReceivedCount(){
+        return Auth::user()->recommendations_received_count();
     }
 }

@@ -7699,6 +7699,11 @@ a.clickable:hover {
 .stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButtonUndo .IconTextContainer .ProfileTweet-actionCount {
   color: #e81c4f;
 }
+/** RECOMMENDATION SCREEN **/
+.recommendation-list-item {
+  cursor: pointer;
+  border-bottom: 1px solid #d3e0e9;
+}
 /*
  * Social Buttons for Bootstrap
  *

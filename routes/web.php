@@ -29,8 +29,8 @@ Route::get('/shows/search', 'ShowsController@search');
 Route::get('/shows/{slug}', 'ShowsController@display');
 
 Route::post('/recommend', 'EpisodesController@recommend');
-Route::get('/recommendation/{slug}', 'RecommendationsController@getRecommendation');
-Route::get('/recent_recommendees', 'RecommendationsController@getRecentRecommendees');
+Route::get('/recommendations/{slug}', 'RecommendationsController@getRecommendation');
+Route::get('/recommendations', 'RecommendationsController@getRecommendations');
 
 Route::get('/users/{slug}', 'UsersController@getUser');
 

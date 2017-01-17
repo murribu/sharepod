@@ -148,8 +148,37 @@ class User extends SparkUser
     }
     
     public function recent_recommendees(){
-        $user = $this;
         return DB::select('select name, slug from users inner join (select distinct recommendee_id from recommendations where recommender_id = ? order by id desc limit 5) r on r.recommendee_id = users.id', [$this->id]);
+    }
+    
+    public function recent_recommendations_received($date = '2199-12-31 23:23:59', $ignoreEpisodes, $limit = 5){
+        foreach(explode(",",$ignoreEpisodes) as $key=>$e){
+            $ignoreEpisodes[$key] = intval($e);
+        }
+        return DB::select('select e.name episode_name, e.id episode_id, u.name user_name, r.slug recommendation_slug, r.created_at
+            from episodes e 
+            inner join (select episode_id, max(recommendee_id) recommendee_id, max(created_at) created_at, max(slug) slug from recommendations where recommendee_id = ? and created_at < ? and episode_id not in (-1,'.DB::raw($ignoreEpisodes).') group by episode_id order by created_at desc limit ?) r on r.episode_id = e.id
+            left join shows s on s.id = e.show_id
+            left join users u on u.id = r.recommendee_id', [$this->id, $date, $limit]);
+    }
+    
+    public function recommendations_received_count(){
+        return DB::select('select count(distinct episode_id) c from recommendations where recommendee_id = ?', [$this->id]);
+    }
+    
+    public function recent_recommendations_given($date = '2199-12-31 23:23:59', $ignoreEpisodes, $limit = 5){
+        foreach(explode(",",$ignoreEpisodes) as $key=>$e){
+            $ignoreEpisodes[$key] = intval($e);
+        }
+        return DB::select('select e.name episode_name, e.id episode_id, u.name user_name, r.slug recommendation_slug, r.created_at
+            from episodes e 
+            inner join (select episode_id, max(recommendee_id) recommendee_id, max(created_at) created_at, max(slug) slug from recommendations where recommender_id = ? and created_at < ? and episode_id not in (-1,'.DB::raw($ignoreEpisodes).') group by episode_id order by created_at desc limit ?) r on r.episode_id = e.id
+            left join shows s on s.id = e.show_id
+            left join users u on u.id = r.recommendee_id', [$this->id, $date, $limit]);
+    }
+    
+    public function recommendations_given_count(){
+        return DB::select('select count(distinct episode_id) c from recommendations where recommender_id = ?', [$this->id]);
     }
     
     public function twitter_user(){

@@ -53,7 +53,7 @@ Vue.component('show', {
     methods: {
         getRecentRecommendees(){
             var self = this;
-            this.$http.get('/recent_recommendees')
+            this.$http.get('/api/recent_recommendees')
                 .then(response => {
                     self.recentRecommendees = response.data;
                 }, response => {

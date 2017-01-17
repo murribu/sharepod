@@ -13,17 +13,22 @@
 
 Route::group(['middleware' => 'auth:api'], function () {
 
-    Route::post('episodes/like', 'EpisodesController@apiLike');
-    Route::post('episodes/unlike', 'EpisodesController@apiUnlike');
-    Route::post('shows/like', 'ShowsController@apiLike');
-    Route::post('shows/unlike', 'ShowsController@apiUnlike');
+    Route::post('/episodes/like', 'EpisodesController@apiLike');
+    Route::post('/episodes/unlike', 'EpisodesController@apiUnlike');
+    Route::post('/shows/like', 'ShowsController@apiLike');
+    Route::post('/shows/unlike', 'ShowsController@apiUnlike');
     
-    Route::get('shows', 'ShowsController@apiListing');
-    Route::get('shows/{slug}', 'ShowsController@apiShow');
-    Route::get('shows/{slug}/episodes', 'ShowsController@apiShowEpisodes');
+    Route::get('/shows', 'ShowsController@apiListing');
+    Route::get('/shows/{slug}', 'ShowsController@apiShow');
+    Route::get('/shows/{slug}/episodes', 'ShowsController@apiShowEpisodes');
+    Route::get('/recent_recommendees', 'RecommendationsController@apiGetRecentRecommendees');
+    Route::get('/recommendations/{slug}', 'RecommendationsController@apiGetRecommendation');
+    Route::get('/recommendations_given', 'RecommendationsController@apiGetRecommendationsGiven');
+    Route::get('/recommendations_given_count', 'RecommendationsController@apiGetRecommendationsGivenCount');
+    Route::get('/recommendations_received', 'RecommendationsController@apiGetRecommendationsReceived');
+    Route::get('/recommendations_received_count', 'RecommendationsController@apiGetRecommendationsReceivedCount');
 
     
 });
 
-Route::get('users/{slug}', 'UsersController@apiGetUser');
-Route::get('recommendation/{slug}', 'RecommendationsController@apiGetRecommendation');
+Route::get('/users/{slug}', 'UsersController@apiGetUser');
