@@ -18,6 +18,7 @@ class Verified
     public function handle($request, Closure $next)
     {
         $user = Auth::user();
+        
         if ($user && $user->verified){
             return $next($request);
         }

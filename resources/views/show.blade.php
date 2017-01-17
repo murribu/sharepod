@@ -140,7 +140,7 @@
                                 <input class="form-control" v-model="recommendTwitter" placeholder="@twitter" />
                             </div>
                         </div>
-                        <div class="row" style="margin:top:10px;">
+                        <div class="row" style="margin-top:10px;">
                             <button class="btn btn-primary pull-right" style="margin-right: 15px;" @click="sendRecommendation()">
                                 <span>
                                     <i class="fa fa-btn" :class="{'fa-spinner fa-spin': recommendForm.busy, 'fa-check-circle': !recommendForm.busy}"></i>Send recommendation

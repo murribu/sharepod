@@ -27,6 +27,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     
 });
+    Route::get('/connections', 'ConnectionsController@apiGetConnections');
 
 Route::get('/shows', 'ShowsController@apiListing');
 Route::get('/shows/{slug}', 'ShowsController@apiShow');
