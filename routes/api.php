@@ -18,9 +18,6 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/shows/like', 'ShowsController@apiLike');
     Route::post('/shows/unlike', 'ShowsController@apiUnlike');
     
-    Route::get('/shows', 'ShowsController@apiListing');
-    Route::get('/shows/{slug}', 'ShowsController@apiShow');
-    Route::get('/shows/{slug}/episodes', 'ShowsController@apiShowEpisodes');
     Route::get('/recent_recommendees', 'RecommendationsController@apiGetRecentRecommendees');
     Route::get('/recommendations/{slug}', 'RecommendationsController@apiGetRecommendation');
     Route::get('/recommendations_given', 'RecommendationsController@apiGetRecommendationsGiven');
@@ -30,5 +27,9 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     
 });
+
+Route::get('/shows', 'ShowsController@apiListing');
+Route::get('/shows/{slug}', 'ShowsController@apiShow');
+Route::get('/shows/{slug}/episodes', 'ShowsController@apiShowEpisodes');
 
 Route::get('/users/{slug}', 'UsersController@apiGetUser');
