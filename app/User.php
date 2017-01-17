@@ -71,6 +71,7 @@ class User extends SparkUser
                     $recommendee->name = $input['email_address'];
                     $recommendee->email = $input['email_address'];
                     $recommendee->slug = User::findSlug($input['email_address']);
+                    $recommendee->password = bcrypt(User::findSlug()); //random string
                     $recommendee->verified = 0;
                     $recommendee->save();
                 }
@@ -93,6 +94,7 @@ class User extends SparkUser
                     $recommendee->slug = User::findSlug($input['twitter_handle']);
                     $recommendee->name = $input['twitter_handle'];
                     $recommendee->twitter_user_id = $social_user->id;
+                    $recommendee->password = bcrypt(User::findSlug()); //random string
                     $recommendee->verified = 0;
                     $recommendee->save();
                 }

@@ -18,7 +18,12 @@
         <div class="collapse navbar-collapse" id="spark-navbar-collapse">
             <!-- Left Side Of Navbar -->
             <ul class="nav navbar-nav">
-                &nbsp;
+                @foreach([
+                    ['link' => '/',                 'label' => 'Home',              'slug' => 'home'],
+                    ['link' => '/shows',            'label' => 'Shows',             'slug' => 'shows'],
+                ] as $link)
+                <li {{isset($activelink) && $activelink == $link['slug'] ? 'class=active' : ''}}><a href="{{$link['link']}}">{{$link['label']}}</a></li>
+                @endforeach
             </ul>
 
             <!-- Right Side Of Navbar -->

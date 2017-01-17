@@ -18,7 +18,7 @@ class Recommendation extends Model {
         $from_name      = $this->recommender->name;
         $subject        = $this->recommender->name.' has recommended a podcast episode';
         $send_to_user   = User::first_or_create_to_send_via_email($email_address);
-        $link           = env('APP_URL').'/accept_recommendation?token='.$this->slug;
+        $link           = env('APP_URL').'/recommendation/'.$this->slug;
         
         if (isset($input['to_name'])){
             $to_name = Input::get('to_name');

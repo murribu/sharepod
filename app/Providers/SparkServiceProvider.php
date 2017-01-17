@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Providers;
-
+use Auth;
 use Laravel\Spark\Spark;
 use Laravel\Spark\Providers\AppServiceProvider as ServiceProvider;
 
@@ -79,5 +79,16 @@ class SparkServiceProvider extends ServiceProvider
 
             return $user;
         });
+        
+        // Spark::swap('Laravel\Spark\Contracts\Repositories\UserRepository@current', function(){
+            // if (Auth::check()) {
+                // $user = $this->find(Auth::id())->shouldHaveSelfVisibility();
+                
+                // $user->needsLinkOrPassword = $user->email && !$user->password && !$user->facebook_user_id;
+                
+                // return $user;
+            // }
+        // });
+        
     }
 }
