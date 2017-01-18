@@ -12,6 +12,6 @@ class Connection extends Model {
     }
     
     public function recommender(){
-        return $this->belongsTo('App\User', 'id', 'recommeder_id');
+        return $this->belongsTo('App\User', 'recommender_id');
     }
 }

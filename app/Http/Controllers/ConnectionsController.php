@@ -19,6 +19,54 @@ class ConnectionsController extends Controller
     }
     
     public function apiGetConnections(){
-        return Connection::where('recommendee_id', Auth::user()->id)->get();
+        return Auth::user()->connections();
+    }
+    
+    public function apiApprove(){
+        if (Input::has('connection_id')){
+            $c = Connection::where('id', Input::get('connection_id'))
+                ->where('user_id', Auth::user()->id)
+                ->first();
+            if ($c){
+                $c->status = 'approved';
+                $c->save();
+            }else{
+                return $response->json('Connection not found or it doesn\'t belong to you.', 403);
+            }
+        }else{
+            return $response->json('Must provide a connection_id', 400);
+        }
+    }
+    
+    public function apiBlock(){
+        if (Input::has('connection_id')){
+            $c = Connection::where('id', Input::get('connection_id'))
+                ->where('user_id', Auth::user()->id)
+                ->first();
+            if ($c){
+                $c->status = 'blocked';
+                $c->save();
+            }else{
+                return $response->json('Connection not found or it doesn\'t belong to you.', 403);
+            }
+        }else{
+            return $response->json('Must provide a connection_id', 400);
+        }
+    }
+    
+    public function apiMakePending(){
+        if (Input::has('connection_id')){
+            $c = Connection::where('id', Input::get('connection_id'))
+                ->where('user_id', Auth::user()->id)
+                ->first();
+            if ($c){
+                $c->status = null;
+                $c->save();
+            }else{
+                return $response->json('Connection not found or it doesn\'t belong to you.', 403);
+            }
+        }else{
+            return $response->json('Must provide a connection_id', 400);
+        }
     }
 }

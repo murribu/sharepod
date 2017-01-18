@@ -19846,6 +19846,147 @@ __webpack_require__(128)
 
 Vue.component('connections', {
     props: ['user'],
+    data: function data() {
+        return {
+            updateBusy: false,
+            connections: {
+                given:[],
+                received:[],
+            },
+            outstandingRequests: 0,
+            areYouSure: {
+                approveMsg: 'Are you sure you want to approve this connection?',
+                blockMsg:   'Are you sure you want to block this connection?',
+                pendingMsg: 'Are you sure you want to mark this connection as pending?',
+                displayMsg: '',
+                action: '',
+                connection: {},
+            },
+        };
+    },
+    created: function created() {
+        this.loadConnections();
+    },
+    computed: {
+        approved_connections: function approved_connections() {
+            return this.connections_of_type('approved');
+        },
+        blocked_connections: function blocked_connections() {
+            return this.connections_of_type('blocked');
+        },
+        pending_connections: function pending_connections() {
+            return this.connections_of_type(null);
+        },
+    },
+    methods: {
+        loadConnections: function loadConnections() {
+            var this$1 = this;
+
+            var self = this;
+            this.outstandingRequests++;
+            this.$http.get('/api/connections')
+                .then(function (response) {
+                    if (--self.outstandingRequests == 0){
+                        self.connections = response.data
+                    }
+                    this$1.updateBusy = false;
+                },function (response) {
+                    self.outstandingRequests--;
+                    this$1.updateBusy = false;
+                    // alert('error');
+                })
+        },
+        showAreYouSure: function showAreYouSure(message, action, connection){
+            this.areYouSure.displayMsg = message;
+            this.areYouSure.action = action;
+            this.areYouSure.connection = connection;
+            $('#modal-are-you-sure').modal('show');
+        },
+        yesImSure: function yesImSure(){
+            $('#modal-are-you-sure').modal('hide');
+            switch (this.areYouSure.action){
+                case 'approve':
+                    this.approveConnection(this.areYouSure.connection);
+                    break;
+                case 'block':
+                    this.blockConnection(this.areYouSure.connection);
+                    break;
+                case 'pending':
+                    this.makeConnectionPending(this.areYouSure.connection);
+                    break;
+            }
+        },
+        noNeverMind: function noNeverMind(){
+            $('#modal-are-you-sure').modal('hide');
+            this.areYouSure.displayMsg = '';
+            this.areYouSure.callback = '';
+            this.areYouSure.connection = {};
+        },
+        approveConnection: function approveConnection(c){
+            var self = this;
+            this.updateBusy = true;
+            var sent = {
+                connection_id: c.connection_id
+            }
+            this.$http.post('/api/connections/approve', sent)
+                .then(function (response) {
+                    self.loadConnections();
+                }, function (response) {
+                    // alert('error')
+                })
+        },
+        blockConnection: function blockConnection(c){
+            var self = this;
+            this.updateBusy = true;
+            var sent = {
+                connection_id: c.connection_id
+            }
+            this.$http.post('/api/connections/block', sent)
+                .then(function (response) {
+                    self.loadConnections();
+                }, function (response) {
+                    // alert('error')
+                })
+        },
+        makeConnectionPending: function makeConnectionPending(c){
+            var self = this;
+            this.updateBusy = true;
+            var sent = {
+                connection_id: c.connection_id
+            }
+            this.$http.post('/api/connections/make_pending', sent)
+                .then(function (response) {
+                    self.loadConnections();
+                }, function (response) {
+                    // alert('error')
+                })
+        },
+        connections_of_type: function connections_of_type(c_status) {
+            var this$1 = this;
+
+            var self = this;
+            var ret = {
+                given: [],
+                received: [],
+            };
+            for(c in this.connections.given){
+                if (this$1.connections.given[c].status == c_status){
+                    ret.given.push(this$1.connections.given[c]);
+                }
+            }
+            for(c in this.connections.received){
+                if (this$1.connections.received[c].status == c_status){
+                    ret.received.push(this$1.connections.received[c]);
+                }
+            }
+            ret.given    = ret.given.sort(function(a,b) {return self.sort_connections(a,b);});
+            ret.received = ret.received.sort(function(a,b) {return self.sort_connections(a,b);});
+            return ret;
+        },
+        sort_connections: function sort_connections(a,b) {
+            return a.updated_at < b.updated_at ? -1 : 1;
+        }
+    }
 });
 
 /***/ },

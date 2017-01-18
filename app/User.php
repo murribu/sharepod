@@ -55,6 +55,37 @@ class User extends SparkUser
         'uses_two_factor_auth' => 'boolean',
     ];
     
+    public function connections(){
+        $db_received    = Connection::where('user_id', $this->id)->get();
+        $db_given       = Connection::where('recommender_id', $this->id)->get();
+        $received = [];
+        $given = [];
+        foreach ($db_received as $r){
+            $received[] = [
+                'connection_id' => $r->id,
+                'user_name' => $r->user->name,
+                'user_slug' => $r->user->slug,
+                'recommender_name' => $r->recommender->name,
+                'recommender_slug' => $r->recommender->slug,
+                'status' => $r->status,
+                'updated_at' => strtotime($r->updated_at),
+            ];
+        }
+        foreach ($db_given as $g){
+            $given[] = [
+                'connection_id' => $g->id,
+                'user_name' => $g->user->name,
+                'user_slug' => $g->user->slug,
+                'recommender_name' => $g->recommender->name,
+                'recommender_slug' => $g->recommender->slug,
+                'status' => $g->status,
+                'updated_at' => strtotime($g->updated_at),
+            ];
+        }
+        
+        return compact('received', 'given');
+    }
+    
     public function recommend($input){
         $user = $this;
         $ep = Episode::where('slug', $input['slug'])->first();

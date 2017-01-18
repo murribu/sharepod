@@ -25,9 +25,13 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('/recommendations_received', 'RecommendationsController@apiGetRecommendationsReceived');
     Route::get('/recommendations_received_count', 'RecommendationsController@apiGetRecommendationsReceivedCount');
 
+    Route::get('/connections', 'ConnectionsController@apiGetConnections');
+    Route::post('/connections/approve', 'ConnectionsController@apiApprove');
+    Route::post('/connections/block', 'ConnectionsController@apiBlock');
+    Route::post('/connections/make_pending', 'ConnectionsController@apiMakePending');
+    
     
 });
-    Route::get('/connections', 'ConnectionsController@apiGetConnections');
 
 Route::get('/shows', 'ShowsController@apiListing');
 Route::get('/shows/{slug}', 'ShowsController@apiShow');
