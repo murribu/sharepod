@@ -21,6 +21,16 @@ Vue.component('connections', {
     created() {
         this.loadConnections();
     },
+    directives: {
+        tooltip: {
+            bind() {
+                console.log('bind');
+                Vue.nextTick(function(){
+                    $('[title]').tooltip();
+                });
+            }
+        }
+    },
     computed: {
         approved_connections() {
             return this.connections_of_type('approved');
@@ -46,7 +56,7 @@ Vue.component('connections', {
                     self.outstandingRequests--;
                     this.updateBusy = false;
                     // alert('error');
-                })
+                });
         },
         showAreYouSure(message, action, connection){
             this.areYouSure.displayMsg = message;

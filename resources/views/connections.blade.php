@@ -1,5 +1,10 @@
 @extends('spark::layouts.app')
 
+@section('scripts')
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+@endsection
+
 @section('content')
 <connections :user="user" inline-template>
     <div>
@@ -16,7 +21,7 @@
                                 <a :href="'/users/' + c.recommender_slug">@{{c.recommender_name}}</a>
                             </div>
                             <div class="col-xs-4">
-                                <button class="btn btn-primary btn-approve-connection" title="Approve" @click.prevent="showAreYouSure(areYouSure.approveMsg, 'approve', c)" :disabled="updateBusy">✔</button>
+                                <button class="btn btn-primary btn-approve-connection" v-tooltip title="Approve" @click.prevent="showAreYouSure(areYouSure.approveMsg, 'approve', c)" :disabled="updateBusy">✔</button>
                                 <button class="btn btn-danger btn-block-connection" title="Block" @click.prevent="showAreYouSure(areYouSure.blockMsg, 'block', c)" :disabled="updateBusy">&times;</button>
                             </div>
                         </div>

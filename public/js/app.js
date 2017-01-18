@@ -19867,6 +19867,16 @@ Vue.component('connections', {
     created: function created() {
         this.loadConnections();
     },
+    directives: {
+        tooltip: {
+            bind: function bind() {
+                console.log('bind');
+                Vue.nextTick(function(){
+                    $('[title]').tooltip();
+                });
+            }
+        }
+    },
     computed: {
         approved_connections: function approved_connections() {
             return this.connections_of_type('approved');
@@ -19894,7 +19904,7 @@ Vue.component('connections', {
                     self.outstandingRequests--;
                     this$1.updateBusy = false;
                     // alert('error');
-                })
+                });
         },
         showAreYouSure: function showAreYouSure(message, action, connection){
             this.areYouSure.displayMsg = message;
