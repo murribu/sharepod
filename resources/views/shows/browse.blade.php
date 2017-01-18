@@ -1,12 +1,14 @@
 <shows-browse :user="user" inline-template>
-    <div class="row">
-        <a class="col-md-4 col-xs-12 clickable" v-for="show in shows" :href="'/shows/' + show.slug">
-            <div class="panel panel-default">
-                <div class="panel-heading">@{{show.name}}</div>
-                <div class="panel-body">
-                    @{{show.description}}
+    <div>
+        <div class="row" v-for="show in shows">
+            <a class="col-xs-12 col-md-8 col-md-offset-2 clickable" :href="'/shows/' + show.slug">
+                <div class="panel panel-default">
+                    <div class="panel-heading">@{{show.name}}</div>
+                    <div class="panel-body">
+                        @{{show.description}}
+                    </div>
                 </div>
-            </div>
-        </a>
+            </a>
+        </div>
     </div>
 </shows-browse>

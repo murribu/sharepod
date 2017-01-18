@@ -37,7 +37,7 @@
                                 <a :href="'/users/' + c.recommender_slug">@{{c.recommender_name}}</a>
                             </div>
                             <div class="col-xs-4">
-                                <button class="btn btn-warning btn-pending-connection" title="Move to Pending" @click.prevent="showAreYouSure(areYouSure.pendingMsg, 'pending', c)" :disabled="updateBusy">/</button>
+                                <button class="btn btn-warning btn-pending-connection" v-tooltip title="Move to Pending" @click.prevent="showAreYouSure(areYouSure.pendingMsg, 'pending', c)" :disabled="updateBusy">/</button>
                                 <button class="btn btn-danger btn-block-connection" title="Block" @click.prevent="showAreYouSure(areYouSure.blockMsg, 'block', c)" :disabled="updateBusy">&times;</button>
                             </div>
                         </div>
@@ -53,7 +53,7 @@
                                 <a :href="'/users/' + c.recommender_slug">@{{c.recommender_name}}</a>
                             </div>
                             <div class="col-xs-4">
-                                <button class="btn btn-warning btn-pending-connection" title="Move to Pending" @click.prevent="showAreYouSure(areYouSure.pendingMsg, 'pending', c)" :disabled="updateBusy">/</button>
+                                <button class="btn btn-warning btn-pending-connection" v-tooltip title="Move to Pending" @click.prevent="showAreYouSure(areYouSure.pendingMsg, 'pending', c)" :disabled="updateBusy">/</button>
                                 <button class="btn btn-primary btn-approve-connection" title="Approve" @click.prevent="showAreYouSure(areYouSure.approveMsg, 'approve', c)" :disabled="updateBusy">✔</button>
                             </div>
                         </div>

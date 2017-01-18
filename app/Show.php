@@ -78,7 +78,9 @@ class Show extends Model {
             if (@$content = simplexml_load_string($str)){
 				//Update podcast info
 				$this->name = $content->channel->title;
-                $this->slug = self::findSlug($content->channel->title);
+                if (!$this->slug || $this->slug == ''){
+                    $this->slug = self::findSlug($content->channel->title);
+                }
                 $this->save();
 				$this->url = $content->channel->link;
 				$this->description = $content->channel->description;
@@ -153,6 +155,20 @@ class Show extends Model {
 			}
         }else{
             throw new Exception('Empty RSS Feed URL');
+        }
+    }
+    
+    public static function updateOneFeed($id = false){
+        if ($id){
+            $show = Show::find($id);
+        }else{
+            $show = Show::where('updated_at', '<', DB::raw('date_sub(now(), interval 1 hour)'))
+                ->where('active', '1')
+                ->orderBy('updated_at')
+                ->first();
+        }
+        if ($show){
+            return $show->parseFeed();
         }
     }
     

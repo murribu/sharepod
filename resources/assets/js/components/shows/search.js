@@ -1,8 +1,31 @@
 Vue.component('shows-search', {
     props: ['user'],
-    methods: {
+    data() {
+        return {
+            shows: [],
+            searchText: '',
+            holdText: ''
+        };
     },
-    mounted() {
-        //
-    }
+    watch: {
+        searchText: function(newText){
+            this.holdText = 'Waiting for you to stop typing...';
+            this.search();
+        }
+    },
+    methods: {
+        search: _.debounce(function(){
+            if (this.searchText != ''){
+                this.holdText = 'Searching...';
+                var self = this;
+                this.$http.get('/api/shows/search?s=' + this.searchText)
+                    .then(response => {
+                        self.shows = response.data;
+                        this.holdText = '';
+                    }, response => {
+                        // alert('error')
+                    })
+            }
+        }, 500)
+    },
 });

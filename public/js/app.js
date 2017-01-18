@@ -20453,11 +20453,36 @@ Vue.component('shows-new', {
 
 Vue.component('shows-search', {
     props: ['user'],
-    methods: {
+    data: function data() {
+        return {
+            shows: [],
+            searchText: '',
+            holdText: ''
+        };
     },
-    mounted: function mounted() {
-        //
-    }
+    watch: {
+        searchText: function(newText){
+            this.holdText = 'Waiting for you to stop typing...';
+            this.search();
+        }
+    },
+    methods: {
+        search: _.debounce(function(){
+            var this$1 = this;
+
+            if (this.searchText != ''){
+                this.holdText = 'Searching...';
+                var self = this;
+                this.$http.get('/api/shows/search?s=' + this.searchText)
+                    .then(function (response) {
+                        self.shows = response.data;
+                        this$1.holdText = '';
+                    }, function (response) {
+                        // alert('error')
+                    })
+            }
+        }, 500)
+    },
 });
 
 

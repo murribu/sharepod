@@ -2,6 +2,7 @@
 
 @section('scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mousetrap/1.4.6/mousetrap.min.js"></script>
+    <script src="/js/lodash.custom.min.js"></script>
 @endsection
 
 @section('content')
@@ -18,22 +19,17 @@
                     <div class="panel-body">
                         <div class="shows-tabs">
                             <ul class="nav left-stacked-tabs" role="tablist">
-                                <!-- Search Link -->
-                                <li role="presentation" class="active">
-                                    <a href="#search" aria-controls="search" role="tab" data-toggle="tab">
-                                        <i class="fa fa-fw fa-btn fa-bullhorn"></i>Search
-                                    </a>
-                                </li>
-
-                                <!-- Browse Link -->
                                 <li role="presentation">
                                     <a href="#browse" aria-controls="browse" role="tab" data-toggle="tab" @click="refreshList()">
                                         <i class="fa fa-fw fa-btn fa-bar-chart"></i>Browse
                                     </a>
                                 </li>
-
+                                <li role="presentation" class="active">
+                                    <a href="#search" aria-controls="search" role="tab" data-toggle="tab">
+                                        <i class="fa fa-fw fa-btn fa-bullhorn"></i>Search
+                                    </a>
+                                </li>
                                 @if (Auth::user() && Spark::developer(Auth::user()->email))
-                                <!-- Users Link -->
                                 <li role="presentation">
                                     <a href="#new" aria-controls="new" role="tab" data-toggle="tab">
                                         <i class="fa fa-fw fa-btn fa-user"></i>New

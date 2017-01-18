@@ -10,7 +10,7 @@ use App\User;
 class UsersController extends Controller
 {
     public function getUser($slug){
-        return view('user');
+        return view('user', ['activelink' => 'connections']);
     }
     
     public function apiGetUser($slug){

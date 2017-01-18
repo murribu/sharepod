@@ -4,7 +4,7 @@
 <view-user :user="user" inline-template>
     <div class="container">
         <div class="row centered">
-            <h3>@{{user.name}}</h3>
+            <h3>@{{viewed_user.name}}</h3>
         </div>
         <div class="col-md-4 col-xs-12">
             <div class="panel panel-default">
