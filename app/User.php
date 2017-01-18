@@ -182,6 +182,28 @@ class User extends SparkUser
         return DB::select('select name, slug from users inner join (select distinct recommendee_id from recommendations where recommender_id = ? order by id desc limit 5) r on r.recommendee_id = users.id', [$this->id]);
     }
     
+    public function recommendations_pending(){
+        $episodes = DB::select('select e.slug, e.name, u.slug user_slug, u.name user_name from episodes e inner join recommendations r on r.episode_id = e.id left join users u on u.id = r.recommender_id where r.recommendee_id = ? and (r.action is null or r.action = \'viewed\')', [$this->id]);
+        $ret = [];
+        $e_slug = '';
+        $ret_index = 0;
+        foreach($episodes as $key=>$e){
+            if ($e->slug == $e_slug){
+                $ret[$ret_index - 1]['users'][] = ['name' => $e->user_name, 'slug' => $e->user_slug];
+            }else{
+                $ret[$ret_index++] = [
+                    'name' => $e->name,
+                    'slug' => $e->slug,
+                    'users' => [[
+                        'name' => $e->user_name,
+                        'slug' => $e->user_slug
+                    ]]
+                ];
+            }
+        }
+        return $ret;
+    }
+    
     public function recent_recommendations_received($date = '2199-12-31 23:23:59', $ignoreEpisodes, $limit = 5){
         foreach(explode(",",$ignoreEpisodes) as $key=>$e){
             $ignoreEpisodes[$key] = intval($e);

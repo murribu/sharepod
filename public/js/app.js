@@ -20052,17 +20052,30 @@ Vue.component('recommendations', {
         return {
             recommendations_given: [],
             recommendations_received: [],
+            recommendations_pending: [],
             recommendations_given_count: 0,
             recommendations_received_count: 0,
             recommendations_given_loaded: false,
             recommendations_received_loaded: false,
+            updateBusy: false,
         };
+    },
+    directives: {
+        tooltip: {
+            bind: function bind() {
+                console.log('bind');
+                Vue.nextTick(function(){
+                    $('[title]').tooltip();
+                });
+            }
+        }
     },
     created: function created() {
         this.loadRecommendationsGiven();
         this.loadRecommendationsGivenCount();
         this.loadRecommendationsReceived();
         this.loadRecommendationsReceivedCount();
+        this.loadRecommendationsPending();
     },
     computed: {
         oldest_recommendation_given: function oldest_recommendation_given() {
@@ -20123,6 +20136,16 @@ Vue.component('recommendations', {
     methods: {
         gotoRecommendation: function gotoRecommendation(r) {
             window.location.href = '/recommendations/' + r.recommendation_slug;
+        },
+        loadRecommendationsPending: function loadRecommendationsPending(){
+            var self = this;
+            this.$http.get('/api/recommendations_pending')
+                .then(function (response) {
+                    self.recommendations_pending = response.data;
+                },
+                function (response) {
+                    // alert('error');
+                });
         },
         loadRecommendationsReceived: function loadRecommendationsReceived(){
             var self = this;

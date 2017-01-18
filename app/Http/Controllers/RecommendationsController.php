@@ -85,4 +85,8 @@ class RecommendationsController extends Controller
     public function apiGetRecommendationsReceivedCount(){
         return Auth::user()->recommendations_received_count();
     }
+    
+    public function apiGetRecommendationsPending(){
+        return Auth::user()->recommendations_pending();
+    }
 }

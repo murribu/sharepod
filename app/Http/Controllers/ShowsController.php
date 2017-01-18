@@ -67,7 +67,7 @@ class ShowsController extends Controller
     }
     
     public function apiSearch(){
-        return DB::select('select name, slug, description from shows where name like ? order by name limit 20', ['%'.Input::get('s').'%']);
+        return DB::select('select name, slug, description from shows where name like ? or description like ? order by name limit 20', ['%'.Input::get('s').'%', '%'.Input::get('s').'%']);
     }
     
     public function apiListing($user_id = null){

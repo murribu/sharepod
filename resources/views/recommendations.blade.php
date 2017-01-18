@@ -8,6 +8,25 @@
             <div class="col-xs-12 col-md-6">
                 <div class="panel panel-default">
                     <div class="panel-heading centered">
+                        Pending
+                    </div>
+                    <div class="panel-body recommendation-list-item" v-for="r in recommendations_pending">
+                        <div class="col-xs-9">
+                            <span v-for="u in r.users"><a href="'/users/' + u.slug">@{{u.name}}</a></span>
+                            recommended <a :href="'/episodes/' + r.slug">@{{r.name}}</a>
+                        </div>
+                        <div class="col-xs-3">
+                            <button class="btn btn-primary btn-approve-recommendation" v-tooltip title="Approve" @click.prevent="" :disabled="updateBusy">✔</button>
+                            <button class="btn btn-danger btn-block-recommendation" title="Reject" @click.prevent="" :disabled="updateBusy">&times;</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading centered">
                         Given<span v-if="recommendations_given_count > 0">&nbsp;(@{{recommendations_given_count}})</span>
                     </div>
                     <div class="panel-body recommendation-list-item" v-for="r in recommendations_given" @click="gotoRecommendation(r)">
