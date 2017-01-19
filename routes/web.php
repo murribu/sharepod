@@ -39,6 +39,7 @@ $router->group(['middleware' => 'auth'], function ($router) {
 });
 
 Route::get('/users/{slug}', 'UsersController@getUser');
+Route::get('/feed/{slug}', 'PlaylistController@getFeed');
 
 
 
