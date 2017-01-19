@@ -5,7 +5,7 @@
     <div>
         <div class="container">
             <div class="row">
-                <div class="col-xs-12 col-md-3">
+                <div class="col-xs-12 col-lg-3 col-md-4">
                     <div class="DashboardProfileCard module">
                         <div class="DashboardProfileCard-content">
                             <a class="DashboardProfileCard-avatarLink u-inlineBlock" :href="'/shows/' + show.slug" :title="show.name">
@@ -37,7 +37,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-12 col-md-9">
+                <div class="col-xs-12 col-lg-9 col-md-8">
                     <ol class="stream-items js-navigable-stream">
                         <li class="js-stream-item stream-item stream-item expanding-stream-item" v-for="episode in displayEpisodes" :key="episode.slug">
                             <div class="tweet">

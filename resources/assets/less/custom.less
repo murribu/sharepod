@@ -92,6 +92,11 @@ a.clickable:hover {
   left: 105px;
   width: 172px;
 }
+@media (max-width: @screen-md-min) {
+    .DashboardProfileCard-userFields {
+        width: 400px
+    }
+}
 .DashboardProfileCard-like {
     color: #333;
     background-color: #fff;
@@ -181,6 +186,11 @@ a.clickable:hover {
   position: relative;
   margin-left: 0;
   list-style: none;
+}
+@media (max-width: @screen-md-min) {
+    .stream-items {
+        padding-left:0;
+    }
 }
 .stream li:first-child,
 .stream-container li:first-child,
