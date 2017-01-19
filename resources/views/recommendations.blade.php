@@ -13,38 +13,11 @@
                     <div class="panel-body recommendation-list-item" v-for="r in recommendations_pending">
                         <div class="col-xs-9">
                             <span v-for="u in r.users"><a href="'/users/' + u.slug">@{{u.name}}</a></span>
-                            recommended <a :href="'/episodes/' + r.slug">@{{r.name}}</a>
+                            recommended <a :href="'/shows/' + r.show_slug">@{{r.show_name}}</a> - <a :href="'/episodes/' + r.slug">@{{r.name}}</a>
                         </div>
                         <div class="col-xs-3">
-                            <button class="btn btn-primary btn-approve-recommendation" v-tooltip title="Approve" @click.prevent="" :disabled="updateBusy">✔</button>
-                            <button class="btn btn-danger btn-block-recommendation" title="Reject" @click.prevent="" :disabled="updateBusy">&times;</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12 col-md-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading centered">
-                        Given<span v-if="recommendations_given_count > 0">&nbsp;(@{{recommendations_given_count}})</span>
-                    </div>
-                    <div class="panel-body recommendation-list-item" v-for="r in recommendations_given" @click="gotoRecommendation(r)">
-                        <div class="col-xs-8">
-                            @{{r.episode_name}}
-                        </div>
-                        <div class="col-xs-4">
-                            @{{r.user_name}}
-                        </div>
-                    </div>
-                    <div class="panel-body recommendation-list-item" v-if="recommendations_given_count > recommendations_given.length" @click="loadRecommendationsGiven">
-                        <div class="col-xs-12 centered">
-                            Show more
-                        </div>
-                    </div>
-                    <div class="panel-body recommendation-list-item" v-if="recommendations_given_loaded && recommendations_given.length == 0" style="cursor:initial;">
-                        <div class="col-xs-12 centered">
-                            None Given Yet
+                            <button class="btn btn-primary btn-accept-recommendation" v-tooltip title="Accept" @click.prevent="accept(r)" :disabled="updatePendingBusy">✔</button>
+                            <button class="btn btn-danger btn-block-recommendation" v-tooltip title="Reject" @click.prevent="reject(r)" :disabled="updatePendingBusy">&times;</button>
                         </div>
                     </div>
                 </div>
@@ -52,24 +25,16 @@
             <div class="col-xs-12 col-md-6">
                 <div class="panel panel-default">
                     <div class="panel-heading centered">
-                        Received
+                        Accepted
                     </div>
-                    <div class="panel-body recommendation-list-item" v-for="r in recommendations_received" @click="gotoRecommendation(r)">
-                        <div class="col-xs-8">
-                            @{{r.episode_name}}
+                    <div class="panel-body recommendation-list-item" v-for="r in recommendations_accepted">
+                        <div class="col-xs-9">
+                            <span v-for="u in r.users"><a href="'/users/' + u.slug">@{{u.name}}</a></span>
+                            recommended <a :href="'/shows/' + r.show_slug">@{{r.show_name}}</a> - <a :href="'/episodes/' + r.slug">@{{r.name}}</a>
                         </div>
-                        <div class="col-xs-4">
-                            @{{r.user_name}}
-                        </div>
-                    </div>
-                    <div class="panel-body recommendation-list-item" v-if="recommendations_received_count > recommendations_received.length" @click="loadRecommendationsReceived">
-                        <div class="col-xs-12 centered">
-                            Show more
-                        </div>
-                    </div>
-                    <div class="panel-body recommendation-list-item" v-if="recommendations_received_loaded && recommendations_received.length == 0" style="cursor:initial;">
-                        <div class="col-xs-12 centered">
-                            None Received Yet
+                        <div class="col-xs-3">
+                            <button class="btn btn-warning btn-pending-recommendation" v-tooltip title="Make Pending" @click.prevent="makePending(r)" :disabled="updateAcceptedBusy">/</button>
+                            <button class="btn btn-danger btn-block-recommendation" v-tooltip title="Reject" @click.prevent="reject(r)" :disabled="updateAcceptedBusy">&times;</button>
                         </div>
                     </div>
                 </div>

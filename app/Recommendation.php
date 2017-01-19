@@ -9,6 +9,7 @@ class Recommendation extends Model {
     use HasSlug;
     
     protected static $slug_length = 64;
+    protected static $slug_reserved_words = ['accept', 'reject', 'new'];
     
     public $table = 'recommendations';
     
@@ -39,11 +40,12 @@ class Recommendation extends Model {
         
         if (!$r){
             $r = new self;
-            $r->recommender_id = $args['recommender_id'];
-            $r->recommendee_id = $args['recommendee_id'];
-            $r->episode_id = $args['episode_id'];
-            $r->action = isset($args['action']) ? $args['action'] : null;
-            $r->slug = Recommendation::findSlug();
+            $r->recommender_id  = $args['recommender_id'];
+            $r->recommendee_id  = $args['recommendee_id'];
+            $r->episode_id      = $args['episode_id'];
+            $r->action          = isset($args['action']) ? $args['action'] : null;
+            $r->autoaction      = isset($args['autoaction']) ? $args['autoaction'] : null;
+            $r->slug            = Recommendation::findSlug();
             $r->save();
         }
         

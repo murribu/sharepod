@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers;
 
 use Auth;
+use DB;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Http\Request;
 use Exception;
@@ -70,23 +71,41 @@ class RecommendationsController extends Controller
         return $ret;
     }
     
-    public function apiGetRecommendationsGiven(){
-        return Auth::user()->recent_recommendations_given(Input::has('date') ? Input::get('date') : '2199-12-31 23:23:59', Input::has('episodes') ? Input::get('episodes') : '-1');
-    }
-    
-    public function apiGetRecommendationsGivenCount(){
-        return Auth::user()->recommendations_given_count();
-    }
-    
-    public function apiGetRecommendationsReceived(){
-        return Auth::user()->recent_recommendations_received(Input::has('date') ? Input::get('date') : '2199-12-31 23:23:59', Input::has('episodes') ? Input::get('episodes') : '-1');
-    }
-    
-    public function apiGetRecommendationsReceivedCount(){
-        return Auth::user()->recommendations_received_count();
-    }
-    
     public function apiGetRecommendationsPending(){
-        return Auth::user()->recommendations_pending();
+        return Auth::user()->recommendations_by_action('pending');
+    }
+    
+    public function apiGetRecommendationsAccepted(){
+        return Auth::user()->recommendations_by_action('accepted');
+    }
+    
+    public function apiAcceptRecommendations(){
+        if (Input::has('slugs')){
+            return Recommendation::where('recommendee_id', Auth::user()->id)
+                ->whereIn('slug', Input::get('slugs'))
+                ->update(['action' => 'accepted']);
+        }else{
+            return response()->json(['message' => 'Bad Request - no slugs'], 400);
+        }
+    }
+    
+    public function apiRejectRecommendations(){
+        if (Input::has('slugs')){
+            return Recommendation::where('recommendee_id', Auth::user()->id)
+                ->whereIn('slug', Input::get('slugs'))
+                ->update(['action' => 'rejected']);
+        }else{
+            return response()->json(['message' => 'Bad Request - no slugs'], 400);
+        }
+    }
+    
+    public function apiMakeRecommendationsPending(){
+        if (Input::has('slugs')){
+            return Recommendation::where('recommendee_id', Auth::user()->id)
+                ->whereIn('slug', Input::get('slugs'))
+                ->update(['action' => 'viewed']);
+        }else{
+            return response()->json(['message' => 'Bad Request - no slugs'], 400);
+        }
     }
 }

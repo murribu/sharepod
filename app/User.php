@@ -138,33 +138,38 @@ class User extends SparkUser
             $connection = Connection::where('user_id', $recommendee->id)
                 ->where('recommender_id', $this->id)
                 ->first();
-                
+
             if (!$connection){
                 $connection = new Connection;
                 $connection->user_id = $recommendee->id;
                 $connection->recommender_id = $this->id;
                 $connection->save();
             }
+
             switch ($connection->status){
                 case 'approved':
-                    $status = 'accepted';
+                    $action = 'accepted';
+                    $autoaction = '1';
                     break;
                 case 'blocked':
-                    $status = 'rejected';
+                    $action = 'rejected';
+                    $autoaction = '1';
                     break;
                 default:
                     //null
-                    $status = null;
+                    $action = null;
+                    $autoaction = '0';
                     break;
             }
             $recommendation = Recommendation::firstOrCreate([
                     'recommender_id'    => $this->id,
                     'recommendee_id'    => $recommendee->id,
                     'episode_id'        => $ep->id,
-                    'action'            => $status
+                    'action'            => $action,
+                    'autoaction'        => $autoaction
                 ]);
             
-            if ($status == null){
+            if ($action == null){
                 if (isset($input['email_address'])){
                     $recommendation->send_via_email();
                 }else if (isset($input['twitter_handle'])){
@@ -182,8 +187,22 @@ class User extends SparkUser
         return DB::select('select name, slug from users inner join (select distinct recommendee_id from recommendations where recommender_id = ? order by id desc limit 5) r on r.recommendee_id = users.id', [$this->id]);
     }
     
-    public function recommendations_pending(){
-        $episodes = DB::select('select e.slug, e.name, u.slug user_slug, u.name user_name from episodes e inner join recommendations r on r.episode_id = e.id left join users u on u.id = r.recommender_id where r.recommendee_id = ? and (r.action is null or r.action = \'viewed\')', [$this->id]);
+    public function recommendations_by_action($action = 'pending'){
+        switch ($action){
+            case 'pending':
+                $action_clause = '(r.action is null or r.action = \'viewed\')';
+                break;
+            case 'accepted':
+                $action_clause = 'r.action = \'accepted\'';
+                break;
+            case 'rejected':
+                $action_clause = 'r.action = \'rejected\'';
+                break;
+            default:
+                return ['error' => 'Invalid recommendation action'];
+                break;
+        }
+        $episodes = DB::select('select e.slug, e.name, s.slug show_slug, s.name show_name, u.slug user_slug, u.name user_name, r.slug recommendation_slug from episodes e inner join recommendations r on r.episode_id = e.id left join users u on u.id = r.recommender_id left join shows s on s.id = e.show_id where r.recommendee_id = ? and '.$action_clause, [$this->id]);
         $ret = [];
         $e_slug = '';
         $ret_index = 0;
@@ -194,44 +213,17 @@ class User extends SparkUser
                 $ret[$ret_index++] = [
                     'name' => $e->name,
                     'slug' => $e->slug,
+                    'show_name' => $e->show_name,
+                    'show_slug' => $e->show_slug,
                     'users' => [[
                         'name' => $e->user_name,
-                        'slug' => $e->user_slug
+                        'slug' => $e->user_slug,
+                        'recommendation_slug' => $e->recommendation_slug
                     ]]
                 ];
             }
         }
         return $ret;
-    }
-    
-    public function recent_recommendations_received($date = '2199-12-31 23:23:59', $ignoreEpisodes, $limit = 5){
-        foreach(explode(",",$ignoreEpisodes) as $key=>$e){
-            $ignoreEpisodes[$key] = intval($e);
-        }
-        return DB::select('select e.name episode_name, e.id episode_id, u.name user_name, r.slug recommendation_slug, r.created_at
-            from episodes e 
-            inner join (select episode_id, max(recommendee_id) recommendee_id, max(created_at) created_at, max(slug) slug from recommendations where recommendee_id = ? and created_at < ? and episode_id not in (-1,'.DB::raw($ignoreEpisodes).') group by episode_id order by created_at desc limit ?) r on r.episode_id = e.id
-            left join shows s on s.id = e.show_id
-            left join users u on u.id = r.recommendee_id', [$this->id, $date, $limit]);
-    }
-    
-    public function recommendations_received_count(){
-        return DB::select('select count(distinct episode_id) c from recommendations where recommendee_id = ?', [$this->id]);
-    }
-    
-    public function recent_recommendations_given($date = '2199-12-31 23:23:59', $ignoreEpisodes, $limit = 5){
-        foreach(explode(",",$ignoreEpisodes) as $key=>$e){
-            $ignoreEpisodes[$key] = intval($e);
-        }
-        return DB::select('select e.name episode_name, e.id episode_id, u.name user_name, r.slug recommendation_slug, r.created_at
-            from episodes e 
-            inner join (select episode_id, max(recommendee_id) recommendee_id, max(created_at) created_at, max(slug) slug from recommendations where recommender_id = ? and created_at < ? and episode_id not in (-1,'.DB::raw($ignoreEpisodes).') group by episode_id order by created_at desc limit ?) r on r.episode_id = e.id
-            left join shows s on s.id = e.show_id
-            left join users u on u.id = r.recommendee_id', [$this->id, $date, $limit]);
-    }
-    
-    public function recommendations_given_count(){
-        return DB::select('select count(distinct episode_id) c from recommendations where recommender_id = ?', [$this->id]);
     }
     
     public function twitter_user(){

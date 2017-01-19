@@ -21,16 +21,6 @@ Vue.component('connections', {
     created() {
         this.loadConnections();
     },
-    directives: {
-        tooltip: {
-            bind() {
-                console.log('bind');
-                Vue.nextTick(function(){
-                    $('[title]').tooltip();
-                });
-            }
-        }
-    },
     computed: {
         approved_connections() {
             return this.connections_of_type('approved');

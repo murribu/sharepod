@@ -18,3 +18,5 @@ require('./recommendations');
 require('./show');
 require('./shows');
 require('./user');
+
+require('./directives/tooltip');
