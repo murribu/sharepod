@@ -14,7 +14,7 @@
                 <div class="col-xs-12 col-md-4">
                     <div class="panel panel-default">
                         <div class="panel-heading centered">
-                            Pending<span class="hover-help" title="When these folks recommend an episode to you, you must approve it before it is added to your feed.">?</span>
+                            Pending<span v-tooltip class="hover-help" title="When these folks recommend an episode to you, you must approve it before it is added to your feed.">?</span>
                         </div>
                         <div class="panel-body" v-for="c in pending_connections.received">
                             <div class="col-xs-8">
