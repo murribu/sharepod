@@ -43,12 +43,12 @@
                             <div class="tweet">
                                 <div class="content">
                                     <div class="stream-item-header">
-                                        <a :href="'/shows/{{$show->slug}}/' + episode.slug">
+                                        <a :href="'/episodes/' + episode.slug">
                                             <img class="avatar js-action-profile-avatar" :src="episode.img_url" alt="">
                                         <strong class="fullname js-action-profile-name show-popup-with-id" data-aria-label-part="">@{{episode.name}}</strong>
                                         </a>
                                         <small class="time">
-                                            <a :href="'/shows/{{$show->slug}}/' + episode.slug" class="tweet-timestamp js-permalink js-nav js-tooltip" :title="episode.pubdate_str">
+                                            <a :href="'/episodes/' + episode.slug" class="tweet-timestamp js-permalink js-nav js-tooltip" :title="episode.pubdate_str">
                                                 <span class="_timestamp js-short-timestamp js-relative-timestamp" aria-hidden="true">@{{episode.howLongAgo}}</span>
                                             </a>
                                         </small>

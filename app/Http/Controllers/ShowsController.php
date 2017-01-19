@@ -105,16 +105,8 @@ class ShowsController extends Controller
     
     public function apiShowEpisodes($slug){
         $show = Show::where('slug', $slug)
-            ->where('active', 1);
-        $user = Auth::user();
-        if ($user){
-            $show = $show->leftJoin('likes', function($join){
-                $join->on('likes.user_id', '=', DB::raw($user->id));
-                $join->on('likes.fk', '=', 'show.id');
-                $join->on('likes.type', '=', 'show');
-            });
-        }
-        $show->first();
+            ->where('active', 1)
+            ->first();
         if ($show){
             return $show->limitedEpisodes(Auth::user(), 10, Input::get('pubdate'));
         }else{

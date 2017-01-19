@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers;
 
 use Auth;
+use DB;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Http\Request;
 use Exception;
@@ -12,6 +13,32 @@ class EpisodesController extends Controller
     public function __construct()
     {
         $this->middleware('verified');
+    }
+    
+    public function getEpisode(){
+        return view('episode', ['activelink' => 'shows']);
+    }
+    
+    public function apiGetEpisode($slug){
+        $user = Auth::user();
+        return Episode::leftJoin('likes', function($join){
+            $join->on('likes.fk', '=', 'episodes.id');
+            $join->on('likes.type', '=', DB::raw("'episode'"));
+        })
+        ->leftJoin('likes as this_user_likes', function($join) use ($user){
+            $join->on('this_user_likes.fk', '=', 'episodes.id');
+            $join->on('this_user_likes.type', '=', DB::raw("'episode'"));
+            $join->on('this_user_likes.user_id', '=', DB::raw($user ? $user->id : DB::raw("-1")));
+        })
+        ->leftJoin('shows as s', 's.id', '=', 'episodes.show_id')
+        ->selectRaw('episodes.name, episodes.description, episodes.slug, s.name as show_name, s.slug as show_slug, count(this_user_likes.id) this_user_likes, count(likes.id) total_likes')
+        ->groupBy('episodes.name')
+        ->groupBy('episodes.description')
+        ->groupBy('episodes.slug')
+        ->groupBy('s.name')
+        ->groupBy('s.slug')
+        ->where('episodes.slug', $slug)
+        ->first();
     }
     
     public function recommend(){

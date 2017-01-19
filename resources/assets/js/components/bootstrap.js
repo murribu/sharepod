@@ -12,6 +12,7 @@
 require('./../spark-components/bootstrap');
 
 require('./home');
+require('./episode');
 require('./connections');
 require('./recommendation');
 require('./recommendations');
@@ -20,3 +21,5 @@ require('./shows');
 require('./user');
 
 require('./directives/tooltip');
+
+require('./mixins/episode-actions');

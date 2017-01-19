@@ -62,9 +62,8 @@ class User extends SparkUser
                 ->where('recommendee_id', $this->id)
                 ->where('action', 'accepted');
             })
+            ->orderBy('pubdate', 'desc')
             ->get();
-
-		//return Response::json($pl);
 
 		$output  = "<?xml version='1.0' encoding='UTF-8'?>\n";
 		$output .= "<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\" xmlns:cc=\"http://web.resource.org/cc/\" xmlns:itunes=\"http://www.itunes.com/dtds/podcast-1.0.dtd\" xmlns:media=\"http://search.yahoo.com/mrss/\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n";

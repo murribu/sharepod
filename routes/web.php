@@ -28,6 +28,9 @@ Route::get('/shows/list', 'ShowsController@listing');
 Route::get('/shows/search', 'ShowsController@search');
 Route::get('/shows/{slug}', 'ShowsController@display');
 
+Route::get('/episodes/{slug}', 'EpisodesController@getEpisode');
+
+
 Route::get('/recommendations/{slug}', 'RecommendationsController@getRecommendation');
 
 $router->group(['middleware' => 'auth'], function ($router) {
@@ -42,11 +45,21 @@ Route::get('/users/{slug}', 'UsersController@getUser');
 Route::get('/feed/{slug}', 'PlaylistController@getFeed');
 
 
-
 $router->group(['middleware' => 'dev'], function ($router) {
     Route::post('/shows/new', 'ShowsController@postNew');
 });
 
+
+/** API endpoints for which I want to allow anonymous access, but use Auth::user(), if present **/
+
+Route::get('/api/shows/{slug}/episodes', 'ShowsController@apiShowEpisodes');
+Route::get('/api/shows', 'ShowsController@apiListing');
+Route::get('/api/shows/search', 'ShowsController@apiSearch');
+Route::get('/api/shows/{slug}', 'ShowsController@apiShow');
+Route::get('/api/episodes/{slug}', 'EpisodesController@apiGetEpisode');
+Route::get('/api/users/{slug}', 'UsersController@apiGetUser');
+
+/**  **/
 
 // Route::get('sendhtmlemail/{email_address}/{to_name}/{subject}','MailController@html_email');
 
