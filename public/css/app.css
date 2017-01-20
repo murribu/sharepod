@@ -7701,13 +7701,20 @@ a.clickable:hover {
   position: relative;
   top: -2px;
 }
-.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButton:hover .IconContainer .HeartAnimationContainer .HeartAnimation,
-.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButtonUndo .IconContainer .HeartAnimationContainer .HeartAnimation {
+.stream-item-footer .ProfileTweet-action button.ProfileTweet-action--like:hover .IconContainer .HeartAnimationContainer .HeartAnimation,
+.stream-item-footer .ProfileTweet-action button.ProfileTweet-action--unlike .IconContainer .HeartAnimationContainer .HeartAnimation {
   background-position: right;
 }
-.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButton:hover .IconTextContainer .ProfileTweet-actionCount,
-.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButtonUndo .IconTextContainer .ProfileTweet-actionCount {
+.stream-item-footer .ProfileTweet-action button.ProfileTweet-action--like:hover .IconTextContainer .ProfileTweet-actionCount,
+.stream-item-footer .ProfileTweet-action button.ProfileTweet-action--unlike .IconTextContainer .ProfileTweet-actionCount {
   color: #e81c4f;
+}
+.stream-item-footer .ProfileTweet-action button.ProfileTweet-action--recommend:hover .IconContainer,
+.stream-item-footer .ProfileTweet-action button.ProfileTweet-action--recommend:hover .ProfileTweet-actionCount {
+  color: #19cf86;
+}
+.btn-separate-from-other-buttons {
+  margin: 2px;
 }
 /** RECOMMENDATION SCREEN **/
 .recommendation-list-item {
@@ -7736,6 +7743,10 @@ a.clickable:hover {
   border-radius: 11px;
   border: 1px solid #d3e0e9;
   font-size: x-small;
+}
+/** HOME SCREEN **/
+.strikethrough {
+  text-decoration: line-through;
 }
 /*
  * Social Buttons for Bootstrap

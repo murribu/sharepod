@@ -20144,11 +20144,14 @@ Vue.component('episode', {
 Vue.component('home', {
     props: ['user'],
     computed: {
-        test: function test() { return 'home'; },
+        showGetStarted: function showGetStarted() {
+            return !this.user || 
+                !this.user.hasLikedSomething || 
+                !this.user.hasRecommendedSomething || 
+                (this.user.hasReceivedARecommendation && !this.user.hasTakenActionOnARecommendation) || 
+                this.user.hasRegisteredTheirFeed;
+        },
     },
-    mounted: function mounted() {
-        //
-    }
 });
 
 
@@ -20190,8 +20193,11 @@ Vue.component('recommendations', {
         return {
             recommendations_pending: [],
             recommendations_accepted: [],
+            recommendations_pending_loaded: false,
+            recommendations_accepted_loaded: false,
             updatePendingBusy: false,
             updateAcceptedBusy: false,
+            
         };
     },
     created: function created() {
@@ -20265,6 +20271,7 @@ Vue.component('recommendations', {
                 .then(function (response) {
                     self.recommendations_pending = response.data;
                     self.updatePendingBusy = false;
+                    self.recommendations_pending_loaded = true;
                 },
                 function (response) {
                     // alert('error');
@@ -20277,6 +20284,7 @@ Vue.component('recommendations', {
                 .then(function (response) {
                     self.recommendations_accepted = response.data;
                     self.updateAcceptedBusy = false;
+                    self.recommendations_accepted_loaded = true;
                 },
                 function (response) {
                     // alert('error');

@@ -22,7 +22,7 @@
         </div>
         <div class="row" v-if="searchText != '' && holdText == '' && shows.length == 0">
             <div class="col-xs-12">
-                No results
+                No results. <a target="_new" href="https://twitter.com/shaarepod">Contact us on twitter</a> to tell us about a show.
             </div>
         </div>
     </div>

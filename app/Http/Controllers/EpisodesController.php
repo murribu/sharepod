@@ -31,7 +31,8 @@ class EpisodesController extends Controller
             $join->on('this_user_likes.user_id', '=', DB::raw($user ? $user->id : DB::raw("-1")));
         })
         ->leftJoin('shows as s', 's.id', '=', 'episodes.show_id')
-        ->selectRaw('episodes.name, episodes.description, episodes.slug, s.name as show_name, s.slug as show_slug, count(this_user_likes.id) this_user_likes, count(likes.id) total_likes')
+        ->leftJoin('recommendations', 'recommendations.episode_id', '=', 'episodes.id')
+        ->selectRaw('episodes.name, episodes.description, episodes.slug, s.name as show_name, s.slug as show_slug, count(this_user_likes.id) this_user_likes, count(likes.id) total_likes, count(recommendations.id) total_recommendations')
         ->groupBy('episodes.name')
         ->groupBy('episodes.description')
         ->groupBy('episodes.slug')

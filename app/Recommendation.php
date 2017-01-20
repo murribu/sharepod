@@ -9,7 +9,7 @@ class Recommendation extends Model {
     use HasSlug;
     
     protected static $slug_length = 64;
-    protected static $slug_reserved_words = ['accept', 'reject', 'new'];
+    protected static $slug_reserved_words = ['accept', 'reject', 'make_pending', 'new'];
     
     public $table = 'recommendations';
     

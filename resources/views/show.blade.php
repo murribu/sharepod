@@ -55,14 +55,14 @@
                                     </div>
                                     <div class="TweetTextSize  js-tweet-text tweet-text" lang="en" data-aria-label-part="0" v-html="episode.description" ></div>
                                     <div class="stream-item-footer" v-if="user.verified">
-                                        <div class="ProfileTweet-action ProfileTweet-action--recommend">
-                                            <button class="ProfileTweet-actionButton" type="button" @click.prevent="recommendEpisode(episode)">
+                                        <div class="ProfileTweet-action">
+                                            <button class="ProfileTweet-actionButton  ProfileTweet-action--recommend" type="button" @click.prevent="recommendEpisode(episode)">
                                                 <div class="IconContainer" title="Recommend">
                                                     <i class="fa fa-reply"></i>
                                                 </div>
                                                 <div class="IconTextContainer">
                                                     <span class="ProfileTweet-actionCount">
-                                                      <span class="ProfileTweet-actionCountForPresentation">@{{episode.total_recommends}}</span>
+                                                      <span class="ProfileTweet-actionCountForPresentation">@{{episode.total_recommendations}}</span>
                                                     </span>
                                                 </div>
                                             </button>
@@ -115,7 +115,7 @@
                         <div>
                             Recommend this episode to:
                         </div>
-                        <button class="btn btn-primary" v-for="user in recentRecommendees" @click.prevent="recommendEpisodeToExistingUser(user.slug)">@{{user.name}}</button>
+                        <button class="btn btn-primary btn-separate-from-other-buttons" v-for="user in recentRecommendees" @click.prevent="recommendEpisodeToExistingUser(user.slug)">@{{user.name}}</button>
                         <button class="btn btn-primary" @click.prevent="recommendEpisodeToSomeoneElse">Someone else</button>
                     </div>
                 </div>

@@ -23,7 +23,7 @@
                                         </div>
                                         <div class="IconTextContainer">
                                             <span class="ProfileTweet-actionCount">
-                                              <span class="ProfileTweet-actionCountForPresentation">@{{episode.total_recommends}}</span>
+                                              <span class="ProfileTweet-actionCountForPresentation">@{{episode.total_recommendations}}</span>
                                             </span>
                                         </div>
                                     </button>
@@ -73,7 +73,7 @@
                         <div>
                             Recommend this episode to:
                         </div>
-                        <button class="btn btn-primary" v-for="user in recentRecommendees" @click.prevent="recommendEpisodeToExistingUser(user.slug)">@{{user.name}}</button>
+                        <button class="btn btn-primary btn-separate-from-other-buttons" v-for="user in recentRecommendees" @click.prevent="recommendEpisodeToExistingUser(user.slug)">@{{user.name}}</button>
                         <button class="btn btn-primary" @click.prevent="recommendEpisodeToSomeoneElse">Someone else</button>
                     </div>
                 </div>

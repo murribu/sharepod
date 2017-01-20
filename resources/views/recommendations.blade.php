@@ -20,6 +20,11 @@
                             <button class="btn btn-danger btn-block-recommendation" v-tooltip title="Reject" @click.prevent="reject(r)" :disabled="updatePendingBusy">&times;</button>
                         </div>
                     </div>
+                    <div class="panel-body" v-if="recommendations_pending_loaded && recommendations_pending.length == 0">
+                        <div class="col-xs-12 centered">
+                            You have no pending recommendations
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-xs-12 col-md-6">
@@ -35,6 +40,11 @@
                         <div class="col-xs-3">
                             <button class="btn btn-warning btn-pending-recommendation" v-tooltip title="Make Pending" @click.prevent="makePending(r)" :disabled="updateAcceptedBusy">/</button>
                             <button class="btn btn-danger btn-block-recommendation" v-tooltip title="Reject" @click.prevent="reject(r)" :disabled="updateAcceptedBusy">&times;</button>
+                        </div>
+                    </div>
+                    <div class="panel-body" v-if="recommendations_accepted_loaded && recommendations_accepted.length == 0">
+                        <div class="col-xs-12 centered">
+                            You have no accepted recommendations
                         </div>
                     </div>
                 </div>

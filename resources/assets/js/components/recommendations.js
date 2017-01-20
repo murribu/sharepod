@@ -4,8 +4,11 @@ Vue.component('recommendations', {
         return {
             recommendations_pending: [],
             recommendations_accepted: [],
+            recommendations_pending_loaded: false,
+            recommendations_accepted_loaded: false,
             updatePendingBusy: false,
             updateAcceptedBusy: false,
+            
         };
     },
     created() {
@@ -79,6 +82,7 @@ Vue.component('recommendations', {
                 .then(response => {
                     self.recommendations_pending = response.data;
                     self.updatePendingBusy = false;
+                    self.recommendations_pending_loaded = true;
                 },
                 response => {
                     // alert('error');
@@ -91,6 +95,7 @@ Vue.component('recommendations', {
                 .then(response => {
                     self.recommendations_accepted = response.data;
                     self.updateAcceptedBusy = false;
+                    self.recommendations_accepted_loaded = true;
                 },
                 response => {
                     // alert('error');

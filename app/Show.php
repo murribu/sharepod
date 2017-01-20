@@ -30,8 +30,9 @@ class Show extends Model {
                 $join->on('this_user_likes.fk', '=', 'episodes.id');
                 $join->on('this_user_likes.type', '=', DB::raw("'episode'"));
             })
+            ->leftJoin('recommendations', 'recommendations.episode_id', '=', 'episodes.id')
             ->where('show_id', $this->id)
-            ->selectRaw('episodes.id, slug, name, description, duration, explicit, filesize, img_url, pubdate, count(total_likes.id) as total_likes, count(this_user_likes.id) as this_user_likes')
+            ->selectRaw('episodes.id, episodes.slug, episodes.name, episodes.description, episodes.duration, episodes.explicit, episodes.filesize, episodes.img_url, episodes.pubdate, count(total_likes.id) as total_likes, count(this_user_likes.id) as this_user_likes, count(recommendations.id) total_recommendations')
             ->where('active', 1)
             ->orderBy('pubdate', 'desc')
             ->groupBy('episodes.id')

@@ -55,6 +55,31 @@ class User extends SparkUser
         'uses_two_factor_auth' => 'boolean',
     ];
     
+    public function add_info(){
+        $moreinfo = DB::select('select count(received.id) recommendations_received, count(given.id) recommendations_given, count(accepted.id) recommendations_accepted, count(acted_upon.id) recommendations_acted_upon, count(likes.id) likes, count(hitcounts.id) hitcounts
+        from users
+        left join likes on likes.user_id = users.id
+        left join recommendations as received on received.recommendee_id = users.id
+        left join recommendations as given on given.recommender_id = users.id
+        left join recommendations as accepted on accepted.recommendee_id = users.id and accepted.action  = \'accepted\'
+        left join recommendations as acted_upon on acted_upon.recommendee_id = users.id and (acted_upon.action is null or acted_upon.action = \'viewed\')
+        left join hitcounts on hitcounts.user_id = users.id and hitcounts.request = \'user_feed\'
+        where users.id = ?
+        limit 1
+        ', [$this->id]);
+        
+        if ($moreinfo[0]){
+            $moreinfo = $moreinfo[0];
+            $this->hasLikedSomething = $moreinfo->likes > 0 ? '1' : 0;
+            $this->hasRecommendedSomething = $moreinfo->recommendations_given > 0 ? '1' : 0;
+            $this->hasReceivedARecommendation = $moreinfo->recommendations_received > 0 ? '1' : 0;
+            $this->hasAcceptedARecommendation = $moreinfo->recommendations_accepted > 0 ? '1' : 0;
+            $this->hasTakenActionOnARecommendation = $moreinfo->recommendations_acted_upon > 0 ? '1' : 0;
+            $this->hasRegisteredTheirFeed = $moreinfo->hitcounts > 0 ? '1' : 0;
+        }
+        return $this;
+    }
+    
     public function feed(){
         $episodes = Episode::whereIn('id', function($query){
             $query->select('episode_id')
@@ -80,13 +105,13 @@ class User extends SparkUser
 				<managingEditor>".env('MAILGUN_FROM_EMAIL_ADDRESS')."</managingEditor>
 				<description><![CDATA[Recommendations for ".$this->name." from ".env('APP_NAME')."]]></description>
 				<image>
-						<url>".env('APP_URL')."/img/logo.jpg</url>
+						<url>".env('APP_URL')."/img/logo.png</url>
 						<title>".env('APP_NAME')."</title>
 						<link><![CDATA[".env('APP_URL')."]]></link>
 				</image>
 				<itunes:author>".$this->name."</itunes:author>
 				<itunes:keywords></itunes:keywords>
-				<itunes:image href=\"".env('APP_URL')."/img/logo.jpg\" />
+				<itunes:image href=\"".env('APP_URL')."/img/logo.png\" />
 				<itunes:explicit></itunes:explicit>
 				<itunes:owner>
 						<itunes:name><![CDATA[".$this->name."]]></itunes:name>

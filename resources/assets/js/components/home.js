@@ -1,9 +1,12 @@
 Vue.component('home', {
     props: ['user'],
     computed: {
-        test() { return 'home'; },
+        showGetStarted() {
+            return !this.user || 
+                !this.user.hasLikedSomething || 
+                !this.user.hasRecommendedSomething || 
+                (this.user.hasReceivedARecommendation && !this.user.hasTakenActionOnARecommendation) || 
+                this.user.hasRegisteredTheirFeed;
+        },
     },
-    mounted() {
-        //
-    }
 });

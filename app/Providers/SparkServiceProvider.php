@@ -5,6 +5,7 @@ use Auth;
 use Laravel\Spark\Spark;
 use Laravel\Spark\Providers\AppServiceProvider as ServiceProvider;
 
+use Laravel\Spark\Contracts\Repositories\UserRepository;
 use Laravel\Spark\Events\Profile\ContactInformationUpdated;
 
 use Jrean\UserVerification\Facades\UserVerification;
@@ -80,15 +81,14 @@ class SparkServiceProvider extends ServiceProvider
             return $user;
         });
         
-        // Spark::swap('Laravel\Spark\Contracts\Repositories\UserRepository@current', function(){
-            // if (Auth::check()) {
-                // $user = $this->find(Auth::id())->shouldHaveSelfVisibility();
-                
-                // $user->needsLinkOrPassword = $user->email && !$user->password && !$user->facebook_user_id;
-                
-                // return $user;
-            // }
-        // });
+        Spark::swap('Laravel\Spark\Contracts\Repositories\UserRepository@current', function(){
+            $user = null;
+            if (Auth::check()) {
+                $user = $this->find(Auth::id())->shouldHaveSelfVisibility();
+                $user = $user->add_info();
+            }
+            return $user;
+        });
         
     }
 }

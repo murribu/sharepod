@@ -1,5 +1,6 @@
 @episode-gray: #aab8c2;
 @episode-red: #e81c4f;
+@episode-green: #19cf86;
 
 .with-navbar {
     .container {
@@ -327,7 +328,7 @@ a.clickable:hover {
                 }
             }
         }
-        button.ProfileTweet-actionButton:hover, button.ProfileTweet-actionButtonUndo{
+        button.ProfileTweet-action--like:hover, button.ProfileTweet-action--unlike{
             .IconContainer{
                 .HeartAnimationContainer{
                     .HeartAnimation{
@@ -341,7 +342,15 @@ a.clickable:hover {
                 }
             }
         }
+        button.ProfileTweet-action--recommend:hover{
+            .IconContainer, .ProfileTweet-actionCount{
+                color: @episode-green;
+            }
+        }
     }
+}
+.btn-separate-from-other-buttons{
+    margin: 2px;
 }
 
 /** RECOMMENDATION SCREEN **/
@@ -372,4 +381,9 @@ a.clickable:hover {
     border-radius: 11px;
     border: 1px solid #d3e0e9;
     font-size: x-small;
+}
+
+/** HOME SCREEN **/
+.strikethrough{
+    text-decoration: line-through;
 }
