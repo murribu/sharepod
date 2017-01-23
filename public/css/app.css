@@ -7465,7 +7465,7 @@ a.clickable:hover {
 }
 @media (max-width: 992px) {
   .DashboardProfileCard-userFields {
-    width: 400px;
+    width: 290px;
   }
 }
 .DashboardProfileCard-like {

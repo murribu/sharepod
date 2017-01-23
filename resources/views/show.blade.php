@@ -54,7 +54,7 @@
                                         </small>
                                     </div>
                                     <div class="TweetTextSize  js-tweet-text tweet-text" lang="en" data-aria-label-part="0" v-html="episode.description" ></div>
-                                    <div class="stream-item-footer" v-if="user.verified">
+                                    <div class="stream-item-footer" v-if="user && user.verified">
                                         <div class="ProfileTweet-action">
                                             <button class="ProfileTweet-actionButton  ProfileTweet-action--recommend" type="button" @click.prevent="recommendEpisode(episode)">
                                                 <div class="IconContainer" title="Recommend">

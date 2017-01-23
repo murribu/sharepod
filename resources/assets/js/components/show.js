@@ -44,7 +44,9 @@ Vue.component('show', {
             response => {
                 // alert('error');
             });
-        this.getRecentRecommendees();
+        if (this.user){
+            this.getRecentRecommendees();
+        }
     },
     methods: {
         likeShow() {

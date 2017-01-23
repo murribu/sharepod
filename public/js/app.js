@@ -20345,7 +20345,9 @@ Vue.component('show', {
             function (response) {
                 // alert('error');
             });
-        this.getRecentRecommendees();
+        if (this.user){
+            this.getRecentRecommendees();
+        }
     },
     methods: {
         likeShow: function likeShow() {
