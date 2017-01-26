@@ -12,8 +12,9 @@
 require('./../spark-components/bootstrap');
 
 require('./home');
-require('./episode');
 require('./connections');
+require('./episode');
+require('./help');
 require('./recommendation');
 require('./recommendations');
 require('./show');

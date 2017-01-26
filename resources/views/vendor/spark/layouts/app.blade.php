@@ -37,7 +37,6 @@
 
         <!-- Main Content -->
         @yield('content')
-
         <!-- Application Level Modals -->
         @if (Auth::check())
             @include('spark::modals.notifications')
@@ -45,6 +44,7 @@
             @include('spark::modals.session-expired')
         @endif
     </div>
+    @include('footer')
 
     <!-- JavaScript -->
     <script src="/js/app.js"></script>

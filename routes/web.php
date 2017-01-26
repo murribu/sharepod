@@ -30,8 +30,10 @@ Route::get('/shows/{slug}', 'ShowsController@display');
 
 Route::get('/episodes/{slug}', 'EpisodesController@getEpisode');
 
-
 Route::get('/recommendations/{slug}', 'RecommendationsController@getRecommendation');
+
+Route::get('/help', 'HelpController@index');
+
 
 $router->group(['middleware' => 'auth'], function ($router) {
     Route::post('/recommend', 'EpisodesController@recommend');
