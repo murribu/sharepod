@@ -21,7 +21,7 @@
                     </div>
                     <div class="panel-body">
                         <ol>
-                            <li :class="{strikethrough: user}"><a href="#" onclick="window.open('/auth/facebook','auth','width=500,height=450');return false;">Login with Facebook</a> or <a href="/login">with your email address</a></li>
+                            <li :class="{strikethrough: user}"><a href="#" onclick="window.open('/auth/facebook','auth','width=500,height=450');return false;">Login with Facebook</a> or <a href="/register">with your email address</a></li>
                             <li :class="{strikethrough: user && user.hasLikedSomething}"><a href="/shows">Find a show and 'Like' it</a></li>
                             <li :class="{strikethrough: user && user.hasRecommendedSomething}"><a href="/shows">Recommend an episode</a></li>
                             <li :class="{strikethrough: user && user.hasTakenActionOnARecommendation}" v-if="user && user.hasReceivedARecommendation"><a href="/recommendations">Accept a recommendation</a></li>

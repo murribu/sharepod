@@ -20594,7 +20594,15 @@ Vue.component('spark-register-stripe', {
         signInWithFacebook: function signInWithFacebook() {
             window.open('/auth/facebook','auth','width=500,height=450');
         },
+        selectAppropriateDefaultPlan: function selectAppropriateDefaultPlan() {
+            this.selectFreePlan();
+        },
     },
+    computed: {
+        paidPlans: function paidPlans() {
+            return [];
+        }
+    }
 });
 
 
