@@ -61,6 +61,13 @@ module.exports = {
                 $('#modal-recommend-success').modal('hide');
             }, 2500);
         },
+        toggleLikeEpisode(episode){
+            if (episode.this_user_likes){
+                return this.unlikeEpisode(episode);
+            }else{
+                return this.likeEpisode(episode);
+            }
+        },
         likeEpisode(episode) {
             var self = this;
             this.$http.post('/api/episodes/like', {slug: episode.slug})

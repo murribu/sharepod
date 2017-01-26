@@ -7417,6 +7417,9 @@ body {
 a.clickable:hover {
   text-decoration: none;
 }
+.panel-border-top {
+  border-top: 1px solid #d3e0e9;
+}
 /** NAV BAR **/
 .verification-alert a {
   color: white !important;
@@ -7449,27 +7452,11 @@ a.clickable:hover {
   background-color: white;
 }
 /** SHOW SCREEN **/
-.DashboardProfileCard {
-  border: 1px solid #e1e8ed;
-  background: #FFF;
-  border-radius: 6px;
+.show-profile-card {
+  overflow: inherit;
+  margin-top: 15px;
 }
-.DashboardProfileCard-stats {
-  margin-left: 11px;
-  padding: 10px 0;
-}
-.DashboardProfileCard-avatarLink {
-  background-color: #fff;
-  border-radius: 6px;
-  margin: -30px 0 0 8px;
-  padding: 1px;
-  vertical-align: bottom;
-}
-.u-inlineBlock {
-  display: inline-block !important;
-  max-width: 100%;
-}
-.DashboardProfileCard-avatarImage {
+.show-image {
   border-radius: 7px;
   height: 72px;
   width: 72px;
@@ -7477,197 +7464,46 @@ a.clickable:hover {
   box-sizing: border-box;
   color: #fff;
 }
-.DashboardProfileCard-userFields {
-  position: absolute;
-  top: 5px;
-  left: 105px;
-  width: 172px;
-}
-@media (max-width: 992px) {
-  .DashboardProfileCard-userFields {
-    width: 290px;
-  }
-}
-.DashboardProfileCard-like {
-  color: #333;
+a.show-image-container {
+  display: inline-block;
   background-color: #fff;
-  border: 1px solid #ccc;
-  font-weight: inherit;
-  text-transform: none;
-  margin-top: 2px;
+  border-radius: 6px;
+  margin: -50px 0 0 8px;
+  padding: 1px;
+  vertical-align: bottom;
 }
-.DashboardProfileCard-like:before {
+button.btn-like:before {
   content: "✔ Like";
 }
-.DashboardProfileCard-like:hover,
-.DashboardProfileCard-like:focus {
+button.btn-like:hover,
+button.btn-like:focus {
   background-color: #ccc;
 }
-.DashboardProfileCard-unlike {
-  color: #fff;
-  background-color: #337ab7;
-  border-color: #2e6da4;
-  padding: 3px 8px;
-  font-weight: inherit;
-  text-transform: none;
-  margin-top: 2px;
-}
-.DashboardProfileCard-unlike:before {
+button.btn-unlike:before {
   content: "Liked!";
 }
-.DashboardProfileCard-unlike:hover:before {
+button.btn-unlike:hover:before {
   content: "Unlike";
 }
-.DashboardProfileCard-unlike:hover {
+button.btn-unlike:hover {
   background-color: #d9534f;
   border-color: #d43f3a;
   color: #fff;
 }
-.DashboardProfileCard-name {
-  font-weight: 700;
-  font-size: 18px;
-  line-height: 21px;
-  max-height: 43px;
-  overflow-y: hidden;
+.panel-list-item {
+  border-bottom: 1px solid #d3e0e9;
+  margin-bottom: 0px;
 }
-.DashboardProfileCard-stat {
-  box-sizing: border-box;
-  line-height: 1;
-  -webkit-transition: all 0.15s ease-in-out;
-  transition: all 0.15s ease-in-out;
-  overflow: hidden;
-}
-.DashboardProfileCard-statLabel {
-  color: #8c9ca9;
-  font-size: 10px;
-  letter-spacing: .02em;
-  text-transform: uppercase;
-  -webkit-transition: color 0.15s ease-in-out;
-  transition: color 0.15s ease-in-out;
-  overflow: hidden;
-}
-.DashboardProfileCard-statValue {
-  display: block;
-  font-size: 18px;
-  padding-top: 3px;
-  font-weight: 500;
-  -webkit-transition: color 0.15s ease-in-out;
-  transition: color 0.15s ease-in-out;
-}
-.Arrange--equal {
-  table-layout: fixed;
-}
-.Arrange {
-  box-sizing: border-box;
-  display: table;
-  margin: 0;
-  min-width: 100%;
-  padding: 0;
-  table-layout: auto;
-}
-.Arrange-sizeFill,
-.Arrange-sizeFit {
-  display: table-cell;
-  padding: 0;
-  vertical-align: top;
-}
-.stream,
-.stream-container,
-.stream-items {
-  position: relative;
-  margin-left: 0;
-  list-style: none;
-}
-@media (max-width: 992px) {
-  .stream-items {
-    padding-left: 0;
-  }
-}
-.stream li:first-child,
-.stream-container li:first-child,
-.stream-items li:first-child {
-  border-top-left-radius: 6px;
-  border-top-right-radius: 6px;
-  border-top: 1px solid #e1e8ed;
-}
-.stream li:last-child,
-.stream-container li:last-child,
-.stream-items li:last-child {
-  border-bottom-left-radius: 6px;
-  border-bottom-right-radius: 6px;
-}
-.tweet {
-  /*cursor: pointer;*/
-  position: relative;
-  min-height: 51px;
-  padding: 9px 12px;
-}
-.stream-loadmore {
-  text-align: center;
-  padding: 10px;
-  cursor: pointer;
-}
-.stream-item {
-  background: #fff;
-  border-left: 1px solid #e1e8ed;
-  border-right: 1px solid #e1e8ed;
-  background-clip: padding-box;
-  border-bottom: 1px solid #e1e8ed;
-}
-.stream-item .content {
-  margin-left: 58px;
-}
-.stream-item-header .avatar {
-  float: left;
-  margin-top: 3px;
-  margin-left: -58px;
-}
-.avatar {
+.episode-image {
   width: 48px;
   height: 48px;
   border-radius: 5px;
   -moz-force-broken-image-icon: 1;
 }
-.fullname {
-  font-weight: bold;
-  color: #292f33;
+.episode-action {
+  display: inline;
 }
-.username,
-.time,
-.time a {
-  font-size: 13px;
-  color: #8899a6;
-}
-.tweet .js-tweet-text {
-  white-space: pre-wrap;
-}
-.tweet p {
-  word-wrap: break-word;
-}
-.TweetTextSize {
-  font-size: 14px;
-  line-height: 18px;
-}
-.u-hiddenVisually {
-  position: absolute!important;
-  overflow: hidden!important;
-  width: 1px!important;
-  height: 1px!important;
-  padding: 0!important;
-  border: 0!important;
-  clip: rect(1px, 1px, 1px, 1px) !important;
-}
-.stream-item-footer {
-  display: table;
-  width: 100%;
-  padding-top: 10px;
-}
-.stream-item-footer .ProfileTweet-action {
-  display: inline-block;
-  min-width: 80px;
-}
-.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButton,
-.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButtonUndo {
+.episode-action button {
   border: 0;
   color: #aab8c2;
   display: inline-block;
@@ -7682,12 +7518,7 @@ a.clickable:hover {
   font: inherit;
   margin: 0;
 }
-.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButton .IconContainer,
-.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButtonUndo .IconContainer {
-  display: inline-block;
-}
-.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButton .IconContainer .HeartAnimationContainer,
-.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButtonUndo .IconContainer .HeartAnimationContainer {
+.icon-container .heart-container {
   height: 16px;
   left: .1rem;
   overflow: hidden;
@@ -7695,8 +7526,7 @@ a.clickable:hover {
   position: relative;
   width: 16px;
 }
-.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButton .IconContainer .HeartAnimationContainer .HeartAnimation,
-.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButtonUndo .IconContainer .HeartAnimationContainer .HeartAnimation {
+.icon-container .heart-container .heart {
   position: absolute;
   background: url(/img/web_heart_animation.png);
   background-position: left;
@@ -7707,34 +7537,25 @@ a.clickable:hover {
   left: -100%;
   top: -100%;
 }
-.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButton .IconTextContainer,
-.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButtonUndo .IconTextContainer {
-  display: inline-block;
-}
-.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButton .IconTextContainer .ProfileTweet-actionCount,
-.stream-item-footer .ProfileTweet-action button.ProfileTweet-actionButtonUndo .IconTextContainer .ProfileTweet-actionCount {
-  color: #aab8c2;
-  display: inline-block;
-  font-size: 12px;
-  font-weight: bold;
-  margin-left: 6px;
-  position: relative;
-  top: -2px;
-}
-.stream-item-footer .ProfileTweet-action button.ProfileTweet-action--like:hover .IconContainer .HeartAnimationContainer .HeartAnimation,
-.stream-item-footer .ProfileTweet-action button.ProfileTweet-action--unlike .IconContainer .HeartAnimationContainer .HeartAnimation {
-  background-position: right;
-}
-.stream-item-footer .ProfileTweet-action button.ProfileTweet-action--like:hover .IconTextContainer .ProfileTweet-actionCount,
-.stream-item-footer .ProfileTweet-action button.ProfileTweet-action--unlike .IconTextContainer .ProfileTweet-actionCount {
-  color: #e81c4f;
-}
-.stream-item-footer .ProfileTweet-action button.ProfileTweet-action--recommend:hover .IconContainer,
-.stream-item-footer .ProfileTweet-action button.ProfileTweet-action--recommend:hover .ProfileTweet-actionCount {
+.btn-recommend:hover .icon-text-container,
+.btn-recommend:hover .icon-container {
   color: #19cf86;
 }
-.btn-separate-from-other-buttons {
-  margin: 2px;
+.btn-episode-like:hover .icon-text-container,
+.btn-episode-unlike .icon-text-container {
+  color: #e81c4f;
+}
+.btn-episode-like:hover .icon-container .heart,
+.btn-episode-unlike .icon-container .heart {
+  background-position: right;
+}
+.icon-text-container,
+.icon-container {
+  display: inline-block;
+  padding-left: 10px;
+}
+.episode-container {
+  overflow: inherit;
 }
 /** RECOMMENDATION SCREEN **/
 .recommendation-list-item {

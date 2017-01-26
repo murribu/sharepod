@@ -27,6 +27,7 @@ Route::get('/shows', 'ShowsController@show');
 Route::get('/shows/list', 'ShowsController@listing');
 Route::get('/shows/search', 'ShowsController@search');
 Route::get('/shows/{slug}', 'ShowsController@display');
+Route::get('/shows/{slug}/feed', 'ShowsController@getFeed');
 
 Route::get('/episodes/{slug}', 'EpisodesController@getEpisode');
 

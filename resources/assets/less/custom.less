@@ -42,6 +42,10 @@ a.clickable:hover {
     text-decoration:none;
 }
 
+.panel-border-top{
+    border-top: 1px solid #d3e0e9;
+}
+
 /** NAV BAR **/
 
 .verification-alert a {
@@ -80,302 +84,120 @@ a.clickable:hover {
 }
 
 /** SHOW SCREEN **/
-
-.DashboardProfileCard {
-  border: 1px solid #e1e8ed;
-  background: #FFF;
-  border-radius: 6px;
+.show-profile-card{
+    overflow:inherit;
+    margin-top: 15px;
 }
-.DashboardProfileCard-stats {
-  margin-left: 11px;
-  padding: 10px 0;
+.show-image{
+    border-radius: 7px;
+    height: 72px;
+    width: 72px;
+    border: 2px solid #fff;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    color: #fff;
 }
-.DashboardProfileCard-avatarLink {
-  background-color: #fff;
-  border-radius: 6px;
-  margin: -30px 0 0 8px;
-  padding: 1px;
-  vertical-align: bottom;
-}
-.u-inlineBlock {
-  display: inline-block !important;
-  max-width: 100%;
-}
-.DashboardProfileCard-avatarImage {
-  border-radius: 7px;
-  height: 72px;
-  width: 72px;
-  border: 2px solid #fff;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  color: #fff;
-}
-.DashboardProfileCard-userFields {
-  position: absolute;
-  top: 5px;
-  left: 105px;
-  width: 172px;
-}
-@media (max-width: @screen-md-min) {
-    .DashboardProfileCard-userFields {
-        width: 290px;
-    }
-}
-.DashboardProfileCard-like {
-    color: #333;
+a.show-image-container{
+    display: inline-block;
     background-color: #fff;
-    border: 1px solid #ccc;
-    font-weight: inherit;
-    text-transform: none;
-    margin-top: 2px;
+    border-radius: 6px;
+    margin: -50px 0 0 8px;
+    padding: 1px;
+    vertical-align: bottom;
 }
-.DashboardProfileCard-like:before {
+button.btn-like:before{
     content:"✔ Like";
 }
-.DashboardProfileCard-like:hover, .DashboardProfileCard-like:focus {
+button.btn-like:hover, button.btn-like:focus {
     background-color: #ccc;
 }
-.DashboardProfileCard-unlike {
-    color: #fff;
-    background-color: #337ab7;
-    border-color: #2e6da4;
-    padding: 3px 8px;
-    font-weight: inherit;
-    text-transform: none;
-    margin-top: 2px;
-}
-.DashboardProfileCard-unlike:before {
+button.btn-unlike:before {
     content:"Liked!";
 }
-.DashboardProfileCard-unlike:hover:before {
+button.btn-unlike:hover:before {
     content:"Unlike";
 }
-.DashboardProfileCard-unlike:hover {
+button.btn-unlike:hover {
     background-color: #d9534f;
     border-color: #d43f3a;
     color: #fff;
 }
-.DashboardProfileCard-name {
-  font-weight: 700;
-  font-size: 18px;
-  line-height: 21px;
-  max-height: 43px;
-  overflow-y: hidden;
+.panel-list-item{
+    border-bottom: 1px solid #d3e0e9;
+    margin-bottom: 0px;
 }
-.DashboardProfileCard-stat {
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  line-height: 1;
-  transition: all 0.15s ease-in-out;
-  overflow: hidden;
+.episode-image{
+    width: 48px;
+    height: 48px;
+    border-radius: 5px;
+    -moz-force-broken-image-icon: 1;
 }
-.DashboardProfileCard-statLabel {
-  color: #8c9ca9;
-  font-size: 10px;
-  letter-spacing: .02em;
-  text-transform: uppercase;
-  transition: color 0.15s ease-in-out;
-  overflow: hidden;
-}
-.DashboardProfileCard-statValue {
-  display: block;
-  font-size: 18px;
-  padding-top: 3px;
-  font-weight: 500;
-  transition: color 0.15s ease-in-out;
-}
-
-.Arrange--equal {
-  table-layout: fixed;
-}
-.Arrange {
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  display: table;
-  margin: 0;
-  min-width: 100%;
-  padding: 0;
-  table-layout: auto;
-}
-.Arrange-sizeFill,
-.Arrange-sizeFit {
-  display: table-cell;
-  padding: 0;
-  vertical-align: top;
-}
-
-.stream,
-.stream-container,
-.stream-items {
-  position: relative;
-  margin-left: 0;
-  list-style: none;
-}
-@media (max-width: @screen-md-min) {
-    .stream-items {
-        padding-left:0;
-    }
-}
-.stream li:first-child,
-.stream-container li:first-child,
-.stream-items li:first-child {
-  border-top-left-radius: 6px;
-  border-top-right-radius: 6px;
-  border-top: 1px solid #e1e8ed;
-}
-.stream li:last-child,
-.stream-container li:last-child,
-.stream-items li:last-child {
-  border-bottom-left-radius: 6px;
-  border-bottom-right-radius: 6px;
-}
-.tweet {
-  /*cursor: pointer;*/
-  position: relative;
-  min-height: 51px;
-  padding: 9px 12px;
-}
-.stream-loadmore{
-	text-align:center;
-	padding: 10px;
-	cursor: pointer;
-}
-.stream-item {
-  background: #fff;
-  border-left: 1px solid #e1e8ed;
-  border-right: 1px solid #e1e8ed;
-  background-clip: padding-box;
-  border-bottom: 1px solid #e1e8ed;
-}
-.stream-item .content {
-  margin-left: 58px;
-}
-.stream-item-header .avatar {
-  float: left;
-  margin-top: 3px;
-  margin-left: -58px;
-}
-.avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 5px;
-  -moz-force-broken-image-icon: 1;
-}
-.fullname {
-  font-weight: bold;
-  color: #292f33;
-}
-.username,
-.time,
-.time a {
-  font-size: 13px;
-  color: #8899a6;
-}
-.tweet .js-tweet-text {
-  white-space: pre-wrap;
-}
-.tweet p {
-  word-wrap: break-word;
-}
-.TweetTextSize {
-  font-size: 14px;
-  line-height: 18px;
-}
-.u-hiddenVisually {
-  position: absolute!important;
-  overflow: hidden!important;
-  width: 1px!important;
-  height: 1px!important;
-  padding: 0!important;
-  border: 0!important;
-  clip: rect(1px, 1px, 1px, 1px) !important;
-}
-
-.stream-item-footer{
-    display: table;
-    width: 100%;
-    padding-top: 10px;
-    
-    .ProfileTweet-action{
+.episode-action{
+    display: inline;
+    button{
+        border: 0;
+        color: #aab8c2;
         display: inline-block;
-        min-width: 80px;
-    
-        button.ProfileTweet-actionButton, button.ProfileTweet-actionButtonUndo{
-            border: 0;
-            color: @episode-gray;
-            display: inline-block;
-            font-size: 16px;
-            line-height: 1;
-            padding: 0 2px;
-            position: relative;
-            background: transparent;
-            -webkit-appearance: button;
-            cursor: pointer;
-            text-transform: none;
-            font: inherit;
-            margin: 0;
-            .IconContainer{
-                display: inline-block;
-    
-                .HeartAnimationContainer{
-                    height: 16px;
-                    left: .1rem;
-                    overflow: hidden;
-                    padding-right: 1px;
-                    position: relative;
-                    width: 16px;
-                    .HeartAnimation{
-                        position: absolute;
-                        background: url(/img/web_heart_animation.png);
-                        background-position: left;
-                        background-repeat: no-repeat;
-                        background-size: 2900%;
-                        height: 50px;
-                        width: 50px;
-                        left: -100%;
-                        top: -100%;
-                    }
-                }
-            }
-            .IconTextContainer{
-                display: inline-block;
-    
-                .ProfileTweet-actionCount{
-                    color: @episode-gray;
-                    display: inline-block;
-                    font-size: 12px;
-                    font-weight: bold;
-                    margin-left: 6px;
-                    position: relative;
-                    top: -2px;
-                }
-            }
-        }
-        button.ProfileTweet-action--like:hover, button.ProfileTweet-action--unlike{
-            .IconContainer{
-                .HeartAnimationContainer{
-                    .HeartAnimation{
-                        background-position: right;
-                    }
-                }
-            }
-            .IconTextContainer{
-                .ProfileTweet-actionCount{
-                    color: @episode-red;
-                }
-            }
-        }
-        button.ProfileTweet-action--recommend:hover{
-            .IconContainer, .ProfileTweet-actionCount{
-                color: @episode-green;
-            }
+        font-size: 16px;
+        line-height: 1;
+        padding: 0 2px;
+        position: relative;
+        background: transparent;
+        -webkit-appearance: button;
+        cursor: pointer;
+        text-transform: none;
+        font: inherit;
+        margin: 0;
+    }
+}
+.icon-container{
+    .heart-container{
+        height: 16px;
+        left: .1rem;
+        overflow: hidden;
+        padding-right: 1px;
+        position: relative;
+        width: 16px;
+        .heart{
+            position: absolute;
+            background: url(/img/web_heart_animation.png);
+            background-position: left;
+            background-repeat: no-repeat;
+            background-size: 2900%;
+            height: 50px;
+            width: 50px;
+            left: -100%;
+            top: -100%;
         }
     }
 }
-.btn-separate-from-other-buttons{
-    margin: 2px;
+
+.btn-recommend:hover{
+    .icon-text-container, .icon-container{
+        color: @episode-green;
+    }
 }
 
+.btn-episode-like:hover, .btn-episode-unlike{
+    .icon-text-container{
+        color: @episode-red;
+    }
+    .icon-container{
+        .heart{
+            background-position: right;
+        }
+    }
+}
+
+.icon-text-container, .icon-container{
+    display: inline-block;
+    padding-left: 10px;
+}
+
+.episode-container{
+    overflow:inherit;
+}
+    
 /** RECOMMENDATION SCREEN **/
 .recommendation-list-item{
     cursor:pointer;

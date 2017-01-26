@@ -10,11 +10,22 @@ class Show extends Model {
     
     use HasSlug;
     use HasLikes;
+    use HasFeed;
     
-    protected static $slug_reserved_words = ['new', 'list', 'search', 'undefined'];
+    protected static $slug_reserved_words = ['new', 'list', 'search', 'undefined', 'feed'];
     public static $like_type = 'show';
     
     public $table = 'shows';
+    
+    
+    public function info_for_feed(){
+        $ret = [];
+        $ret['episodes'] = $this->episodes()->orderBy('pubdate', 'desc')->get();
+        $ret['url'] = env('APP_URL')."/show/".$this->slug."/feed";
+        $ret['name'] = $this->name;
+        
+        return $ret;
+    }
     
     public function episodes(){
         return $this->hasMany('App\Episode')->where('active', 1);

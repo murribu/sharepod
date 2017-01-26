@@ -2,6 +2,7 @@
 
 use Auth;
 use DB;
+use Response;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Http\Request;
 use Exception;

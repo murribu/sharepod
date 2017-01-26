@@ -2,11 +2,13 @@
 
 use Auth;
 use DB;
+use Response;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Http\Request;
 use Exception;
 
 use App\Episode;
+use App\Hitcount;
 use App\Show;
 
 class ShowsController extends Controller
@@ -131,6 +133,22 @@ class ShowsController extends Controller
             if ($s->unlike($user)){
                 return ['success' => 1, 'total_likes' => $s->likeCount(), 'this_user_likes' => 0];
             }
+        }
+    }
+    
+    public function getFeed($slug){
+        $show = Show::where('slug', $slug)->first();
+        if ($show){
+            $hitcount = new Hitcount;
+            $hitcount->request = 'show_feed';
+            $hitcount->user_id = Auth::user() ? Auth::user()->id : null;
+            $hitcount->ip = \Request::getClientIp();
+            $hitcount->fk = $show->id;
+            $hitcount->save();
+            
+            return Response::make($show->feed(), 200)->header('Content-Type', 'application/xml');
+        }else{
+            return response()->json('Show not found', 404);
         }
     }
 }

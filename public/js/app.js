@@ -5095,6 +5095,13 @@ module.exports = {
                 $('#modal-recommend-success').modal('hide');
             }, 2500);
         },
+        toggleLikeEpisode: function toggleLikeEpisode(episode){
+            if (episode.this_user_likes){
+                return this.unlikeEpisode(episode);
+            }else{
+                return this.likeEpisode(episode);
+            }
+        },
         likeEpisode: function likeEpisode(episode) {
             var self = this;
             this.$http.post('/api/episodes/like', {slug: episode.slug})
@@ -20142,7 +20149,7 @@ Vue.component('episode', {
 /* 144 */
 /***/ function(module, exports, __webpack_require__) {
 
-__webpack_require__(146);
+__webpack_require__(276);
 __webpack_require__(145);
 
 Vue.component('help', {
@@ -20163,14 +20170,7 @@ Vue.component('help-register-my-feed', {
 
 
 /***/ },
-/* 146 */
-/***/ function(module, exports) {
-
-Vue.component('help-find-a-podcatcher', {
-    props: ['user'],
-});
-
-/***/ },
+/* 146 */,
 /* 147 */
 /***/ function(module, exports) {
 
@@ -49698,6 +49698,14 @@ var app = new Vue({
     mixins: [__webpack_require__(126)]
 });
 
+
+/***/ },
+/* 276 */
+/***/ function(module, exports) {
+
+Vue.component('help-find-a-podcatcher', {
+    props: ['user'],
+});
 
 /***/ }
 /******/ ]);

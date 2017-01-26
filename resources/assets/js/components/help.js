@@ -1,4 +1,4 @@
-require('./help/search');
+require('./help/find-a-podcatcher');
 require('./help/register-my-feed');
 
 Vue.component('help', {
