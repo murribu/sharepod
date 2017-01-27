@@ -33,6 +33,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/connections/make_pending', 'ConnectionsController@apiMakePending');
     
     Route::get('/playlists', 'PlaylistController@apiGetPlaylists');
+    Route::post('/playlists/{slug}/add_episode', 'PlaylistController@apiPostAddEpisode');
+    
     
 });
 

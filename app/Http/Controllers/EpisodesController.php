@@ -31,9 +31,10 @@ class EpisodesController extends Controller
             $join->on('this_user_likes.type', '=', DB::raw("'episode'"));
             $join->on('this_user_likes.user_id', '=', DB::raw($user ? $user->id : DB::raw("-1")));
         })
+        ->leftJoin('playlist_episodes as pe', 'pe.episode_id', '=', 'episodes.id')
         ->leftJoin('shows as s', 's.id', '=', 'episodes.show_id')
         ->leftJoin('recommendations', 'recommendations.episode_id', '=', 'episodes.id')
-        ->selectRaw('episodes.name, episodes.description, episodes.slug, s.name as show_name, s.slug as show_slug, count(this_user_likes.id) this_user_likes, count(likes.id) total_likes, count(recommendations.id) total_recommendations')
+        ->selectRaw('episodes.name, episodes.description, episodes.slug, s.name as show_name, s.slug as show_slug, count(this_user_likes.id) this_user_likes, count(likes.id) total_likes, count(recommendations.id) total_recommendations, count(distinct pe.playlist_id) total_playlists')
         ->groupBy('episodes.name')
         ->groupBy('episodes.description')
         ->groupBy('episodes.slug')

@@ -7,10 +7,47 @@ module.exports = {
             },
             recentRecommendees: [],
             recommendEmail: '',
-            recommendTwitter: ''
+            recommendTwitter: '',
+            playlists: [],
+            selectedPlaylist: {}
         };
     },
     methods: {
+        getPlaylists() {
+            var self = this;
+            this.$http.get('/api/playlists')
+                .then(response => {
+                    self.playlists = response.data;
+                }, response => {
+                    // alert('error');
+                });
+        },
+        selectEpisodeForAddingToPlaylist(episode){
+            this.selectedEpisode = episode;
+            if (this.playlists.length == 0){
+                $("#modal-no-playlists").modal('show');
+            }else if (this.playlists.length == 1){
+                this.addSelectedEpisodeToPlaylist(this.playlists[0]);
+            }else{
+                $("#modal-select-playlist").modal('show');
+            }
+        },
+        addSelectedEpisodeToPlaylist(playlist){
+            var self = this;
+            var sent = {
+                slug: this.selectedEpisode.slug,
+            };
+            this.selectedPlaylist = playlist;
+            this.$http.post('/api/playlists/' + playlist.slug + '/add_episode', sent)
+                .then(response => {
+                    $("#modal-add-to-playlist-success").modal('show');
+                    setTimeout(function(){
+                        $("#modal-add-to-playlist-success").modal('hide');
+                    }, 7000);
+                }, response => {
+                    // alert('error');
+                })
+        },
         getRecentRecommendees(){
             var self = this;
             this.$http.get('/api/recent_recommendees')

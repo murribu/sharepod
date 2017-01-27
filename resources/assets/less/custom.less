@@ -1,6 +1,7 @@
 @episode-gray: #aab8c2;
 @episode-red: #e81c4f;
 @episode-green: #19cf86;
+@episode-yellow: #e2d51d;
 
 html {
     height: 100%;
@@ -178,6 +179,12 @@ button.btn-unlike:hover {
     }
 }
 
+.btn-add-to-playlist:hover{
+    .icon-text-container, .icon-container{
+        color: @episode-yellow;
+    }
+}
+
 .btn-episode-like:hover, .btn-episode-unlike{
     .icon-text-container{
         color: @episode-red;
@@ -192,6 +199,7 @@ button.btn-unlike:hover {
 .icon-text-container, .icon-container{
     display: inline-block;
     padding-left: 10px;
+    font-weight: bold;
 }
 
 .episode-container{

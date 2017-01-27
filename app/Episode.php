@@ -20,4 +20,8 @@ class Episode extends Model {
 			return $this->podcast->img_url;
 		}
 	}
+    
+    public function show(){
+        return $this->belongsTo('App\Show');
+    }
 }

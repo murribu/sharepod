@@ -78,6 +78,16 @@
                                     </div>
                                 </button>
                             </div>
+                            <div class="episode-action">
+                                <button class="btn-add-to-playlist" @click.prevent="selectEpisodeForAddingToPlaylist(episode)">
+                                    <div class="icon-container" title="Add To Playlist">
+                                        <i class="fa fa-plus"></i>
+                                    </div>
+                                    <div class="icon-text-container">
+                                        <span>@{{episode.total_playlists}}</span>
+                                    </div>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div class="panel panel-default panel-list-item clickable" v-if="show.episodes && show.episodeCount > show.episodes.length" @click="showMore">
@@ -88,7 +98,48 @@
                 </div>
             </div>
         </div>
-        
+        <div class="modal fade" id="modal-select-playlist" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">@{{show.name}}<br>@{{selectedEpisode.name}}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="">
+                            Add this episode to:
+                        </div>
+                        <button class="btn btn-primary btn-separate-from-other-buttons" v-for="playlist in playlists" @click.prevent="addSelectedEpisodeToPlaylist(playlist)">@{{playlist.name}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="modal-no-playlists" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">@{{show.name}}<br>@{{selectedEpisode.name}}</h4>
+                    </div>
+                    <div class="modal-body">
+                        You have no Playlists. <a href="/playlists/new">Click here</a> to create one.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="modal-add-to-playlist-success" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">@{{show.name}}<br>@{{selectedEpisode.name}}</h4>
+                    </div>
+                    <div class="modal-body">
+                        Success! You added this episode to the @{{selectedPlaylist.name}} playlist. <a :href="'/playlists/' + selectedPlaylist.slug">Click here</a> to see it
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="modal fade" id="modal-recommend-episode-1" tabindex="-1" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">

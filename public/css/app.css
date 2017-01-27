@@ -7541,6 +7541,10 @@ button.btn-unlike:hover {
 .btn-recommend:hover .icon-container {
   color: #19cf86;
 }
+.btn-add-to-playlist:hover .icon-text-container,
+.btn-add-to-playlist:hover .icon-container {
+  color: #e2d51d;
+}
 .btn-episode-like:hover .icon-text-container,
 .btn-episode-unlike .icon-text-container {
   color: #e81c4f;
@@ -7553,6 +7557,7 @@ button.btn-unlike:hover {
 .icon-container {
   display: inline-block;
   padding-left: 10px;
+  font-weight: bold;
 }
 .episode-container {
   overflow: inherit;

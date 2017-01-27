@@ -47,6 +47,7 @@ Vue.component('show', {
         if (this.user){
             this.getRecentRecommendees();
         }
+        this.getPlaylists();
     },
     methods: {
         likeShow() {
