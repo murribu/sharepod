@@ -26,7 +26,7 @@ class PodcatcherSeeder extends Seeder{
             array(
                 'slug' => 'downcast',
                 'name' => 'Downcast',
-                'platforms' => ['macOS','iOS','watchOS'],
+                'platforms' => ['macOS', 'iOS', 'watchOS'],
                 'url' => 'http://www.downcastapp.com/',
                 'url_register_feed' => 'http://support.downcastapp.com/',
             ),
@@ -51,18 +51,25 @@ class PodcatcherSeeder extends Seeder{
                 'url' => 'https://www.spotify.com/',
                 'url_register_feed' => 'https://support.spotify.com/us/using_spotify/lifestyle_features/podcasts/',
             ),
+            array(
+                'slug' => 'overcast',
+                'name' => 'Overcast',
+                'platforms' => ['iOS'],
+                'url' => 'https://overcast.fm/',
+                'url_register_feed' => '',
+            ),
         );
         
         foreach($podcatchers as $podcatcher){
             $p = Podcatcher::where('slug', $podcatcher['slug'])->first();
             if (!$p){
                 $p = new Podcatcher;
-                $p->slug = $podcatcher['slug'];
-                $p->name = $podcatcher['name'];
-                $p->url = $podcatcher['url'];
-                $p->url_register_feed = $podcatcher['url_register_feed'];
-                $p->save();
             }
+            $p->slug = $podcatcher['slug'];
+            $p->name = $podcatcher['name'];
+            $p->url = $podcatcher['url'];
+            $p->url_register_feed = $podcatcher['url_register_feed'];
+            $p->save();
             foreach ($podcatcher['platforms'] as $platform){
                 $pp = PodcatcherPlatform::firstOrCreate(['podcatcher_id' => $p->id, 'platform' => $platform]);
             }

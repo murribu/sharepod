@@ -42,10 +42,18 @@ $router->group(['middleware' => 'auth'], function ($router) {
     
     Route::get('/connections', 'ConnectionsController@getConnections');
     
+    Route::get('/playlists/new', 'PlaylistController@getEdit');
+    Route::post('/playlists/new', 'PlaylistController@postEdit');
+    Route::get('/playlists/{slug}/edit', 'PlaylistController@getEdit');
+    Route::post('/playlists/{slug}/edit', 'PlaylistController@postEdit');
+    
 });
 
+Route::get('/playlists', 'PlaylistController@getPlaylists');
+Route::get('/playlists/{slug}', 'PlaylistController@getPlaylist');
+
 Route::get('/users/{slug}', 'UsersController@getUser');
-Route::get('/feed/{slug}', 'PlaylistController@getFeed');
+Route::get('/feed/{slug}', 'UsersController@getFeed');
 
 
 $router->group(['middleware' => 'dev'], function ($router) {
@@ -61,6 +69,8 @@ Route::get('/api/shows/search', 'ShowsController@apiSearch');
 Route::get('/api/shows/{slug}', 'ShowsController@apiShow');
 Route::get('/api/episodes/{slug}', 'EpisodesController@apiGetEpisode');
 Route::get('/api/users/{slug}', 'UsersController@apiGetUser');
+Route::get('/api/playlists/popular', 'PlaylistController@apiGetPopularPlaylists');
+Route::get('/api/playlists/{slug}', 'PlaylistController@apiGetPlaylist');
 
 /**  **/
 

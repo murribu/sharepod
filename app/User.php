@@ -56,6 +56,10 @@ class User extends SparkUser
         'uses_two_factor_auth' => 'boolean',
     ];
     
+    public function playlists(){
+        return $this->hasMany('App\Playlist');
+    }
+    
     public function info_for_feed(){
         $ret = [];
         $ret['episodes'] = Episode::whereIn('id', function($query){

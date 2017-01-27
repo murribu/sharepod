@@ -15,7 +15,7 @@ class ConnectionsController extends Controller
     }
     
     public function getConnections(){
-        return view('connections', ['activelink' => 'connections']);
+        return view('connections', ['activelink' => 'recommendations']);
     }
     
     public function apiGetConnections(){

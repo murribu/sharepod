@@ -8,7 +8,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">What is {{env('APP_NAME')}}?</div>
                     <div class="panel-body">
-                        You and your friends can make a podcast episode pop up in each others' podcatcher of choice.
+                        Become a Podcast DJ for your friends.
                     </div>
                 </div>
             </div>

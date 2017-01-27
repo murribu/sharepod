@@ -115,15 +115,13 @@ class CreateInitialTables extends Migration
             $table->longText('description')->nullable();
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
-            $table->enum('type', ['mixtape', 'recommendations']);
+            $table->boolean('private')->default(false);
             $table->timestamps();
         });
         Schema::create('playlist_episodes', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('playlist_id')->unsigned();
             $table->foreign('playlist_id')->references('id')->on('playlists');
-            $table->integer('user_id')->unsigned();
-            $table->foreign('user_id')->references('id')->on('users');
             $table->integer('episode_id')->unsigned();
             $table->foreign('episode_id')->references('id')->on('episodes');
             $table->integer('ordering')->nullable();
@@ -155,6 +153,7 @@ class CreateInitialTables extends Migration
             $table->text('comment')->nullable();
             $table->boolean('public')->default(true);
             $table->enum('action', ['viewed', 'accepted', 'rejected'])->nullable();
+            $table->boolean('autoaction')->default(false);
             $table->timestamps();
         });
         Schema::create('connections', function (Blueprint $table) {
@@ -166,6 +165,22 @@ class CreateInitialTables extends Migration
             $table->enum('status', ['approved','blocked'])->nullable()->index();
             $table->timestamps();
         });
+        Schema::create('podcatchers', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('slug')->unique();
+            $table->string('name');
+            $table->string('url');
+            $table->string('url_register_feed');
+            $table->integer('hits')->nullable();
+            $table->timestamps();
+        });
+        Schema::create('podcatcher_platforms', function(Blueprint $table) {
+            $table->increments('id');
+            $table->string('platform');
+            $table->integer('podcatcher_id')->unsigned();
+            $table->foreign('podcatcher_id')->references('id')->on('podcatchers');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -175,6 +190,8 @@ class CreateInitialTables extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('podcatcher_platforms');
+        Schema::dropIfExists('podcatchers');
         Schema::dropIfExists('connections');
         Schema::dropIfExists('recommendations');
         Schema::table('users', function (Blueprint $table) {

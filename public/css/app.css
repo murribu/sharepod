@@ -7589,6 +7589,17 @@ button.btn-unlike:hover {
 .strikethrough {
   text-decoration: line-through;
 }
+/** PLAYLISTS SCREEN **/
+.btn-plus-new {
+  right: 7%;
+  position: absolute;
+  font-size: x-large;
+  padding: 0px 11px;
+  border-radius: 20px;
+  z-index: 9;
+  width: 40px;
+  top: 90px;
+}
 /*
  * Social Buttons for Bootstrap
  *
