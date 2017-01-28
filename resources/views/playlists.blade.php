@@ -15,10 +15,8 @@
                         <div class="panel-body" v-if="userPlaylistsLoaded && userPlaylists.length == 0">
                             You have no playlists
                         </div>
-                        <div class="panel-body" v-if="userPlaylists.length > 0">
-                            <div v-for="playlist in userPlaylists">
-                                <a :href="'/playlists' + playlist.slug">@{{playlist.name}}</a>
-                            </div>
+                        <div class="panel-body panel-list-item" v-for="playlist in userPlaylists">
+                            <a :href="'/playlists/' + playlist.slug">@{{playlist.name}}</a>
                         </div>
                     </div>
                 </div>
