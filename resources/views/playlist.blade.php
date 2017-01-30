@@ -25,13 +25,52 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-12 col-md-offset-1 col-md-6">
+                <div class="col-xs-12 col-md-8">
                     <div class="panel panel-default">
                         <div class="panel-heading centered">
                             Episodes
                         </div>
                         <div class="panel-body panel-list-item" v-for="(episode, index) in playlist.episodes">
-                            @{{index + 1}}. <a :href="'/episodes/' + episode.slug">@{{episode.name}}</a> from <a :href="'/podcasts/' + episode.show_slug">@{{episode.show_name}}</a>
+                            <div :class="{'col-xs-8': user, 'col-xs-12': !user}">
+                                @{{index + 1}}. <a :href="'/episodes/' + episode.slug">@{{episode.name}}</a> from <a :href="'/podcasts/' + episode.show_slug">@{{episode.show_name}}</a>
+                            </div>
+                            <div class="col-xs-4" v-if="user">
+                                <div class="episode-action col-xs-2">
+                                    <button class="btn-move-to-top" @click.prevent="moveToTop(episode)" :disabled="!loaded">
+                                        <div class="icon-container" title="Move Episode to the Top" v-tooltip v-if="index != 0">
+                                            <i class="fa fa-long-arrow-up"></i>
+                                        </div>
+                                    </button>
+                                </div>
+                                <div class="episode-action col-xs-2">
+                                    <button class="btn-move-up" @click.prevent="moveUp(episode)" :disabled="!loaded">
+                                        <div class="icon-container" title="Move Episode Up" v-tooltip v-if="index != 0">
+                                            <i class="fa fa-arrow-up"></i>
+                                        </div>
+                                    </button>
+                                </div>
+                                <div class="episode-action col-xs-2">
+                                    <button class="btn-move-down" @click.prevent="moveDown(episode)" :disabled="!loaded">
+                                        <div class="icon-container" title="Move Episode Down" v-tooltip v-if="index != playlist.episodes.length - 1">
+                                            <i class="fa fa-arrow-down"></i>
+                                        </div>
+                                    </button>
+                                </div>
+                                <div class="episode-action col-xs-2">
+                                    <button class="btn-move-to-bottom" @click.prevent="moveToBottom(episode)" :disabled="!loaded">
+                                        <div class="icon-container" title="Move Episode to the Bottom" v-tooltip v-if="index != playlist.episodes.length - 1">
+                                            <i class="fa fa-long-arrow-down"></i>
+                                        </div>
+                                    </button>
+                                </div>
+                                <div class="episode-action col-xs-2" @click.prevent="remove(episode)" :disabled="!loaded">
+                                    <button class="btn-remove">
+                                        <div class="icon-container" title="Remove Episode from this Playlist" v-tooltip>
+                                            <i class="fa fa-times"></i>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                         <div class="panel-body centered" v-if="loaded && playlist.episodes.length == 0">
                             This playlist has no episodes

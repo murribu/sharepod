@@ -16,12 +16,12 @@ class Playlist extends Model {
     protected static $slug_reserved_words = ['new', 'popular'];
     
     public function episodes(){
-        $self = $this;
-        return Episode::whereIn('id', function($query) use ($self){
-            $query->select('episode_id')
-                ->from('playlist_episodes')
-                ->where('playlist_id', $self->id);
-        })->get();
+        return Episode::join('playlist_episodes', 'playlist_episodes.episode_id', '=', 'episodes.id')
+            ->leftJoin('shows', 'shows.id', '=', 'episodes.show_id')
+            ->selectRaw('episodes.*, shows.name show_name, shows.slug show_slug')
+            ->orderBy('ordering')
+            ->orderBy('id')
+            ->get();
     }
     
     public function user(){
@@ -30,11 +30,7 @@ class Playlist extends Model {
     
     public function info_for_feed(){
         $ret = [];
-        $ret['episodes'] = Episode::join('playlist_episodes', 'playlist_episodes.episode_id', '=', 'episodes.id')
-            ->selectRaw('episodes.*')
-            ->orderBy('ordering')
-            ->orderBy('id')
-            ->get();
+        $ret['episodes'] = $this->episodes();
         $ret['url'] = env('APP_URL')."/playlists/".$this->slug."/feed";
         $ret['name'] = $this->name;
         

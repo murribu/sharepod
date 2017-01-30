@@ -34,7 +34,11 @@ Route::group(['middleware' => 'auth:api'], function () {
     
     Route::get('/playlists', 'PlaylistController@apiGetPlaylists');
     Route::post('/playlists/{slug}/add_episode', 'PlaylistController@apiPostAddEpisode');
-    
+    Route::post('/playlists/{slug}/move_up', 'PlaylistController@apiPostMoveUp');
+    Route::post('/playlists/{slug}/move_to_top', 'PlaylistController@apiPostMoveToTop');
+    Route::post('/playlists/{slug}/move_down', 'PlaylistController@apiPostMoveDown');
+    Route::post('/playlists/{slug}/move_to_bottom', 'PlaylistController@apiPostMoveToBottom');
+    Route::post('/playlists/{slug}/remove', 'PlaylistController@apiPostRemove');
     
 });
 

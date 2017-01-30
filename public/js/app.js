@@ -20270,6 +20270,76 @@ Vue.component('playlist', {
         },
     },
     methods: {
+        moveToTop: function moveToTop(episode){
+            var self = this;
+            this.loaded = false;
+            var sent = {
+                slug: episode.slug
+            };
+            this.$http.post('/api/playlists/' + this.slug + '/move_to_top', sent)
+                .then(function (response) {
+                    self.playlist.episodes = response.data;
+                    self.loaded = true;
+                }, function (response) {
+                    // alert('error');
+                })
+        },
+        moveUp: function moveUp(episode){
+            var self = this;
+            this.loaded = false;
+            var sent = {
+                slug: episode.slug
+            };
+            this.$http.post('/api/playlists/' + this.slug + '/move_up', sent)
+                .then(function (response) {
+                    self.playlist.episodes = response.data;
+                    self.loaded = true;
+                }, function (response) {
+                    // alert('error');
+                })
+        },
+        moveDown: function moveDown(episode){
+            var self = this;
+            this.loaded = false;
+            var sent = {
+                slug: episode.slug
+            };
+            this.$http.post('/api/playlists/' + this.slug + '/move_down', sent)
+                .then(function (response) {
+                    self.playlist.episodes = response.data;
+                    self.loaded = true;
+                }, function (response) {
+                    // alert('error');
+                })
+        },
+        moveToBottom: function moveToBottom(episode){
+            var self = this;
+            this.loaded = false;
+            var sent = {
+                slug: episode.slug
+            };
+            this.$http.post('/api/playlists/' + this.slug + '/move_to_bottom', sent)
+                .then(function (response) {
+                    self.playlist.episodes = response.data;
+                    self.loaded = true;
+                }, function (response) {
+                    // alert('error');
+                })
+        },
+        remove: function remove(episode){
+            var self = this;
+            this.loaded = false;
+            var sent = {
+                slug: episode.slug
+            };
+            this.$http.post('/api/playlists/' + this.slug + '/remove', sent)
+                .then(function (response) {
+                    self.playlist.episodes = response.data;
+                    self.loaded = true;
+                }, function (response) {
+                    // alert('error');
+                })
+        },
         loadPlaylist: function loadPlaylist() {
             var self = this;
             this.loaded = false;

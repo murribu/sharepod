@@ -129,4 +129,116 @@ class PlaylistController extends Controller {
             return Response::make($playlist->feed(), 200)->header('Content-Type', 'application/xml');
         }
     }
+    
+    public function apiPostMoveUp($slug){
+        $playlist = Playlist::where('slug', $slug)->first();
+        if ($playlist->user_id == Auth::user()->id){
+            DB::update("update playlist_episodes set ordering = coalesce(ordering, id) where playlist_id = ?", [$playlist->id]);
+            $pe = PlaylistEpisode::where('playlist_id', $playlist->id)
+                ->where('episode_id', function($query){
+                    $query->select('id')
+                        ->from('episodes')
+                        ->where('slug', Input::get('slug'));
+                })->first();
+            $swap = PlaylistEpisode::where('playlist_id', $playlist->id)
+                ->where('ordering', '<', $pe->ordering)
+                ->orderBy('ordering', 'desc')
+                ->orderBy('id', 'desc')
+                ->first();
+            $temp = $pe->ordering;
+            $pe->ordering = $swap->ordering;
+            $swap->ordering = $temp;
+            $pe->save();
+            $swap->save();
+            
+            return $playlist->episodes();
+        }else{
+            return response()->json('This is not your playlist', 403);
+        }
+    }
+    
+    public function apiPostMoveDown($slug){
+        $playlist = Playlist::where('slug', $slug)->first();
+        if ($playlist->user_id == Auth::user()->id){
+            DB::update("update playlist_episodes set ordering = coalesce(ordering, id) where playlist_id = ?", [$playlist->id]);
+            $pe = PlaylistEpisode::where('playlist_id', $playlist->id)
+                ->where('episode_id', function($query){
+                    $query->select('id')
+                        ->from('episodes')
+                        ->where('slug', Input::get('slug'));
+                })->first();
+            $swap = PlaylistEpisode::where('playlist_id', $playlist->id)
+                ->where('ordering', '>', $pe->ordering)
+                ->orderBy('ordering')
+                ->orderBy('id')
+                ->first();
+            $temp = $pe->ordering;
+            $pe->ordering = $swap->ordering;
+            $swap->ordering = $temp;
+            $pe->save();
+            $swap->save();
+            
+            return $playlist->episodes();
+        }else{
+            return response()->json('This is not your playlist', 403);
+        }
+    }
+    
+    public function apiPostMoveToTop($slug){
+        $playlist = Playlist::where('slug', $slug)->first();
+        if ($playlist->user_id == Auth::user()->id){
+            DB::update("update playlist_episodes set ordering = coalesce(ordering, id) where playlist_id = ?", [$playlist->id]);
+            $pe = PlaylistEpisode::where('playlist_id', $playlist->id)
+                ->where('episode_id', function($query){
+                    $query->select('id')
+                        ->from('episodes')
+                        ->where('slug', Input::get('slug'));
+                })->first();
+            DB::update("update playlist_episodes set ordering = ordering + 1 where playlist_id = ? and ordering < ?", [$playlist->id, $pe->ordering]);
+            $pe->ordering = 1;
+            $pe->save();
+            
+            return $playlist->episodes();
+        }else{
+            return response()->json('This is not your playlist', 403);
+        }
+    }
+    
+    public function apiPostMoveToBottom($slug){
+        $playlist = Playlist::where('slug', $slug)->first();
+        if ($playlist->user_id == Auth::user()->id){
+            DB::update("update playlist_episodes set ordering = coalesce(ordering, id) where playlist_id = ?", [$playlist->id]);
+            $pe = PlaylistEpisode::where('playlist_id', $playlist->id)
+                ->where('episode_id', function($query){
+                    $query->select('id')
+                        ->from('episodes')
+                        ->where('slug', Input::get('slug'));
+                })->first();
+            $max = PlaylistEpisode::where('playlist_id', $playlist->id)
+                ->max('ordering');
+            DB::update("update playlist_episodes set ordering = ordering - 1 where playlist_id = ? and ordering > ?", [$playlist->id, $pe->ordering]);
+            $pe->ordering = $max;
+            $pe->save();
+            
+            return $playlist->episodes();
+        }else{
+            return response()->json('This is not your playlist', 403);
+        }
+    }
+    
+    public function apiPostRemove($slug){
+        $playlist = Playlist::where('slug', $slug)->first();
+        if ($playlist->user_id == Auth::user()->id){
+            $pe = PlaylistEpisode::where('playlist_id', $playlist->id)
+                ->where('episode_id', function($query){
+                    $query->select('id')
+                        ->from('episodes')
+                        ->where('slug', Input::get('slug'));
+                })->delete();
+            
+            return $playlist->episodes();
+        }else{
+            return response()->json('This is not your playlist', 403);
+        }
+    }
 }
