@@ -40,7 +40,7 @@ trait HasFeed{
 		foreach($episodes as $e){
 			$output .= "<item>\n";
 			$output .= "<title>" . str_replace("&","&amp;",$e->name) . "</title>\n";
-			$output .= "<pubDate>" . gmdate("D, d M Y G:i:s",strtotime($e->pubdate)) . " +0000</pubDate>\n";
+			$output .= "<pubDate>" . gmdate("D, d M Y G:i:s",$e->pubdate) . " +0000</pubDate>\n";
 			$output .= "<guid isPermaLink=\"false\"><![CDATA[" . $e->guid . "]]></guid>\n";
 			$output .= "<link><![CDATA[".$e->link."]]></link>\n";
 			$output .= "<itunes:image href='".$e->img_url."' />\n";

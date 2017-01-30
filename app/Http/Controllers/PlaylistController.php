@@ -115,4 +115,18 @@ class PlaylistController extends Controller {
         }
         
     }
+    
+    public function getFeed($slug){
+        $playlist = Playlist::where('slug', $slug)->first();
+        if ($playlist){
+            $hitcount = new Hitcount;
+            $hitcount->request = 'user_feed';
+            $hitcount->user_id = Auth::user() ? Auth::user()->id : null;
+            $hitcount->ip = \Request::getClientIp();
+            $hitcount->fk = $playlist->id;
+            $hitcount->save();
+            
+            return Response::make($playlist->feed(), 200)->header('Content-Type', 'application/xml');
+        }
+    }
 }

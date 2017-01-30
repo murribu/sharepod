@@ -51,6 +51,7 @@ $router->group(['middleware' => 'auth'], function ($router) {
 
 Route::get('/playlists', 'PlaylistController@getPlaylists');
 Route::get('/playlists/{slug}', 'PlaylistController@getPlaylist');
+Route::get('/playlists/{slug}/feed', 'PlaylistController@getFeed');
 
 Route::get('/users/{slug}', 'UsersController@getUser');
 Route::get('/feed/{slug}', 'UsersController@getFeed');

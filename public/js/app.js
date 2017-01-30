@@ -20284,7 +20284,7 @@ Vue.component('playlist', {
         copyFeed: function copyFeed(){
             var textArea = document.createElement("input");
             var feedUrl = window.location.href.split('/')[0]
-                + '://' + window.location.href.split('/')[2]
+                + '//' + window.location.href.split('/')[2]
                 + '/playlists/' + this.slug + '/feed';
             textArea.style.position = 'fixed';
             textArea.style.top = 0;
