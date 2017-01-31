@@ -124,6 +124,7 @@ class User extends SparkUser
             $this->hasAcceptedARecommendation = $moreinfo->recommendations_accepted > 0 ? '1' : 0;
             $this->hasTakenActionOnARecommendation = $moreinfo->recommendations_acted_upon > 0 ? '1' : 0;
             $this->hasRegisteredTheirFeed = $moreinfo->hitcounts > 0 ? '1' : 0;
+            $this->canAddAPlaylist = $this->can_add_a_playlist();
         }
         return $this;
     }

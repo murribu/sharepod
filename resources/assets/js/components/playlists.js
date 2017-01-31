@@ -13,6 +13,13 @@ Vue.component('playlists', {
         this.loadPopularPlaylists();
     },
     methods: {
+        addPlaylist(){
+            if (this.user.canAddAPlaylist){
+                window.location.href = '/playlists/new';
+            }else{
+                $("#modal-max-playlists").modal('show');
+            }
+        },
         loadUserPlaylists() {
             var self = this;
             this.userPlaylistsLoaded = false;
