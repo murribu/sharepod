@@ -1,8 +1,9 @@
 var episodeActions = require('./mixins/episode-actions');
+var copyFeed = require('./mixins/copy-feed');
 
 Vue.component('show', {
     props: ['user'],
-    mixins: [episodeActions],
+    mixins: [episodeActions, copyFeed],
     data() {
         return {
             show: {},

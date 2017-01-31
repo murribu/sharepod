@@ -18,7 +18,7 @@
                             @{{playlist.episodes.length}} Episode@{{playlist.episodes.length == 1 ? '' : 's'}}
                         </div>
                         <div class="panel-body panel-list-item">
-                            <a href="#" @click.prevent="copyFeed()">@{{copyLinkText}}</a>
+                            <a href="#" @click.prevent="copyFeed(feedUrl, 'copy-link')" id="copy-link">@{{copyLinkText}}</a>
                         </div>
                         <div class="panel-footer" v-if="user && playlist && playlist.user_slug == user.slug">
                             <a :href="'/playlists/' + playlist.slug + '/edit'">Edit</a>

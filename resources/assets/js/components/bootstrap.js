@@ -27,3 +27,4 @@ require('./user');
 require('./directives/tooltip');
 
 require('./mixins/episode-actions');
+require('./mixins/copy-feed');

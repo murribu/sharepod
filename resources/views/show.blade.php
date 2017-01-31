@@ -16,8 +16,8 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-xs-12">
-                                    <a :href="show.feed">Original RSS Feed</a><br>
-                                    <a :href="'{{env('APP_URL')}}/' + show.slug + '/feed'">{{env('APP_NAME')}} Feed</a>
+                                    <a href="#" @click.prevent="copyFeed(show.feed, 'copy-feed-original')" id="copy-feed-original">Copy original RSS feed</a><br>
+                                    <a href="#" @click.prevent="copyFeed('{{env('APP_URL')}}/shows/' + show.slug + '/feed', 'copy-feed-app')" id="copy-feed-app">Copy {{env('APP_NAME')}} feed</a>
                                 </div>
                             </div>
                         </div>
