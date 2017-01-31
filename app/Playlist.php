@@ -18,6 +18,7 @@ class Playlist extends Model {
     public function episodes(){
         return Episode::join('playlist_episodes', 'playlist_episodes.episode_id', '=', 'episodes.id')
             ->leftJoin('shows', 'shows.id', '=', 'episodes.show_id')
+            ->where('playlist_episodes.playlist_id', $this->id)
             ->selectRaw('episodes.*, shows.name show_name, shows.slug show_slug')
             ->orderBy('ordering')
             ->orderBy('id')

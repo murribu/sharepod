@@ -20259,6 +20259,10 @@ Vue.component('playlist', {
             },
             copyLinkText: 'Click here to copy RSS Feed URL',
             loaded: false,
+            areYouSure: {
+                busy: false,
+                episode_slug: ''
+            }
         };
     },
     created: function created() {
@@ -20270,6 +20274,16 @@ Vue.component('playlist', {
         },
     },
     methods: {
+        noNeverMind: function noNeverMind(){
+            $('#modal-are-you-sure').modal('hide');
+            this.areYouSure.busy = false;
+            this.areYouSure.episode_slug = '';
+        },
+        remove: function remove(episode){
+            $('#modal-are-you-sure').modal('show');
+            this.areYouSure.busy = false;
+            this.areYouSure.episode_slug = episode.slug;
+        },
         moveToTop: function moveToTop(episode){
             var self = this;
             this.loaded = false;
@@ -20326,17 +20340,23 @@ Vue.component('playlist', {
                     // alert('error');
                 })
         },
-        remove: function remove(episode){
+        yesImSureRemoveEpisode: function yesImSureRemoveEpisode(){
+            var this$1 = this;
+
+            $('#modal-are-you-sure').modal('hide');
+            this.areYouSure.busy = true;
             var self = this;
             this.loaded = false;
             var sent = {
-                slug: episode.slug
+                slug: this.areYouSure.episode_slug
             };
             this.$http.post('/api/playlists/' + this.slug + '/remove', sent)
                 .then(function (response) {
+                    this$1.areYouSure.busy = false;
                     self.playlist.episodes = response.data;
                     self.loaded = true;
                 }, function (response) {
+                    this$1.areYouSure.busy = false;
                     // alert('error');
                 })
         },

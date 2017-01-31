@@ -9,6 +9,10 @@ Vue.component('playlist', {
             },
             copyLinkText: 'Click here to copy RSS Feed URL',
             loaded: false,
+            areYouSure: {
+                busy: false,
+                episode_slug: ''
+            }
         };
     },
     created() {
@@ -20,6 +24,16 @@ Vue.component('playlist', {
         },
     },
     methods: {
+        noNeverMind(){
+            $('#modal-are-you-sure').modal('hide');
+            this.areYouSure.busy = false;
+            this.areYouSure.episode_slug = '';
+        },
+        remove(episode){
+            $('#modal-are-you-sure').modal('show');
+            this.areYouSure.busy = false;
+            this.areYouSure.episode_slug = episode.slug;
+        },
         moveToTop(episode){
             var self = this;
             this.loaded = false;
@@ -76,17 +90,21 @@ Vue.component('playlist', {
                     // alert('error');
                 })
         },
-        remove(episode){
+        yesImSureRemoveEpisode(){
+            $('#modal-are-you-sure').modal('hide');
+            this.areYouSure.busy = true;
             var self = this;
             this.loaded = false;
             var sent = {
-                slug: episode.slug
+                slug: this.areYouSure.episode_slug
             };
             this.$http.post('/api/playlists/' + this.slug + '/remove', sent)
                 .then(response => {
+                    this.areYouSure.busy = false;
                     self.playlist.episodes = response.data;
                     self.loaded = true;
                 }, response => {
+                    this.areYouSure.busy = false;
                     // alert('error');
                 })
         },

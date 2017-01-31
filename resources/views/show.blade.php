@@ -102,7 +102,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <button class="close" type="button" data-dismiss="modal" aria-hidden="true" class="btn btn-primary btn-separate-from-other-buttons">&times;</button>
                         <h4 class="modal-title">@{{show.name}}<br>@{{selectedEpisode.name}}</h4>
                     </div>
                     <div class="modal-body">

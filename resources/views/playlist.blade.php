@@ -32,7 +32,7 @@
                         </div>
                         <div class="panel-body panel-list-item" v-for="(episode, index) in playlist.episodes">
                             <div :class="{'col-xs-8': user, 'col-xs-12': !user}">
-                                @{{index + 1}}. <a :href="'/episodes/' + episode.slug">@{{episode.name}}</a> from <a :href="'/podcasts/' + episode.show_slug">@{{episode.show_name}}</a>
+                                @{{index + 1}}. <a :href="'/episodes/' + episode.slug">@{{episode.name}}</a> from <a :href="'/shows/' + episode.show_slug">@{{episode.show_name}}</a>
                             </div>
                             <div class="col-xs-4" v-if="user">
                                 <div class="episode-action col-xs-2">
@@ -79,6 +79,28 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="modal-are-you-sure" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Are you sure?</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div>
+                            Are you sure you want to remove this episode?
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" @click="noNeverMind">No, Never mind</button>
+
+                        <button type="button" class="btn btn-danger" @click="yesImSureRemoveEpisode" :disabled="areYouSure.busy">
+                            Yes
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>    
     </div>
 </playlist>
 @endsection
