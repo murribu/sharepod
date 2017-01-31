@@ -55,13 +55,19 @@ class SparkServiceProvider extends ServiceProvider
      */
     public function booted()
     {
-        Spark::freePlan()
+        Spark::freePlan('Free', 'free')
             ->features([
                 'First', 'Second', 'Third'
             ]);
 
         Spark::plan('Basic', 'basic-1')
             ->price(10)
+            ->features([
+                'First', 'Second', 'Third'
+            ]);
+            
+        Spark::plan('Premium', 'premium-1')
+            ->price(20)
             ->features([
                 'First', 'Second', 'Third'
             ]);

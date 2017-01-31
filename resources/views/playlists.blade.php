@@ -6,6 +6,11 @@
         <a href="/playlists/new" class="btn btn-primary pull-right btn-plus-new">&plus;</a>
         <div class="container">
             <h3 class="centered">Playlists</h3>
+            @if (session('msg'))
+                <div class="alert {{session('statusClass')}}">
+                    {!! session('msg') !!}
+                </div>
+            @endif
             <div class="row">
                 <div class="col-xs-12 col-md-6" v-if="user">
                     <div class="panel panel-default">

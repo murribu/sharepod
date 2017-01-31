@@ -25,9 +25,9 @@ class PlaylistController extends Controller {
     }
     
     public function getEdit($slug = null){
+        $user = Auth::user();
         $playlist = Playlist::where('slug', $slug)->first();
         if ($playlist){
-            $user = Auth::user();
             if (!$user || $playlist->user_id != $user->id){
                 return redirect('/');
             }
@@ -43,6 +43,11 @@ class PlaylistController extends Controller {
                 return redirect('/');
             }
         }else{
+            if (!$user->can_add_a_playlist()){
+                $msg = 'You have reached the maximum number of Playlists for your Subscription Plan. <a href="/settings#/subscription">Click here</a> to change your Plan.';
+                $statusClass = 'alert-danger';
+                return redirect('/playlists')->with(compact('msg', 'statusClass'));
+            }
             $playlist = new Playlist;
             $playlist->slug = Playlist::findSlug(Input::get('name'));
             $playlist->user_id = $user->id;

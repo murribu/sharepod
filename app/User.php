@@ -57,6 +57,36 @@ class User extends SparkUser
         return $this->hasMany('App\Playlist');
     }
     
+    public function can_add_a_playlist(){
+        $plan = $this->plan();
+        $playlist_count = $this->playlists->count();
+        if ($playlist_count < intval(env('PLAN_FREE_PLAYLIST_COUNT'))){
+            return true;
+        }else{
+            return $plan && 
+                (
+                    ($plan == env('PLAN_BASIC_NAME') && $playlist_count < intval(env('PLAN_BASIC_PLAYLIST_COUNT')))
+                || 
+                    ($plan == env('PLAN_PREMIUM_NAME') && $playlist_count < intval(env('PLAN_PREMIUM_PLAYLIST_COUNT')))
+                );
+        }
+    }
+    
+    public function plan(){
+        $sub = Subscription::where('user_id', $this->id)
+            ->where(function($query){
+                $query->whereNull('ends_at')
+                    ->orWhere('ends_at', '>', DB::raw("now()"));
+            })
+            ->orderBy('ends_at', 'desc')
+            ->first();
+        if (count($sub) == 0){
+            return false;
+        }else{
+            return $sub['stripe_plan'];
+        }
+    }
+    
     public function info_for_feed(){
         $ret = [];
         $ret['episodes'] = Episode::whereIn('id', function($query){
