@@ -20160,7 +20160,8 @@ Vue.component('episode', {
     mixins: [episodeActions],
     data: function data() {
         return {
-            episode: {},
+            selectedEpisode: {},
+            show: false
         }
     },
     computed: {
@@ -20176,15 +20177,15 @@ Vue.component('episode', {
             var self = this;
             this.$http.get('/api/episodes/' + this.slug)
                 .then(function (response) {
-                    self.episode = response.data;
+                    self.selectedEpisode = response.data;
                 },
                 function (response) {
                     // alert('error');
                 });
         },
         updateEpisode: function updateEpisode(slug, total_likes, this_user_likes){
-            this.episode.total_likes = total_likes;
-            this.episode.this_user_likes = this_user_likes;
+            this.selectedEpisode.total_likes = total_likes;
+            this.selectedEpisode.this_user_likes = this_user_likes;
         },
     }
 });
