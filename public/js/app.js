@@ -5088,14 +5088,14 @@ module.exports = {
                 })
         },
         recommendEpisodeToExistingUser: function recommendEpisodeToExistingUser(user_slug) {
-            var this$1 = this;
-
+            var self = this;
             this.recommendForm.busy = true;
             this.$http.post('/recommend', {slug: this.selectedEpisode.slug, user_slug: user_slug})
                 .then(function (response) {
-                    this$1.recommendForm.busy = false;
-                    this$1.showSuccessModal();
-                    this$1.getRecentRecommendees();
+                    self.recommendForm.busy = false;
+                    self.showSuccessModal();
+                    self.getRecentRecommendees();
+                    self.selectedEpisode.total_recommendations = response.data.total_recommendations;
                 }, function (response) {
                     // alert('error');
                 });
@@ -5109,7 +5109,7 @@ module.exports = {
                     $('#modal-recommend-episode-1').modal('show');
                 }
             }else{
-                
+                $("#modal-max-recommendations").modal('show');
             }
         },
         recommendEpisodeToSomeoneElse: function recommendEpisodeToSomeoneElse(){

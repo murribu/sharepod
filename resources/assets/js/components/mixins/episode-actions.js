@@ -58,12 +58,14 @@ module.exports = {
                 })
         },
         recommendEpisodeToExistingUser(user_slug) {
+            var self = this;
             this.recommendForm.busy = true;
             this.$http.post('/recommend', {slug: this.selectedEpisode.slug, user_slug: user_slug})
                 .then(response => {
-                    this.recommendForm.busy = false;
-                    this.showSuccessModal();
-                    this.getRecentRecommendees();
+                    self.recommendForm.busy = false;
+                    self.showSuccessModal();
+                    self.getRecentRecommendees();
+                    self.selectedEpisode.total_recommendations = response.data.total_recommendations;
                 }, response => {
                     // alert('error');
                 });
@@ -77,7 +79,7 @@ module.exports = {
                     $('#modal-recommend-episode-1').modal('show');
                 }
             }else{
-                
+                $("#modal-max-recommendations").modal('show');
             }
         },
         recommendEpisodeToSomeoneElse(){

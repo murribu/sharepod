@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Exception;
 
 use App\Episode;
+use App\Recommendation;
 
 class EpisodesController extends Controller
 {
@@ -65,7 +66,14 @@ class EpisodesController extends Controller
                     break;
             }
             
-            return ['success' => 1, 'recommendation_slug' => $recommendation->slug];
+            $rec_count = Recommendation::where('episode_id', $recommendation->episode->id)
+                ->count();
+            
+            return [
+                'success'               => 1,
+                'recommendation_slug'   => $recommendation->slug,
+                'total_recommendations' => $rec_count
+            ];
         }else{
             return response()->json(['message' => 'You have reached today\'s maximum number of Recommendations for your Subscription Plan'], 403);
         }
