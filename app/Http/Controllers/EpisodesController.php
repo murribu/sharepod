@@ -46,24 +46,29 @@ class EpisodesController extends Controller
     
     public function recommend(){
         $user = Auth::user();
-        $recommendation = $user->recommend(Input::all());
-        if (isset($recommendation['error'])){
-            return response()->json(['message' => $recommendation['message']], $recommendation['error']);
+        $permissions = $user->plan_permissions();
+        if ($permissions['can_recommend']){
+            $recommendation = $user->recommend(Input::all());
+            if (isset($recommendation['error'])){
+                return response()->json(['message' => $recommendation['message']], $recommendation['error']);
+            }
+            
+            switch ($recommendation->status){
+                case 'rejected':
+                    $message = 'You have been blocked from recommending episodes to this user';
+                    break;
+                case 'accepted':
+                    $message = 'Success! You have recommended this episode to '.$recommendation->recommendee->name;
+                    break;
+                default:
+                    $message = 'Success! You have recommended this episode to '.$recommendation->recommendee->name.' They will be notified.';
+                    break;
+            }
+            
+            return ['success' => 1, 'recommendation_slug' => $recommendation->slug];
+        }else{
+            return response()->json(['message' => 'You have reached today\'s maximum number of Recommendations for your Subscription Plan'], 403);
         }
-        
-        switch ($recommendation->status){
-            case 'rejected':
-                $message = 'You have been blocked from recommending episodes to this user';
-                break;
-            case 'accepted':
-                $message = 'Success! You have recommended this episode to '.$recommendation->recommendee->name;
-                break;
-            default:
-                $message = 'Success! You have recommended this episode to '.$recommendation->recommendee->name.' They will be notified.';
-                break;
-        }
-        
-        return ['success' => 1, 'recommendation_slug' => $recommendation->slug];
     }
     
     public function apiLike(){

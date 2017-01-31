@@ -57,19 +57,41 @@ class User extends SparkUser
         return $this->hasMany('App\Playlist');
     }
     
-    public function can_add_a_playlist(){
+    public function plan_permissions(){
+        $ret = [
+            'can_add_a_playlist'    => false,
+            'can_recommend'         => false,
+        ];
+        
         $plan = $this->plan();
         $playlist_count = $this->playlists->count();
         if ($playlist_count < intval(env('PLAN_FREE_PLAYLIST_COUNT'))){
-            return true;
+            $ret['can_add_a_playlist'] = true;
         }else{
-            return $plan && 
+            $ret['can_add_a_playlist'] = $plan && 
                 (
                     ($plan == env('PLAN_BASIC_NAME') && $playlist_count < intval(env('PLAN_BASIC_PLAYLIST_COUNT')))
                 || 
                     ($plan == env('PLAN_PREMIUM_NAME') && $playlist_count < intval(env('PLAN_PREMIUM_PLAYLIST_COUNT')))
                 );
         }
+        
+        $rec_count = Recommendation::where('recommender_id', $this->id)
+            ->where('created_at', '>', DB::raw("date_sub(now(), interval 24 hour)"))
+            ->count();
+        
+        if ($rec_count < intval(env('PLAN_FREE_RECOMMENDATION_COUNT'))){
+            $ret['can_recommend'] = true;
+        }else{
+            $ret['can_recommend'] = $plan && 
+                (
+                    ($plan == env('PLAN_BASIC_NAME') && $playlist_count < intval(env('PLAN_BASIC_RECOMMENDATION_COUNT')))
+                || 
+                    ($plan == env('PLAN_PREMIUM_NAME') && $playlist_count < intval(env('PLAN_PREMIUM_RECOMMENDATION_COUNT')))
+                );
+        }
+        
+        return $ret;
     }
     
     public function plan(){
@@ -124,7 +146,9 @@ class User extends SparkUser
             $this->hasAcceptedARecommendation = $moreinfo->recommendations_accepted > 0 ? '1' : 0;
             $this->hasTakenActionOnARecommendation = $moreinfo->recommendations_acted_upon > 0 ? '1' : 0;
             $this->hasRegisteredTheirFeed = $moreinfo->hitcounts > 0 ? '1' : 0;
-            $this->canAddAPlaylist = $this->can_add_a_playlist();
+            $permissions = $this->plan_permissions();
+            $this->canAddAPlaylist = $permissions['can_add_a_playlist'];
+            $this->canRecommend = $permissions['can_recommend'];
         }
         return $this;
     }

@@ -57,19 +57,27 @@ class SparkServiceProvider extends ServiceProvider
     {
         Spark::freePlan('Free', 'free')
             ->features([
-                'First', 'Second', 'Third'
+                'Receive unlimited recommendations', 
+                'Send up to '.env('PLAN_FREE_RECOMMENDATION_COUNT').' recommendations per 24 hours', 
+                'Create up to '.env('PLAN_FREE_PLAYLIST_COUNT').' playlists'
             ]);
 
         Spark::plan('Basic', 'basic-1')
             ->price(10)
             ->features([
-                'First', 'Second', 'Third'
+                'Send up to '.env('PLAN_BASIC_RECOMMENDATION_COUNT').' recommendations per 24 hours', 
+                'Create up to '.env('PLAN_BASIC_PLAYLIST_COUNT').' playlists',
+                'Archive episodes (Coming soon)'
             ]);
             
         Spark::plan('Premium', 'premium-1')
             ->price(20)
             ->features([
-                'First', 'Second', 'Third'
+                'Send unlimited recommendations', 
+                'Create unlimited playlists',
+                'Archive episodes (Coming soon)',
+                'Archive shows (Coming soon)',
+                'Secure playlists with a username and password (Coming soon)'
             ]);
             
         Spark::swap('UpdateContactInformation@handle', function($user, array $data){

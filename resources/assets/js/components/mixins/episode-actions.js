@@ -69,11 +69,15 @@ module.exports = {
                 });
         },
         recommendEpisode(episode) {
-            this.selectedEpisode = episode;
-            if (this.recentRecommendees.length == 0){
-                $('#modal-recommend-episode-2').modal('show');
+            if (this.user.canRecommend){
+                this.selectedEpisode = episode;
+                if (this.recentRecommendees.length == 0){
+                    $('#modal-recommend-episode-2').modal('show');
+                }else{
+                    $('#modal-recommend-episode-1').modal('show');
+                }
             }else{
-                $('#modal-recommend-episode-1').modal('show');
+                
             }
         },
         recommendEpisodeToSomeoneElse(){

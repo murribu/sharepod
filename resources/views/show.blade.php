@@ -166,14 +166,11 @@
                     </div>
                     <div class="modal-body">
                         <div>
-                            Recommend this episode via email or twitter:
+                            Recommend this episode via email:
                         </div>
                         <div class="row">
-                            <div class="col-xs-6">
+                            <div class="col-xs-12">
                                 <input class="form-control" v-model="recommendEmail" placeholder="sam@example.com" />
-                            </div>
-                            <div class="col-xs-6">
-                                <input class="form-control" v-model="recommendTwitter" placeholder="@twitter" />
                             </div>
                         </div>
                         <div class="row" style="margin-top:10px;">
@@ -197,6 +194,21 @@
                     <div class="modal-body">
                         <div>
                             Success! You have recommended this podcast episode
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="modal-max-recommendations" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Max Recommendations</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div>
+                            You have reached today's maximum number of Recommendations for your Subscription Plan.<br><a href="/settings#/subscription">Click here</a> to change your Plan.
                         </div>
                     </div>
                 </div>
