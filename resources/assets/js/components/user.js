@@ -6,7 +6,18 @@ Vue.component('view-user', {
     },
     data() {
         return {
-            viewed_user: {}
+            viewed_user: {},
+            episodes_liked: [],
+            episodes_liked_loaded: false,
+            shows_liked: [],
+            shows_liked_loaded: false,
+            playlists: [],
+            playlists_loaded: false,
+            connections: {
+                accepted: [],
+                pending: [],
+            },
+            connections_loaded: false,
         };
     },
     created() {
@@ -14,10 +25,10 @@ Vue.component('view-user', {
     },
     computed: {
         slug() {
-            return window.location.href.split('/')[4];
+            return window.location.href.split('/')[4].split('#')[0];
         },
         isMe() {
-            return viewed_user.id == user.id;
+            return this.viewed_user.id == this.user.id;
         }
     },
     methods: {
@@ -26,6 +37,35 @@ Vue.component('view-user', {
             this.$http.get('/api/users/' + this.slug)
                 .then(response => {
                     self.viewed_user = response.data;
+                }, response => {
+                    // alert('error');
+                });
+            this.$http.get('/api/users/' + this.slug + '/episodes_liked')
+                .then(response => {
+                    self.episodes_liked = response.data;
+                    self.episodes_liked_loaded = true;
+                }, response => {
+                    // alert('error');
+                });
+            this.$http.get('/api/users/' + this.slug + '/shows_liked')
+                .then(response => {
+                    self.shows_liked = response.data;
+                    self.shows_liked_loaded = true;
+                }, response => {
+                    // alert('error');
+                });
+            this.$http.get('/api/users/' + this.slug + '/playlists')
+                .then(response => {
+                    self.playlists = response.data;
+                    self.playlists_loaded = true;
+                }, response => {
+                    // alert('error');
+                });
+            this.$http.get('/api/users/' + this.slug + '/connections')
+                .then(response => {
+                    self.connections.accepted = response.data.accepted;
+                    self.connections.pending = response.data.pending;
+                    self.connections_loaded = true;
                 }, response => {
                     // alert('error');
                 });

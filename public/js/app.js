@@ -4522,6 +4522,105 @@ module.exports = {
 
 /***/ },
 /* 2 */
+/***/ function(module, exports) {
+
+module.exports = {
+    pushStateSelector: null,
+
+
+    methods: {
+        /**
+         * Initialize push state handling for tabs.
+         */
+        usePushStateForTabs: function usePushStateForTabs(selector) {
+            var this$1 = this;
+
+            this.pushStateSelector = selector;
+
+            this.registerTabClickHandler();
+
+            window.addEventListener('popstate', function (e) {
+                this$1.activateTabForCurrentHash();
+            });
+
+            if (window.location.hash) {
+                this.activateTabForCurrentHash();
+            } else {
+                this.activateFirstTab();
+            }
+        },
+
+
+        /**
+         * Register the click handler for all of the tabs.
+         */
+        registerTabClickHandler: function registerTabClickHandler() {
+            var self = this;
+
+            $(((this.pushStateSelector) + " a[data-toggle=\"tab\"]")).on('click', function(e) {
+                self.removeActiveClassFromTabs();
+
+                history.pushState(null, null, '#/' + $(this).attr('href').substring(1));
+
+                self.broadcastTabChange($(this).attr('href').substring(1));
+            });
+        },
+
+
+        /**
+         * Activate the tab for the current hash in the URL.
+         */
+        activateTabForCurrentHash: function activateTabForCurrentHash() {
+            var hash = window.location.hash.substring(2);
+
+            var parameters = hash.split('/');
+
+            hash = parameters.shift();
+
+            this.removeActiveClassFromTabs();
+
+            var tab = $(((this.pushStateSelector) + " a[href=\"#" + hash + "\"][data-toggle=\"tab\"]"));
+
+            if (tab.length > 0) {
+                tab.tab('show');
+            }
+
+            this.broadcastTabChange(hash, parameters);
+        },
+
+
+        /**
+         * Activate the first tab in a list.
+         */
+        activateFirstTab: function activateFirstTab() {
+            var tab = $(((this.pushStateSelector) + " a[data-toggle=\"tab\"]")).first();
+
+            tab.tab('show');
+
+            this.broadcastTabChange(tab.attr('href').substring(1));
+        },
+
+
+        /**
+         * Remove the active class from the tabs.
+         */
+        removeActiveClassFromTabs: function removeActiveClassFromTabs() {
+            $(((this.pushStateSelector) + " li")).removeClass('active');
+        },
+
+
+        /**
+         * Broadcast that a tab change happened.
+         */
+        broadcastTabChange: function broadcastTabChange(hash, parameters) {
+            Bus.$emit('sparkHashChanged', hash, parameters);
+        }
+    }
+};
+
+
+/***/ },
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4741,7 +4840,7 @@ function doResolve(fn, promise) {
 
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports) {
 
 /*
@@ -4920,105 +5019,6 @@ module.exports = {
             return this.billingUser
                             ? '/settings/subscription'
                             : ("/settings/" + (Spark.pluralTeamString) + "/" + (this.team.id) + "/subscription");
-        }
-    }
-};
-
-
-/***/ },
-/* 4 */
-/***/ function(module, exports) {
-
-module.exports = {
-    pushStateSelector: null,
-
-
-    methods: {
-        /**
-         * Initialize push state handling for tabs.
-         */
-        usePushStateForTabs: function usePushStateForTabs(selector) {
-            var this$1 = this;
-
-            this.pushStateSelector = selector;
-
-            this.registerTabClickHandler();
-
-            window.addEventListener('popstate', function (e) {
-                this$1.activateTabForCurrentHash();
-            });
-
-            if (window.location.hash) {
-                this.activateTabForCurrentHash();
-            } else {
-                this.activateFirstTab();
-            }
-        },
-
-
-        /**
-         * Register the click handler for all of the tabs.
-         */
-        registerTabClickHandler: function registerTabClickHandler() {
-            var self = this;
-
-            $(((this.pushStateSelector) + " a[data-toggle=\"tab\"]")).on('click', function(e) {
-                self.removeActiveClassFromTabs();
-
-                history.pushState(null, null, '#/' + $(this).attr('href').substring(1));
-
-                self.broadcastTabChange($(this).attr('href').substring(1));
-            });
-        },
-
-
-        /**
-         * Activate the tab for the current hash in the URL.
-         */
-        activateTabForCurrentHash: function activateTabForCurrentHash() {
-            var hash = window.location.hash.substring(2);
-
-            var parameters = hash.split('/');
-
-            hash = parameters.shift();
-
-            this.removeActiveClassFromTabs();
-
-            var tab = $(((this.pushStateSelector) + " a[href=\"#" + hash + "\"][data-toggle=\"tab\"]"));
-
-            if (tab.length > 0) {
-                tab.tab('show');
-            }
-
-            this.broadcastTabChange(hash, parameters);
-        },
-
-
-        /**
-         * Activate the first tab in a list.
-         */
-        activateFirstTab: function activateFirstTab() {
-            var tab = $(((this.pushStateSelector) + " a[data-toggle=\"tab\"]")).first();
-
-            tab.tab('show');
-
-            this.broadcastTabChange(tab.attr('href').substring(1));
-        },
-
-
-        /**
-         * Remove the active class from the tabs.
-         */
-        removeActiveClassFromTabs: function removeActiveClassFromTabs() {
-            $(((this.pushStateSelector) + " li")).removeClass('active');
-        },
-
-
-        /**
-         * Broadcast that a tab change happened.
-         */
-        broadcastTabChange: function broadcastTabChange(hash, parameters) {
-            Bus.$emit('sparkHashChanged', hash, parameters);
         }
     }
 };
@@ -20249,7 +20249,7 @@ __webpack_require__(147);
 
 Vue.component('help', {
     props: ['user'],
-    mixins: [__webpack_require__(4)],
+    mixins: [__webpack_require__(2)],
     mounted: function mounted() {
         this.usePushStateForTabs('.help-tabs');
     },
@@ -20786,7 +20786,7 @@ __webpack_require__(156);
 
 Vue.component('shows', {
     props: ['user'],
-    mixins: [__webpack_require__(4)],
+    mixins: [__webpack_require__(2)],
     mounted: function mounted() {
         this.usePushStateForTabs('.shows-tabs');
     },
@@ -20918,13 +20918,24 @@ Vue.component('shows-search', {
 
 Vue.component('view-user', {
     props: ['user'],
-    mixins: [__webpack_require__(4)],
+    mixins: [__webpack_require__(2)],
     mounted: function mounted() {
         this.usePushStateForTabs('.user-tabs');
     },
     data: function data() {
         return {
-            viewed_user: {}
+            viewed_user: {},
+            episodes_liked: [],
+            episodes_liked_loaded: false,
+            shows_liked: [],
+            shows_liked_loaded: false,
+            playlists: [],
+            playlists_loaded: false,
+            connections: {
+                accepted: [],
+                pending: [],
+            },
+            connections_loaded: false,
         };
     },
     created: function created() {
@@ -20932,10 +20943,10 @@ Vue.component('view-user', {
     },
     computed: {
         slug: function slug() {
-            return window.location.href.split('/')[4];
+            return window.location.href.split('/')[4].split('#')[0];
         },
         isMe: function isMe() {
-            return viewed_user.id == user.id;
+            return this.viewed_user.id == this.user.id;
         }
     },
     methods: {
@@ -20944,6 +20955,35 @@ Vue.component('view-user', {
             this.$http.get('/api/users/' + this.slug)
                 .then(function (response) {
                     self.viewed_user = response.data;
+                }, function (response) {
+                    // alert('error');
+                });
+            this.$http.get('/api/users/' + this.slug + '/episodes_liked')
+                .then(function (response) {
+                    self.episodes_liked = response.data;
+                    self.episodes_liked_loaded = true;
+                }, function (response) {
+                    // alert('error');
+                });
+            this.$http.get('/api/users/' + this.slug + '/shows_liked')
+                .then(function (response) {
+                    self.shows_liked = response.data;
+                    self.shows_liked_loaded = true;
+                }, function (response) {
+                    // alert('error');
+                });
+            this.$http.get('/api/users/' + this.slug + '/playlists')
+                .then(function (response) {
+                    self.playlists = response.data;
+                    self.playlists_loaded = true;
+                }, function (response) {
+                    // alert('error');
+                });
+            this.$http.get('/api/users/' + this.slug + '/connections')
+                .then(function (response) {
+                    self.connections.accepted = response.data.accepted;
+                    self.connections.pending = response.data.pending;
+                    self.connections_loaded = true;
                 }, function (response) {
                     // alert('error');
                 });
@@ -22597,7 +22637,7 @@ module.exports = {
     /**
      * Load mixins for the component.
      */
-    mixins: [__webpack_require__(4)],
+    mixins: [__webpack_require__(2)],
 
 
     /**
@@ -24627,7 +24667,7 @@ module.exports = {
     /**
      * Load mixins for the component.
      */
-    mixins: [__webpack_require__(4)],
+    mixins: [__webpack_require__(2)],
 
 
     /**
@@ -24662,7 +24702,7 @@ module.exports = {
      */
     mixins: [
         __webpack_require__(1),
-        __webpack_require__(3)
+        __webpack_require__(4)
     ],
 
 
@@ -24774,7 +24814,7 @@ module.exports = {
      */
     mixins: [
         __webpack_require__(1),
-        __webpack_require__(3)
+        __webpack_require__(4)
     ],
 
 
@@ -24822,7 +24862,7 @@ module.exports = {
     mixins: [
         __webpack_require__(7),
         __webpack_require__(1),
-        __webpack_require__(3)
+        __webpack_require__(4)
     ],
 
 
@@ -24925,7 +24965,7 @@ module.exports = {
      */
     mixins: [
         __webpack_require__(1),
-        __webpack_require__(3),
+        __webpack_require__(4),
         __webpack_require__(11)
     ],
 
@@ -25149,7 +25189,7 @@ module.exports = {
      */
     mixins: [
         __webpack_require__(1),
-        __webpack_require__(3)
+        __webpack_require__(4)
     ],
 
 
@@ -25948,7 +25988,7 @@ module.exports = {
     /**
      * Load mixins for the component.
      */
-    mixins: [__webpack_require__(4)],
+    mixins: [__webpack_require__(2)],
 
 
     /**
@@ -36396,7 +36436,7 @@ module.exports = __webpack_require__(272)
 "use strict";
 'use strict';
 
-var Promise = __webpack_require__(2);
+var Promise = __webpack_require__(3);
 
 module.exports = Promise;
 Promise.prototype.done = function (onFulfilled, onRejected) {
@@ -36418,7 +36458,7 @@ Promise.prototype.done = function (onFulfilled, onRejected) {
 
 //This file contains the ES6 extensions to the core Promises/A+ API
 
-var Promise = __webpack_require__(2);
+var Promise = __webpack_require__(3);
 
 module.exports = Promise;
 
@@ -36530,7 +36570,7 @@ Promise.prototype['catch'] = function (onRejected) {
 "use strict";
 'use strict';
 
-var Promise = __webpack_require__(2);
+var Promise = __webpack_require__(3);
 
 module.exports = Promise;
 Promise.prototype['finally'] = function (f) {
@@ -36553,7 +36593,7 @@ Promise.prototype['finally'] = function (f) {
 "use strict";
 'use strict';
 
-module.exports = __webpack_require__(2);
+module.exports = __webpack_require__(3);
 __webpack_require__(269);
 __webpack_require__(271);
 __webpack_require__(270);
@@ -36571,7 +36611,7 @@ __webpack_require__(274);
 // This file contains then/promise specific extensions that are only useful
 // for node.js interop
 
-var Promise = __webpack_require__(2);
+var Promise = __webpack_require__(3);
 var asap = __webpack_require__(128);
 
 module.exports = Promise;
@@ -36705,7 +36745,7 @@ Promise.prototype.nodeify = function (callback, ctx) {
 "use strict";
 'use strict';
 
-var Promise = __webpack_require__(2);
+var Promise = __webpack_require__(3);
 
 module.exports = Promise;
 Promise.enableSynchronous = function () {

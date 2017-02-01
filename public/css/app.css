@@ -7611,6 +7611,11 @@ button.btn-unlike:hover {
   width: 40px;
   top: 90px;
 }
+/** USER SCREEN **/
+.liked-time {
+  position: absolute;
+  right: 30px;
+}
 /*
  * Social Buttons for Bootstrap
  *

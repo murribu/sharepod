@@ -42,3 +42,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     
 });
 
+Route::get('/users/{slug}/episodes_liked', 'UsersController@apiGetUserEpisodesLiked');
+Route::get('/users/{slug}/shows_liked', 'UsersController@apiGetUserShowsLiked');
+Route::get('/users/{slug}/playlists', 'UsersController@apiGetUserPlaylists');
+Route::get('/users/{slug}/connections', 'UsersController@apiGetUserConnections');

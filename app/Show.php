@@ -64,9 +64,7 @@ class Show extends Model {
         $ret = $episodes->get();
         
         foreach($ret as $e){
-            $e->howLongAgo = self::howLongAgo($e->pubdate);
-            $e->pubdate_str = date('g:i A - j M Y', $e->pubdate);
-            $e->description = strip_tags($e->description,"<p></p>");
+            $e = $e->prepare();
         }
         
         return $ret;
@@ -182,6 +180,14 @@ class Show extends Model {
         }
         if ($show){
             return $show->parseFeed();
+        }
+    }
+    
+    public function prepare(){
+        $this->description = strip_tags($this->description,"<p></p>");
+        if (isset($this->likeddate)){
+            $this->likedHowLongAgo = self::howLongAgo(strtotime($this->likeddate));
+            $this->likeddate_str = date('g:i A - j M Y', strtotime($this->likeddate));
         }
     }
     
