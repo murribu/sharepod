@@ -17,7 +17,7 @@ class RecommendationsController extends Controller
     }
     
     public function getRecommendations(){
-        return view('recommendations', ['activelink' => 'recommendations']);
+        return view('recommendations', ['activelink' => 'me']);
     }
     
     public function getRecommendation($slug){

@@ -4,7 +4,6 @@
 <recommendations :user="user" inline-template>
     <div class="container">
         <h3 style="text-align:center">Recommendations</h3>
-        <h4 style="text-align:center"><a href="/connections">Manage your Connections</a></h4>
         <div class="row">
             <div class="col-xs-12 col-md-6">
                 <div class="panel panel-default">

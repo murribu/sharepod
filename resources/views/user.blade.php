@@ -44,6 +44,9 @@
                             </div>
                         </div>
                         <div class="panel-footer" v-if="isMe">
+                            <a href="/recommendations">Manage Recommendations</a>
+                        </div>
+                        <div class="panel-footer" v-if="isMe">
                             <a href="/connections">Manage Connections</a>
                         </div>
                         <div class="panel-footer" v-if="isMe">
@@ -74,7 +77,9 @@
                                 <div class="panel-body" v-html="episode.description"></div>
                             </div>
                             <div class="panel panel-default panel-list-item" v-if="episodes_liked_loaded && episodes_liked.length == 0">
-                                @{{viewed_user.name}} has not liked any episodes yet.
+                                <div class="panel-body">
+                                    @{{viewed_user.name}} has not liked any episodes yet.
+                                </div>
                             </div>
                         </div>
                         <div class="tab-pane" role="tabpanel" id="shows-liked">
@@ -97,7 +102,9 @@
                                 <div class="panel-body" v-html="show.description"></div>
                             </div>
                             <div class="panel panel-default panel-list-item" v-if="shows_liked.length == 0">
-                                @{{viewed_user.name}} has not liked any shows yet.
+                                <div class="panel-body">
+                                    @{{viewed_user.name}} has not liked any shows yet.
+                                </div>
                             </div>
                         </div>
                         <div class="tab-pane" role="tabpanel" id="playlists">
@@ -111,7 +118,9 @@
                                 <div class="panel-body">@{{playlist.description}}</div>
                             </div>
                             <div class="panel panel-default panel-list-item" v-if="playlists_loaded && playlists.length == 0">
-                                @{{viewed_user.name}} does not have any playlists yet.
+                                <div class="panel-body">
+                                    @{{viewed_user.name}} does not have any playlists yet.
+                                </div>
                             </div>
                         </div>
                         <div class="tab-pane" role="tabpanel" id="connections">

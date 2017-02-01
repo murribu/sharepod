@@ -47,6 +47,9 @@ $router->group(['middleware' => 'auth'], function ($router) {
     Route::get('/playlists/{slug}/edit', 'PlaylistController@getEdit');
     Route::post('/playlists/{slug}/edit', 'PlaylistController@postEdit');
     
+    Route::get('/me', 'UsersController@getMe');
+    
+    
 });
 
 Route::get('/playlists', 'PlaylistController@getPlaylists');

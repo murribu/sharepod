@@ -13,8 +13,14 @@ use App\User;
 
 class UsersController extends Controller
 {
+    public function getMe(){
+        return redirect('/users/' . Auth::user()->slug);
+    }
+    
     public function getUser($slug){
-        return view('user', ['activelink' => 'connections']);
+        $user = User::where('slug', $slug)->first();
+        $activelink = Auth::user() && Auth::user()->slug == $slug ? 'me' : '';
+        return view('user', compact('user', 'activelink'));
     }
     
     public function apiGetUser($slug){
@@ -99,12 +105,27 @@ class UsersController extends Controller
     public function apiGetUserConnections($slug){
         $user = User::where('slug', $slug)->first();
         if ($user){
-            $accepted = Connection::where('user_id', $user->id)->where('status', DB::raw("'approved'"))->get();
-            $pending = Connection::where('user_id', $user->id)
+            $accepted_db = Connection::where('user_id', $user->id)->where('status', DB::raw("'approved'"))->get();
+            $pending_db = Connection::where('user_id', $user->id)
                 ->where(function($query){
                     $query->where('status', DB::raw("'viewed'"));
                     $query->orWhereNull('status');
                 })->get();
+            $accepted = [];
+            foreach($accepted_db as $a){
+                $accepted[] = [
+                    'user_name' => $a->recommender->name,
+                    'user_slug' => $a->recommender->slug
+                ];
+            }
+            $pending = [];
+            foreach($pending_db as $a){
+                $pending[] = [
+                    'user_name' => $a->recommender->name,
+                    'user_slug' => $a->recommender->slug
+                ];
+            }
+                
             return compact('accepted', 'pending');
         }
     }
