@@ -14,9 +14,13 @@ class UsersController extends Controller
     }
     
     public function apiGetUser($slug){
-        return User::where('slug', $slug)
-            ->select('id', 'slug', 'name')
+        $u = User::where('slug', $slug)
+            ->select('id', 'slug', 'name', 'email')
             ->first();
+            
+        $u->photo_url = $u->getPhotoUrlAttribute($u->photo_url);
+        
+        return $u;
     }
     
     public function getFeed($slug){

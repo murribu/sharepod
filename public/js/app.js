@@ -20914,10 +20914,14 @@ Vue.component('shows-search', {
 
 /***/ },
 /* 158 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 Vue.component('view-user', {
     props: ['user'],
+    mixins: [__webpack_require__(4)],
+    mounted: function mounted() {
+        this.usePushStateForTabs('.user-tabs');
+    },
     data: function data() {
         return {
             viewed_user: {}
@@ -20929,6 +20933,9 @@ Vue.component('view-user', {
     computed: {
         slug: function slug() {
             return window.location.href.split('/')[4];
+        },
+        isMe: function isMe() {
+            return viewed_user.id == user.id;
         }
     },
     methods: {
