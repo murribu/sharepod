@@ -20250,35 +20250,20 @@ Vue.component('episode', {
 /* 145 */
 /***/ function(module, exports, __webpack_require__) {
 
-__webpack_require__(146);
-__webpack_require__(147);
+var copyFeed = __webpack_require__(5);
+var tabState = __webpack_require__(2);
 
 Vue.component('help', {
     props: ['user'],
-    mixins: [__webpack_require__(2)],
+    mixins: [tabState, copyFeed],
     mounted: function mounted() {
         this.usePushStateForTabs('.help-tabs');
     },
 });
 
 /***/ },
-/* 146 */
-/***/ function(module, exports) {
-
-Vue.component('help-find-a-podcatcher', {
-    props: ['user'],
-});
-
-/***/ },
-/* 147 */
-/***/ function(module, exports) {
-
-Vue.component('help-register-my-feed', {
-    props: ['user'],
-});
-
-
-/***/ },
+/* 146 */,
+/* 147 */,
 /* 148 */
 /***/ function(module, exports) {
 
