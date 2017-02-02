@@ -120,7 +120,7 @@ class User extends SparkUser
             ->orderBy('pubdate', 'desc')
             ->get();
         $ret['url'] = env('APP_URL')."/feed/".$this->slug;
-        $ret['name'] = $this->name;
+        $ret['name'] = "Recommendations for ".$this->name;
         
         return $ret;
     }

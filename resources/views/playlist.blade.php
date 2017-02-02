@@ -19,6 +19,7 @@
                         </div>
                         <div class="panel-body panel-list-item">
                             <a href="#" @click.prevent="copyFeed(feedUrl, 'copy-link')" id="copy-link">@{{copyLinkText}}</a>
+                            <input type="text" id="copy-link-fallback" :value="feedUrl" class="fallback"/>
                         </div>
                         <div class="panel-footer" v-if="user && playlist && playlist.user_slug == user.slug">
                             <a :href="'/playlists/' + playlist.slug + '/edit'">Edit</a>

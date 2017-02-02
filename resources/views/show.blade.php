@@ -16,8 +16,10 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-xs-12">
-                                    <a href="#" @click.prevent="copyFeed(show.feed, 'copy-feed-original')" id="copy-feed-original">Copy original RSS feed</a><br>
+                                    <a href="#" @click.prevent="copyFeed(show.feed, 'copy-feed-original')" id="copy-feed-original">Copy original RSS feed</a>
+                                    <input type="text" id="copy-feed-original-fallback" class="fallback" :value="show.feed" v-tooltip title="Copy this text" /><br>
                                     <a href="#" @click.prevent="copyFeed('{{env('APP_URL')}}/shows/' + show.slug + '/feed', 'copy-feed-app')" id="copy-feed-app">Copy {{env('APP_NAME')}} feed</a>
+                                    <input type="text" id="copy-feed-app-fallback" class="fallback" :value="'{{env('APP_URL')}}/shows/' + show.slug + '/feed'" v-tooltip title="Copy this text"/>
                                 </div>
                             </div>
                         </div>

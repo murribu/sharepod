@@ -1,5 +1,9 @@
 module.exports = {
     methods: {
+        catchError(ele){
+            $("#" + ele + "-fallback").show().focus().select();
+            $("#" + ele).hide();
+        },
         copyFeed(feedUrl, ele){
             var textArea = document.createElement("input");
             var originalText = $("#" + ele).html();
@@ -27,11 +31,13 @@ module.exports = {
                 if (successful){
                     $("#" + ele).html('Copied!');
                 }else{
-                    $("#" + ele).html('There was a problem. The copy didn\'t work.');
+                    this.catchError(ele);
+                    //$("#" + ele).html('There was a problem. The copy didn\'t work.');
                 }
             } catch (err) {
                 console.log('Oops, unable to copy');
-                $("#" + ele).html('There was a problem. The copy didn\'t work.');
+                //$("#" + ele).html('There was a problem. The copy didn\'t work.');
+                this.catchError(ele);
             }
             
             document.body.removeChild(textArea);

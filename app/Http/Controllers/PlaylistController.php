@@ -43,7 +43,8 @@ class PlaylistController extends Controller {
                 return redirect('/');
             }
         }else{
-            if (!$user->can_add_a_playlist()){
+            $permissions = $user->plan_permissions();
+            if (!$permissions['can_add_a_playlist']){
                 $msg = 'You have reached the maximum number of Playlists for your Subscription Plan. <a href="/settings#/subscription">Click here</a> to change your Plan.';
                 $statusClass = 'alert-danger';
                 return redirect('/playlists')->with(compact('msg', 'statusClass'));

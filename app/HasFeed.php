@@ -12,7 +12,7 @@ trait HasFeed{
 		$output .= "<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\" xmlns:cc=\"http://web.resource.org/cc/\" xmlns:itunes=\"http://www.itunes.com/dtds/podcast-1.0.dtd\" xmlns:media=\"http://search.yahoo.com/mrss/\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n";
 		$output .= "<channel>\n";
 		$output .= "<atom:link href=\"".$url."\" rel=\"self\" type=\"application/rss+xml\"/>
-				<title>Recommendations for ".$info['name']."</title>
+				<title>".$info['name']." from ".env('APP_NAME')."</title>
 				<pubDate>".gmdate("D, d M Y G:i:s")." +0000</pubDate>
 				<lastBuildDate>".gmdate("D, d M Y G:i:s")." +0000</lastBuildDate>
 				<generator>".env('APP_NAME')."</generator>
