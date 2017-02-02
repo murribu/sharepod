@@ -20506,22 +20506,80 @@ Vue.component('recommendation', {
     data: function data() {
         return {
             recommendation: {},
+            recommendation_loaded: false,
+            busy: false,
         };
     },
     created: function created() {
-        var self = this;
-        this.$http.get('/api/recommendations/' + this.slug)
-            .then(function (response) {
-                self.recommendation = response.data;
-            },
-            function (response) {
-                // alert('error');
-            });
+        this.loadRecommenation();
     },
     computed: {
         slug: function slug() {
             return window.location.href.split('/')[4];
         },
+    },
+    methods: {
+        accept: function accept(){
+            var self = this;
+            var sent = {
+                slugs: [this.recommendation.slug]
+            };
+            this.busy = true;
+            this.$http.post('/api/recommendations/accept', sent)
+                .then(function (response) {
+                    self.loadRecommenation();
+                    self.busy = false;
+                }, function (response) {
+                    // alert('error');
+                })
+        },
+        reject: function reject(){
+            var self = this;
+            var sent = {
+                slugs: [this.recommendation.slug]
+            };
+            this.busy = true;
+            this.$http.post('/api/recommendations/reject', sent)
+                .then(function (response) {
+                    self.loadRecommenation();
+                    self.busy = false;
+                }, function (response) {
+                    // alert('error');
+                })
+        },
+        makePending: function makePending(){
+            var self = this;
+            var sent = {
+                slugs: [this.recommendation.slug]
+            };
+            this.busy = true;
+            this.$http.post('/api/recommendations/make_pending', sent)
+                .then(function (response) {
+                    self.loadRecommenation();
+                    self.busy = false;
+                }, function (response) {
+                    // alert('error');
+                })
+        },
+        loadRecommenation: function loadRecommenation() {
+            var self = this;
+            this.recommendation_loaded = false;
+            this.$http.get('/api/recommendations/' + this.slug)
+                .then(function (response) {
+                    self.recommendation = response.data;
+                    self.recommendation_loaded = true;
+                },
+                function (response) {
+                    switch (response.status){
+                        case 401:
+                            window.location.href = '/';
+                            break;
+                        default:
+                            // alert('error');
+                            break;
+                    }
+                });
+        }
     }
 });
 
@@ -20881,9 +20939,12 @@ Vue.component('shows-search', {
 /* 158 */
 /***/ function(module, exports, __webpack_require__) {
 
+var copyFeed = __webpack_require__(5);
+var tabState = __webpack_require__(2);
+
 Vue.component('view-user', {
     props: ['user'],
-    mixins: [__webpack_require__(2)],
+    mixins: [tabState, copyFeed],
     mounted: function mounted() {
         this.usePushStateForTabs('.user-tabs');
     },
@@ -20901,6 +20962,8 @@ Vue.component('view-user', {
                 pending: [],
             },
             connections_loaded: false,
+            recommendations_accepted: [],
+            recommendations_loaded: false,
         };
     },
     created: function created() {
@@ -20949,6 +21012,13 @@ Vue.component('view-user', {
                     self.connections.accepted = response.data.accepted;
                     self.connections.pending = response.data.pending;
                     self.connections_loaded = true;
+                }, function (response) {
+                    // alert('error');
+                });
+            this.$http.get('/api/users/' + this.slug + '/recommendations_accepted')
+                .then(function (response) {
+                    self.recommendations_accepted = response.data;
+                    self.recommendations_loaded = true;
                 }, function (response) {
                     // alert('error');
                 });

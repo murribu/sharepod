@@ -1,6 +1,9 @@
+var copyFeed = require('./mixins/copy-feed');
+var tabState = require('./../../../../spark/resources/assets/js/mixins/tab-state');
+
 Vue.component('view-user', {
     props: ['user'],
-    mixins: [require('./../../../../spark/resources/assets/js/mixins/tab-state')],
+    mixins: [tabState, copyFeed],
     mounted() {
         this.usePushStateForTabs('.user-tabs');
     },
@@ -18,6 +21,8 @@ Vue.component('view-user', {
                 pending: [],
             },
             connections_loaded: false,
+            recommendations_accepted: [],
+            recommendations_loaded: false,
         };
     },
     created() {
@@ -66,6 +71,13 @@ Vue.component('view-user', {
                     self.connections.accepted = response.data.accepted;
                     self.connections.pending = response.data.pending;
                     self.connections_loaded = true;
+                }, response => {
+                    // alert('error');
+                });
+            this.$http.get('/api/users/' + this.slug + '/recommendations_accepted')
+                .then(response => {
+                    self.recommendations_accepted = response.data;
+                    self.recommendations_loaded = true;
                 }, response => {
                     // alert('error');
                 });

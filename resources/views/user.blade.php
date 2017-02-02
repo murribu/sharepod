@@ -21,6 +21,11 @@
                             <div class="user-tabs">
                                 <ul class="nav left-stacked-tabs" role="tablist">
                                     <li role="presentation">
+                                        <a href="#recommendations-accepted" aria-controls="recommendations-accepted" role="tab" data-toggle="tab">
+                                            @{{recommendations_accepted.length}} Recommendations Accepted
+                                        </a>
+                                    </li>
+                                    <li role="presentation">
                                         <a href="#episodes-liked" aria-controls="episodes-liked" role="tab" data-toggle="tab">
                                             @{{episodes_liked.length}} Episodes Liked
                                         </a>
@@ -148,6 +153,30 @@
                                 </div>
                                 <div class="panel-body" v-if="connections_loaded && connections.pending.length == 0">
                                     @{{viewed_user.name}} does not have any pending connections.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane active" role="tabpanel" id="recommendations-accepted">
+                            <h3 class="centered" v-if="viewed_user.name">@{{viewed_user.name}}'s Recommendation Feed</h3>
+                            <div class="centered" v-if="viewed_user.slug">
+                                <h4>
+                                    <a href="#" @click.prevent="copyFeed('{{env('APP_URL')}}/feed/' + viewed_user.slug, 'copy-feed')" id="copy-feed">Copy Recommendation Feed URL</a>
+                                    <input type="text" id="copy-feed-fallback" class="fallback" :value="'{{env('APP_URL')}}/feed/' + viewed_user.slug" v-tooltip title="Copy this text" /><br>
+                                </h4>
+                            </div>
+                            <div class="panel panel-default panel-list-item episode-container" v-for="episode in recommendations_accepted" :key="episode.slug">
+                                <div class="panel-heading">
+                                    <a :href="'/episodes/' + episode.slug">
+                                        <img :src="episode.img_url" class="episode-image" />
+                                        <strong>@{{episode.name}}</strong>
+                                    </a>
+                                    <small v-tooltip :title="episode.pubdate_str">@{{episode.howLongAgo}}</small>
+                                </div>
+                                <div class="panel-body" v-html="episode.description"></div>
+                            </div>
+                            <div class="panel panel-default panel-list-item" v-if="recommendations_loaded && recommendations_accepted.length == 0">
+                                <div class="panel-body">
+                                    @{{viewed_user.name}} has not accepted any recommendations yet.
                                 </div>
                             </div>
                         </div>

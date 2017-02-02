@@ -46,3 +46,4 @@ Route::get('/users/{slug}/episodes_liked', 'UsersController@apiGetUserEpisodesLi
 Route::get('/users/{slug}/shows_liked', 'UsersController@apiGetUserShowsLiked');
 Route::get('/users/{slug}/playlists', 'UsersController@apiGetUserPlaylists');
 Route::get('/users/{slug}/connections', 'UsersController@apiGetUserConnections');
+Route::get('/users/{slug}/recommendations_accepted', 'UsersController@apiGetUserRecommendationsAccepted');

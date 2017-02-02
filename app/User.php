@@ -286,6 +286,7 @@ class User extends SparkUser
     }
     
     public function recommendations_by_action($action = 'pending'){
+        $order_clause = ' order by r.updated_at desc';
         switch ($action){
             case 'pending':
                 $action_clause = '(r.action is null or r.action = \'viewed\')';
@@ -300,7 +301,7 @@ class User extends SparkUser
                 return ['error' => 'Invalid recommendation action'];
                 break;
         }
-        $episodes = DB::select('select e.slug, e.name, s.slug show_slug, s.name show_name, u.slug user_slug, u.name user_name, r.slug recommendation_slug from episodes e inner join recommendations r on r.episode_id = e.id left join users u on u.id = r.recommender_id left join shows s on s.id = e.show_id where r.recommendee_id = ? and '.$action_clause, [$this->id]);
+        $episodes = DB::select('select e.slug, e.name, s.slug show_slug, s.name show_name, u.slug user_slug, u.name user_name, r.slug recommendation_slug from episodes e inner join recommendations r on r.episode_id = e.id left join users u on u.id = r.recommender_id left join shows s on s.id = e.show_id where r.recommendee_id = ? and '.$action_clause.$order_clause, [$this->id]);
         $ret = [];
         $e_slug = '';
         $ret_index = 0;
