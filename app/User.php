@@ -2,6 +2,7 @@
 namespace App;
 
 use DB;
+use Illuminate\Support\Str;
 use Laravel\Spark\User as SparkUser;
 
 class User extends SparkUser
@@ -52,6 +53,19 @@ class User extends SparkUser
         'trial_ends_at' => 'date',
         'uses_two_factor_auth' => 'boolean',
     ];
+    
+    public function getPhotoUrlAttribute($value)
+    {
+        if (empty($value)){
+            if ($this->facebook_user() && $this->facebook_user()->avatar){
+                return $this->facebook_user()->avatar;
+            }else{
+                return 'https://www.gravatar.com/avatar/'.md5(Str::lower($this->email)).'.jpg?s=200&d=mm';
+            }
+        }else{
+            return $value;
+        }
+    }
     
     public function playlists(){
         return $this->hasMany('App\Playlist');
