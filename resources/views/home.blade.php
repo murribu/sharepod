@@ -27,6 +27,7 @@
                             <li :class="{strikethrough: user && user.hasAcceptedARecommendation}" v-if="user && user.hasReceivedARecommendation"><a href="/recommendations">Accept a recommendation</a></li>
                             <li :class="{strikethrough: user && user.hasTakenActionOnARecommendation}" v-if="!user || !user.hasReceivedARecommendation"><a href="/recommendations">Receive a recommendation</a></li>
                             <li :class="{strikethrough: user && user.hasRegisteredTheirFeed}"><a href="/help#register_my_feed">Register Your Feed</a></li>
+                            <li :class="{strikethrough: user && user.hasCreatedAPlaylist}"><a href="/playlists/new">Create a Playlist</a></li>
                         </ol>
                     </div>
                 </div>

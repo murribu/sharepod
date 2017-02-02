@@ -20275,7 +20275,8 @@ Vue.component('home', {
                 !this.user.hasLikedSomething || 
                 !this.user.hasRecommendedSomething || 
                 (this.user.hasReceivedARecommendation && !this.user.hasTakenActionOnARecommendation) || 
-                this.user.hasRegisteredTheirFeed;
+                !this.user.hasRegisteredTheirFeed ||
+                !this.user.hasCreatedAPlaylist;
         },
     },
 });
@@ -20949,6 +20950,16 @@ Vue.component('view-user', {
             connections_loaded: false,
             recommendations_accepted: [],
             recommendations_loaded: false,
+            verbs:{
+                to_have:{
+                    you: 'have',
+                    third_person: 'has'
+                },
+                to_do:{
+                    you: 'do',
+                    third_person: 'does'
+                }
+            }
         };
     },
     created: function created() {
@@ -20960,7 +20971,7 @@ Vue.component('view-user', {
         },
         isMe: function isMe() {
             return this.viewed_user.id == this.user.id;
-        }
+        },
     },
     methods: {
         getUser: function getUser() {
@@ -21007,6 +21018,37 @@ Vue.component('view-user', {
                 }, function (response) {
                     // alert('error');
                 });
+        },
+        viewed_user_name: function viewed_user_name(options) {
+            if ( options === void 0 ) options = false;
+
+            if (this.viewed_user && this.user){
+                var ret = '';
+                if (this.viewed_user.slug == this.user.slug){
+                    if (options.possessive){
+                        ret = 'Your';
+                    }else{
+                        ret = 'You';
+                    }
+                    if (options.verbs){
+                        ret += ' ' + options.verbs.you;
+                    }
+                }else{
+                    if (options.possessive){
+                        if (options.generic){
+                            ret = 'their';
+                        }else{
+                            ret = this.viewed_user.name + '\'s';
+                        }
+                    }else{
+                        ret = this.viewed_user.name;
+                    }
+                    if (options.verbs){
+                        ret += ' ' + options.verbs.third_person;
+                    }
+                }
+                return ret;
+            }
         }
     }
 });

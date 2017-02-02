@@ -6,7 +6,8 @@ Vue.component('home', {
                 !this.user.hasLikedSomething || 
                 !this.user.hasRecommendedSomething || 
                 (this.user.hasReceivedARecommendation && !this.user.hasTakenActionOnARecommendation) || 
-                this.user.hasRegisteredTheirFeed;
+                !this.user.hasRegisteredTheirFeed ||
+                !this.user.hasCreatedAPlaylist;
         },
     },
 });

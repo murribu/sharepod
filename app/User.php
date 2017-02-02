@@ -126,7 +126,7 @@ class User extends SparkUser
     }
     
     public function add_info(){
-        $moreinfo = DB::select('select count(received.id) recommendations_received, count(given.id) recommendations_given, count(accepted.id) recommendations_accepted, count(acted_upon.id) recommendations_acted_upon, count(likes.id) likes, count(hitcounts.id) hitcounts
+        $moreinfo = DB::select('select count(received.id) recommendations_received, count(given.id) recommendations_given, count(accepted.id) recommendations_accepted, count(acted_upon.id) recommendations_acted_upon, count(likes.id) likes, count(hitcounts.id) hitcounts, count(playlists.id) playlists
         from users
         left join likes on likes.user_id = users.id
         left join recommendations as received on received.recommendee_id = users.id
@@ -134,6 +134,7 @@ class User extends SparkUser
         left join recommendations as accepted on accepted.recommendee_id = users.id and accepted.action  = \'accepted\'
         left join recommendations as acted_upon on acted_upon.recommendee_id = users.id and (acted_upon.action is null or acted_upon.action = \'viewed\')
         left join hitcounts on hitcounts.user_id = users.id and hitcounts.request = \'user_feed\'
+        left join playlists on playlists.user_id = users.id
         where users.id = ?
         limit 1
         ', [$this->id]);
@@ -146,6 +147,7 @@ class User extends SparkUser
             $this->hasAcceptedARecommendation = $moreinfo->recommendations_accepted > 0 ? '1' : 0;
             $this->hasTakenActionOnARecommendation = $moreinfo->recommendations_acted_upon > 0 ? '1' : 0;
             $this->hasRegisteredTheirFeed = $moreinfo->hitcounts > 0 ? '1' : 0;
+            $this->hasCreatedAPlaylist = $moreinfo->playlists > 0 ? '1' : 0;
             $permissions = $this->plan_permissions();
             $this->canAddAPlaylist = $permissions['can_add_a_playlist'];
             $this->canRecommend = $permissions['can_recommend'];
