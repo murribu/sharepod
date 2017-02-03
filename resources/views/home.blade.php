@@ -33,6 +33,39 @@
                 </div>
             </div>
         </div>
+        <div class="row" v-if="episodes.length > 0">
+            <h3 class="centered">Recently Popular Episodes</h3>
+            <div class="panel panel-default panel-list-item episode-container" v-for="episode in episodes" :key="episode.slug">
+                <div class="panel-heading">
+                    <a :href="'/episodes/' + episode.slug">
+                        <img :src="episode.img_url" class="episode-image" />
+                        <strong>@{{episode.name}}</strong>
+                    </a>
+                    <small v-tooltip :title="episode.pubdate_str">@{{episode.howLongAgo}}</small>
+                </div>
+                <div class="panel-body" v-html="episode.description"></div>
+                <div class="panel-footer" v-if="episode.likers.length > 0 || (episode.friend_recommenders && episode.friend_recommenders.length > 0)">
+                    <div class="row" v-if="episode.likers.length > 0">
+                        <div class="col-xs-12">
+                            <div class="icon-container">
+                                <div class="heart-container">
+                                    <div class="heart" style="background-position: right;"></div>
+                                </div>
+                            </div>
+                            Liked by:<span v-for="(liker, index) in episode.likers"><a :href="'/users/' + liker.slug">@{{liker.name}}</a>@{{index == episode.likers.length - 1 ? '' : ', '}}</span>
+                        </div>
+                    </div>
+                    <div class="row" v-if="episode.friend_recommenders && episode.friend_recommenders.length > 0">
+                        <div class="col-xs-12">
+                            <div class="icon-container">
+                                <i class="fa fa-reply"></i>
+                            </div>
+                            Recommended by:<span v-for="(recommender, index) in episode.friend_recommenders"><a :href="'/users/' + recommender.slug">@{{recommender.name}}</a>@{{index == episode.friend_recommenders.length - 1 ? '' : ', '}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </home>
 @endsection

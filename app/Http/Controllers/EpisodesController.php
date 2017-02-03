@@ -14,7 +14,7 @@ class EpisodesController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('verified');
+        $this->middleware('verified')->except('apiGetPopular');
     }
     
     public function getEpisode(){
@@ -91,5 +91,9 @@ class EpisodesController extends Controller
         if ($ep->unlike(Auth::user())){
             return ['success' => 1, 'total_likes' => $ep->likeCount(), 'this_user_likes' => 0];
         }
+    }
+    
+    public function apiGetPopular(){
+        return Episode::popular();
     }
 }

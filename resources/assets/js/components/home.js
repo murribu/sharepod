@@ -1,5 +1,10 @@
 Vue.component('home', {
     props: ['user'],
+    data(){
+        return {
+            episodes:[]
+        };
+    },
     computed: {
         showGetStarted() {
             return !this.user || 
@@ -10,4 +15,19 @@ Vue.component('home', {
                 !this.user.hasCreatedAPlaylist;
         },
     },
+    created(){
+        this.loadPopularEpisodes();
+    },
+    methods:{
+        loadPopularEpisodes() {
+            var self = this;
+            this.$http.get('/api/episodes/popular')
+                .then(response => {
+                    self.episodes = response.data;
+                }, response => {
+                    // alert('error');
+                });
+        }
+    }
 });
+

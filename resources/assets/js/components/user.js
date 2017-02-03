@@ -43,7 +43,7 @@ Vue.component('view-user', {
             return window.location.href.split('/')[4].split('#')[0];
         },
         isMe() {
-            return this.viewed_user.id == this.user.id;
+            return this.user && this.viewed_user.id == this.user.id;
         },
     },
     methods: {
@@ -93,30 +93,29 @@ Vue.component('view-user', {
                 });
         },
         viewed_user_name(options = false) {
-            if (this.viewed_user && this.user){
-                var ret = '';
-                if (this.viewed_user.slug == this.user.slug){
-                    if (options.possessive){
-                        ret = 'Your';
+            var ret = '';
+            if (this.viewed_user && this.user && this.viewed_user.slug == this.user.slug){
+                if (options.possessive){
+                    ret = 'Your';
+                }else{
+                    ret = 'You';
+                }
+                if (options.verbs){
+                    ret += ' ' + options.verbs.you;
+                }
+                return ret;
+            }else{
+                if (options.possessive){
+                    if (options.generic){
+                        ret = 'their';
                     }else{
-                        ret = 'You';
-                    }
-                    if (options.verbs){
-                        ret += ' ' + options.verbs.you;
+                        ret = this.viewed_user.name + '\'s';
                     }
                 }else{
-                    if (options.possessive){
-                        if (options.generic){
-                            ret = 'their';
-                        }else{
-                            ret = this.viewed_user.name + '\'s';
-                        }
-                    }else{
-                        ret = this.viewed_user.name;
-                    }
-                    if (options.verbs){
-                        ret += ' ' + options.verbs.third_person;
-                    }
+                    ret = this.viewed_user.name;
+                }
+                if (options.verbs){
+                    ret += ' ' + options.verbs.third_person;
                 }
                 return ret;
             }
