@@ -7,14 +7,17 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Http\Request;
 use Exception;
 
+use Laravel\Spark\Contracts\Repositories\NotificationRepository;
+
 use App\Episode;
 use App\Recommendation;
 
 class EpisodesController extends Controller
 {
-    public function __construct()
+    public function __construct(NotificationRepository $notifications)
     {
         $this->middleware('verified');
+        $this->notifications = $notifications;
     }
     
     public function getEpisode(){
@@ -49,7 +52,7 @@ class EpisodesController extends Controller
         $user = Auth::user();
         $permissions = $user->plan_permissions();
         if ($permissions['can_recommend']){
-            $recommendation = $user->recommend(Input::all());
+            $recommendation = $user->recommend(Input::all(), $this->notifications);
             if (isset($recommendation['error'])){
                 return response()->json(['message' => $recommendation['message']], $recommendation['error']);
             }

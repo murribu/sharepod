@@ -184,7 +184,7 @@ class User extends SparkUser
         return compact('received', 'given');
     }
     
-    public function recommend($input){
+    public function recommend($input, $notifications){
         $user = $this;
         $ep = Episode::where('slug', $input['slug'])->first();
         if ($ep){
@@ -266,6 +266,14 @@ class User extends SparkUser
                     'action'            => $action,
                     'autoaction'        => $autoaction
                 ]);
+            if ($action != 'rejected'){
+                $notifications->create($recommendee, [
+                    'icon' => 'fa-plus',
+                    'body' => 'You have a new recommendation!',
+                    'action_text' => 'View Recommendation',
+                    'action_url' => '/recommendations/'.$recommendation->slug,
+                ]);
+            }
             
             if ($action == null){
                 if (isset($input['email_address'])){
