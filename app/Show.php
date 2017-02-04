@@ -179,6 +179,7 @@ class Show extends Model {
                 ->first();
         }
         if ($show){
+            $this->info('Attempting to update '.$show->name);
             return $show->parseFeed();
         }
     }
