@@ -26,12 +26,15 @@ class RecommendationsController extends Controller
         
         $user = Auth::user();
         $recommendee = $recommendation->recommendee;
-        
+        $activelink = '';
         if ($recommendation){
             if ($user){
                 if ($recommendation->recommendee_id == $user->id){
-                    $recommendation->action = 'viewed';
-                    $recommendation->save();
+                    $activelink = 'me';
+                    if ($recommendation->action == null){
+                        $recommendation->action = 'viewed';
+                        $recommendation->save();
+                    }
                 }
             }else{
                 if (!$recommendee->verified){
@@ -49,7 +52,7 @@ class RecommendationsController extends Controller
             // Recommendation doesn't exist.
         }
         
-        return view('recommendation', ['activelink' => 'recommendations']);
+        return view('recommendation', compact('activelink'));
     }
     
     public function apiGetRecentRecommendees(){
@@ -66,6 +69,11 @@ class RecommendationsController extends Controller
         $ret['recommendee_slug']    = $r->recommendee->slug;
         $ret['episode_name']        = $r->episode->name;
         $ret['episode_slug']        = $r->episode->slug;
+        if ($r->episode->show){
+            $ret['show_name']       = $r->episode->show->name;
+            $ret['show_slug']       = $r->episode->show->slug;
+        }
+        $ret['action']              = $r->action;
         $ret['comment']             = $r->comment;
         
         return $ret;

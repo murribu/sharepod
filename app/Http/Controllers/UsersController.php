@@ -2,12 +2,14 @@
 
 use Auth;
 use DB;
-use Illuminate\Support\Facades\Input;
+use Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
 use Exception;
 
 use App\Connection;
 use App\Episode;
+use App\Hitcount;
 use App\Show;
 use App\User;
 
@@ -128,5 +130,10 @@ class UsersController extends Controller
                 
             return compact('accepted', 'pending');
         }
+    }
+    
+    public function apiGetUserRecommendationsAccepted($slug){
+        $user = User::where('slug', $slug)->first();
+        return $user->info_for_feed()['episodes'];
     }
 }

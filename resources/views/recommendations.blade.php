@@ -12,7 +12,7 @@
                     </div>
                     <div class="panel-body recommendation-list-item" v-for="r in recommendations_pending">
                         <div class="col-xs-9">
-                            <span v-for="u in r.users"><a href="'/users/' + u.slug">@{{u.name}}</a></span>
+                            <span v-for="u in r.users"><a :href="'/users/' + u.slug">@{{u.name}}</a></span>
                             recommended <a :href="'/shows/' + r.show_slug">@{{r.show_name}}</a> - <a :href="'/episodes/' + r.slug">@{{r.name}}</a>
                         </div>
                         <div class="col-xs-3">
@@ -34,7 +34,7 @@
                     </div>
                     <div class="panel-body recommendation-list-item" v-for="r in recommendations_accepted">
                         <div class="col-xs-9">
-                            <span v-for="u in r.users"><a href="'/users/' + u.slug">@{{u.name}}</a></span>
+                            <span v-for="u in r.users"><a :href="'/users/' + u.slug">@{{u.name}}</a></span>
                             recommended <a :href="'/shows/' + r.show_slug">@{{r.show_name}}</a> - <a :href="'/episodes/' + r.slug">@{{r.name}}</a>
                         </div>
                         <div class="col-xs-3">

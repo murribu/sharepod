@@ -12,7 +12,7 @@ class Show extends Model {
     use HasLikes;
     use HasFeed;
     
-    protected static $slug_reserved_words = ['new', 'list', 'search', 'undefined', 'feed'];
+    protected static $slug_reserved_words = ['new', 'list', 'search', 'undefined', 'feed', 'popular'];
     public static $like_type = 'show';
     
     public $table = 'shows';

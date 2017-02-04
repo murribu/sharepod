@@ -1,6 +1,9 @@
+var copyFeed = require('./mixins/copy-feed');
+var tabState = require('./../../../../spark/resources/assets/js/mixins/tab-state');
+
 Vue.component('view-user', {
     props: ['user'],
-    mixins: [require('./../../../../spark/resources/assets/js/mixins/tab-state')],
+    mixins: [tabState, copyFeed],
     mounted() {
         this.usePushStateForTabs('.user-tabs');
     },
@@ -18,6 +21,18 @@ Vue.component('view-user', {
                 pending: [],
             },
             connections_loaded: false,
+            recommendations_accepted: [],
+            recommendations_loaded: false,
+            verbs:{
+                to_have:{
+                    you: 'have',
+                    third_person: 'has'
+                },
+                to_do:{
+                    you: 'do',
+                    third_person: 'does'
+                }
+            }
         };
     },
     created() {
@@ -28,8 +43,8 @@ Vue.component('view-user', {
             return window.location.href.split('/')[4].split('#')[0];
         },
         isMe() {
-            return this.viewed_user.id == this.user.id;
-        }
+            return this.user && this.viewed_user.id == this.user.id;
+        },
     },
     methods: {
         getUser() {
@@ -69,6 +84,41 @@ Vue.component('view-user', {
                 }, response => {
                     // alert('error');
                 });
+            this.$http.get('/api/users/' + this.slug + '/recommendations_accepted')
+                .then(response => {
+                    self.recommendations_accepted = response.data;
+                    self.recommendations_loaded = true;
+                }, response => {
+                    // alert('error');
+                });
+        },
+        viewed_user_name(options = false) {
+            var ret = '';
+            if (this.viewed_user && this.user && this.viewed_user.slug == this.user.slug){
+                if (options.possessive){
+                    ret = 'Your';
+                }else{
+                    ret = 'You';
+                }
+                if (options.verbs){
+                    ret += ' ' + options.verbs.you;
+                }
+                return ret;
+            }else{
+                if (options.possessive){
+                    if (options.generic){
+                        ret = 'their';
+                    }else{
+                        ret = this.viewed_user.name + '\'s';
+                    }
+                }else{
+                    ret = this.viewed_user.name;
+                }
+                if (options.verbs){
+                    ret += ' ' + options.verbs.third_person;
+                }
+                return ret;
+            }
         }
     }
 });

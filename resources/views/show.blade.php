@@ -14,7 +14,7 @@
                             @{{show.name}}
                         </div>
                         <div class="panel-body">
-                            <div class="row">
+                            <div class="row" v-if="show.feed">
                                 <div class="col-xs-12">
                                     <a href="#" @click.prevent="copyFeed(show.feed, 'copy-feed-original')" id="copy-feed-original">Copy original RSS feed</a>
                                     <input type="text" id="copy-feed-original-fallback" class="fallback" :value="show.feed" v-tooltip title="Copy this text" /><br>
@@ -24,7 +24,7 @@
                             </div>
                         </div>
                         <div class="panel-body panel-border-top">
-                            <div class="row">
+                            <div class="row" v-if="show.feed">
                                 <div class="col-xs-7">
                                     @{{show.total_likes}} Like@{{show && show.total_likes != '1' ? 's' : ''}}
                                 </div>

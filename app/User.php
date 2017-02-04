@@ -2,6 +2,7 @@
 namespace App;
 
 use DB;
+use Illuminate\Support\Str;
 use Laravel\Spark\User as SparkUser;
 
 class User extends SparkUser
@@ -52,6 +53,19 @@ class User extends SparkUser
         'trial_ends_at' => 'date',
         'uses_two_factor_auth' => 'boolean',
     ];
+    
+    public function getPhotoUrlAttribute($value)
+    {
+        if (empty($value)){
+            if ($this->facebook_user() && $this->facebook_user()->avatar){
+                return $this->facebook_user()->avatar;
+            }else{
+                return 'https://www.gravatar.com/avatar/'.md5(Str::lower($this->email)).'.jpg?s=200&d=mm';
+            }
+        }else{
+            return $value;
+        }
+    }
     
     public function playlists(){
         return $this->hasMany('App\Playlist');
@@ -126,7 +140,7 @@ class User extends SparkUser
     }
     
     public function add_info(){
-        $moreinfo = DB::select('select count(received.id) recommendations_received, count(given.id) recommendations_given, count(accepted.id) recommendations_accepted, count(acted_upon.id) recommendations_acted_upon, count(likes.id) likes, count(hitcounts.id) hitcounts
+        $moreinfo = DB::select('select count(received.id) recommendations_received, count(given.id) recommendations_given, count(accepted.id) recommendations_accepted, count(acted_upon.id) recommendations_acted_upon, count(likes.id) likes, count(hitcounts.id) hitcounts, count(playlists.id) playlists
         from users
         left join likes on likes.user_id = users.id
         left join recommendations as received on received.recommendee_id = users.id
@@ -134,6 +148,7 @@ class User extends SparkUser
         left join recommendations as accepted on accepted.recommendee_id = users.id and accepted.action  = \'accepted\'
         left join recommendations as acted_upon on acted_upon.recommendee_id = users.id and (acted_upon.action is null or acted_upon.action = \'viewed\')
         left join hitcounts on hitcounts.user_id = users.id and hitcounts.request = \'user_feed\'
+        left join playlists on playlists.user_id = users.id
         where users.id = ?
         limit 1
         ', [$this->id]);
@@ -146,6 +161,7 @@ class User extends SparkUser
             $this->hasAcceptedARecommendation = $moreinfo->recommendations_accepted > 0 ? '1' : 0;
             $this->hasTakenActionOnARecommendation = $moreinfo->recommendations_acted_upon > 0 ? '1' : 0;
             $this->hasRegisteredTheirFeed = $moreinfo->hitcounts > 0 ? '1' : 0;
+            $this->hasCreatedAPlaylist = $moreinfo->playlists > 0 ? '1' : 0;
             $permissions = $this->plan_permissions();
             $this->canAddAPlaylist = $permissions['can_add_a_playlist'];
             $this->canRecommend = $permissions['can_recommend'];
@@ -294,6 +310,7 @@ class User extends SparkUser
     }
     
     public function recommendations_by_action($action = 'pending'){
+        $order_clause = ' order by r.updated_at desc';
         switch ($action){
             case 'pending':
                 $action_clause = '(r.action is null or r.action = \'viewed\')';
@@ -308,7 +325,7 @@ class User extends SparkUser
                 return ['error' => 'Invalid recommendation action'];
                 break;
         }
-        $episodes = DB::select('select e.slug, e.name, s.slug show_slug, s.name show_name, u.slug user_slug, u.name user_name, r.slug recommendation_slug from episodes e inner join recommendations r on r.episode_id = e.id left join users u on u.id = r.recommender_id left join shows s on s.id = e.show_id where r.recommendee_id = ? and '.$action_clause, [$this->id]);
+        $episodes = DB::select('select e.slug, e.name, s.slug show_slug, s.name show_name, u.slug user_slug, u.name user_name, r.slug recommendation_slug from episodes e inner join recommendations r on r.episode_id = e.id left join users u on u.id = r.recommender_id left join shows s on s.id = e.show_id where r.recommendee_id = ? and '.$action_clause.$order_clause, [$this->id]);
         $ret = [];
         $e_slug = '';
         $ret_index = 0;
