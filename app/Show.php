@@ -86,6 +86,7 @@ class Show extends Model {
             curl_close($ch);
               
             $str = str_replace("itunes:","itunes_",$str);
+            $str = str_replace("sy:","sy_",$str);
             if (@$content = simplexml_load_string($str)){
 				//Update podcast info
 				$this->name = $content->channel->title;
@@ -102,6 +103,19 @@ class Show extends Model {
 						if ($key == "href"){
 							$this->img_url = (string)$val;
 						}
+					}
+				}
+				if ($content->channel->sy_updatePeriod){
+				    $this->updatePeriod = (string)$content->channel->sy_updatePeriod;
+				}
+				if ($content->channel->sy_updateFrequency){
+				    $this->updateFrequency = (string)$content->channel->sy_updateFrequency;
+				}
+				if ($content->channel->itunes_category){
+					foreach($content->channel->itunes_category->Attributes() as $key=>$val){
+					    if ($key == "text"){
+        				    $this->category = (string)$val;
+					    }
 					}
 				}
 				$this->active = true;
