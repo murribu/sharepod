@@ -8,6 +8,9 @@ class RefreshFeed extends Command
     protected $signature = 'refreshfeed';
     
     public function handle() {
-        $this->info(Show::updateOneFeed());
+        $ret = Show::updateOneFeed();
+        if ($ret != ""){
+            $this->info($ret);
+        }
     }
 }
