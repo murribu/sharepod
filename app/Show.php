@@ -149,8 +149,10 @@ class Show extends Model {
 						}
 						if ($item->enclosure && $item->enclosure->Attributes()){
 							foreach($item->enclosure->Attributes() as $key=>$val){
-								if($key == "length")
-									$episode->filesize = (string)$val;
+								if($key == "length"){
+									$val = (string)$val;
+									$episode->filesize = $val == "" ? null : $val;
+								}
 								if($key == "url")
 									$episode->url = (string)$val;
 							}
