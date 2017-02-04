@@ -27,7 +27,7 @@ class UsersController extends Controller
     
     public function apiGetUser($slug){
         $u = User::where('slug', $slug)
-            ->select('id', 'slug', 'name', 'email')
+            ->select('id', 'slug', 'name', 'email', 'facebook_user_id')
             ->first();
             
         $u->photo_url = $u->getPhotoUrlAttribute($u->photo_url);

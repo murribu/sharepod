@@ -25,7 +25,10 @@ Vue.component('episode', {
                     self.selectedEpisode = response.data;
                 },
                 response => {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
         },
         updateEpisode(slug, total_likes, this_user_likes){

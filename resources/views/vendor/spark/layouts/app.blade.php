@@ -45,7 +45,7 @@
         @endif
     </div>
     @include('footer')
-
+    @include('modals.error')
     <!-- JavaScript -->
     <script src="/js/app.js"></script>
     <script src="/js/global.js"></script>

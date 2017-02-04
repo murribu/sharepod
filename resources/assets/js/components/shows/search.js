@@ -23,7 +23,10 @@ Vue.component('shows-search', {
                         self.shows = response.data;
                         this.holdText = '';
                     }, response => {
-                        // alert('error')
+                        $("#modal-error").modal('show');
+                        setTimeout(function(){
+                            $("#modal-error").modal('hide');
+                        }, 8000);
                     })
             }
         }, 500)

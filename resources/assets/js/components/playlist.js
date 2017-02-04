@@ -53,7 +53,10 @@ Vue.component('playlist', {
                     self.playlist.episodes = response.data;
                     self.loaded = true;
                 }, response => {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         moveUp(episode){
@@ -67,7 +70,10 @@ Vue.component('playlist', {
                     self.playlist.episodes = response.data;
                     self.loaded = true;
                 }, response => {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         moveDown(episode){
@@ -81,7 +87,10 @@ Vue.component('playlist', {
                     self.playlist.episodes = response.data;
                     self.loaded = true;
                 }, response => {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         moveToBottom(episode){
@@ -95,7 +104,10 @@ Vue.component('playlist', {
                     self.playlist.episodes = response.data;
                     self.loaded = true;
                 }, response => {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         yesImSureRemoveEpisode(){
@@ -113,7 +125,10 @@ Vue.component('playlist', {
                     self.loaded = true;
                 }, response => {
                     this.areYouSure.busy = false;
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         loadPlaylist() {
@@ -124,7 +139,10 @@ Vue.component('playlist', {
                     self.playlist = response.data;
                     self.loaded = true;
                 }, response => {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
         },
     }

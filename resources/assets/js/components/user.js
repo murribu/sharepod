@@ -53,28 +53,40 @@ Vue.component('view-user', {
                 .then(response => {
                     self.viewed_user = response.data;
                 }, response => {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
             this.$http.get('/api/users/' + this.slug + '/episodes_liked')
                 .then(response => {
                     self.episodes_liked = response.data;
                     self.episodes_liked_loaded = true;
                 }, response => {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
             this.$http.get('/api/users/' + this.slug + '/shows_liked')
                 .then(response => {
                     self.shows_liked = response.data;
                     self.shows_liked_loaded = true;
                 }, response => {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
             this.$http.get('/api/users/' + this.slug + '/playlists')
                 .then(response => {
                     self.playlists = response.data;
                     self.playlists_loaded = true;
                 }, response => {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
             this.$http.get('/api/users/' + this.slug + '/connections')
                 .then(response => {
@@ -82,14 +94,20 @@ Vue.component('view-user', {
                     self.connections.pending = response.data.pending;
                     self.connections_loaded = true;
                 }, response => {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
             this.$http.get('/api/users/' + this.slug + '/recommendations_accepted')
                 .then(response => {
                     self.recommendations_accepted = response.data;
                     self.recommendations_loaded = true;
                 }, response => {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
         },
         viewed_user_name(options = false) {

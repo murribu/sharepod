@@ -45,7 +45,10 @@ Vue.component('connections', {
                 },response => {
                     self.outstandingRequests--;
                     this.updateBusy = false;
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
         },
         showAreYouSure(message, action, connection){
@@ -84,7 +87,10 @@ Vue.component('connections', {
                 .then(response => {
                     self.loadConnections();
                 }, response => {
-                    // alert('error')
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         blockConnection(c){
@@ -97,7 +103,10 @@ Vue.component('connections', {
                 .then(response => {
                     self.loadConnections();
                 }, response => {
-                    // alert('error')
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         makeConnectionPending(c){
@@ -110,7 +119,10 @@ Vue.component('connections', {
                 .then(response => {
                     self.loadConnections();
                 }, response => {
-                    // alert('error')
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         connections_of_type(c_status) {

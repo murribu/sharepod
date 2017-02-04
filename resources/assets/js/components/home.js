@@ -25,7 +25,10 @@ Vue.component('home', {
                 .then(response => {
                     self.episodes = response.data;
                 }, response => {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
         }
     }

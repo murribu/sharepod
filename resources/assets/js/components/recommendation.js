@@ -27,7 +27,10 @@ Vue.component('recommendation', {
                     self.loadRecommenation();
                     self.busy = false;
                 }, response => {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         reject(){
@@ -41,7 +44,10 @@ Vue.component('recommendation', {
                     self.loadRecommenation();
                     self.busy = false;
                 }, response => {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         makePending(){
@@ -55,7 +61,10 @@ Vue.component('recommendation', {
                     self.loadRecommenation();
                     self.busy = false;
                 }, response => {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         loadRecommenation() {
@@ -72,7 +81,10 @@ Vue.component('recommendation', {
                             window.location.href = '/';
                             break;
                         default:
-                            // alert('error');
+                            $("#modal-error").modal('show');
+                            setTimeout(function(){
+                                $("#modal-error").modal('hide');
+                            }, 8000);
                             break;
                     }
                 });

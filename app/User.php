@@ -488,4 +488,11 @@ class User extends SparkUser
         
         return $user;
     }
+    
+    //https://laracasts.com/discuss/channels/spark/column-notificationsnotifiable-id-not-found-bug
+    public function notifications()
+    {
+        return $this->hasMany(\Illuminate\Notifications\DatabaseNotification::class)
+            ->orderBy('created_at', 'desc');
+    }
 }

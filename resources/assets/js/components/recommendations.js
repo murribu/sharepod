@@ -36,7 +36,10 @@ Vue.component('recommendations', {
                     self.loadRecommendationsPending();
                     self.loadRecommendationsAccepted();
                 }, response => {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         reject(r){
@@ -54,7 +57,10 @@ Vue.component('recommendations', {
                     self.loadRecommendationsPending();
                     self.loadRecommendationsAccepted();
                 }, response => {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         makePending(r){
@@ -72,7 +78,10 @@ Vue.component('recommendations', {
                     self.loadRecommendationsPending();
                     self.loadRecommendationsAccepted();
                 }, response => {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         loadRecommendationsPending(){
@@ -85,7 +94,10 @@ Vue.component('recommendations', {
                     self.recommendations_pending_loaded = true;
                 },
                 response => {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
         },
         loadRecommendationsAccepted(){
@@ -98,7 +110,10 @@ Vue.component('recommendations', {
                     self.recommendations_accepted_loaded = true;
                 },
                 response => {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
         },
     }

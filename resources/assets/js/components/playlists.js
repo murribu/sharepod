@@ -28,7 +28,10 @@ Vue.component('playlists', {
                     self.userPlaylists = response.data;
                     self.userPlaylistsLoaded = true;
                 }, response => {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
         },
         loadPopularPlaylists() {
@@ -39,7 +42,10 @@ Vue.component('playlists', {
                     self.popularPlaylists = response.data;
                     self.popularPlaylistsLoaded = true;
                 }, response => {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
         }
     },

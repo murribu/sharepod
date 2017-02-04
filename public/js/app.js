@@ -5104,7 +5104,10 @@ module.exports = {
                 .then(function (response) {
                     self.playlists = response.data;
                 }, function (response) {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
         },
         selectEpisodeForAddingToPlaylist: function selectEpisodeForAddingToPlaylist(episode){
@@ -5130,7 +5133,10 @@ module.exports = {
                         $("#modal-add-to-playlist-success").modal('hide');
                     }, 7000);
                 }, function (response) {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         getRecentRecommendees: function getRecentRecommendees(){
@@ -5139,7 +5145,10 @@ module.exports = {
                 .then(function (response) {
                     self.recentRecommendees = response.data;
                 }, function (response) {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         recommendEpisodeToExistingUser: function recommendEpisodeToExistingUser(user_slug) {
@@ -5152,7 +5161,10 @@ module.exports = {
                     self.getRecentRecommendees();
                     self.selectedEpisode.total_recommendations = response.data.total_recommendations;
                 }, function (response) {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
         },
         recommendEpisode: function recommendEpisode(episode) {
@@ -5180,7 +5192,10 @@ module.exports = {
                     this$1.showSuccessModal();
                     this$1.getRecentRecommendees();
                 }, function (response) {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
         },
         showSuccessModal: function showSuccessModal(){
@@ -20097,7 +20112,10 @@ Vue.component('connections', {
                 },function (response) {
                     self.outstandingRequests--;
                     this$1.updateBusy = false;
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
         },
         showAreYouSure: function showAreYouSure(message, action, connection){
@@ -20136,7 +20154,10 @@ Vue.component('connections', {
                 .then(function (response) {
                     self.loadConnections();
                 }, function (response) {
-                    // alert('error')
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         blockConnection: function blockConnection(c){
@@ -20149,7 +20170,10 @@ Vue.component('connections', {
                 .then(function (response) {
                     self.loadConnections();
                 }, function (response) {
-                    // alert('error')
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         makeConnectionPending: function makeConnectionPending(c){
@@ -20162,7 +20186,10 @@ Vue.component('connections', {
                 .then(function (response) {
                     self.loadConnections();
                 }, function (response) {
-                    // alert('error')
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         connections_of_type: function connections_of_type(c_status) {
@@ -20236,7 +20263,10 @@ Vue.component('episode', {
                     self.selectedEpisode = response.data;
                 },
                 function (response) {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
         },
         updateEpisode: function updateEpisode(slug, total_likes, this_user_likes){
@@ -20292,7 +20322,10 @@ Vue.component('home', {
                 .then(function (response) {
                     self.episodes = response.data;
                 }, function (response) {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
         }
     }
@@ -20368,7 +20401,10 @@ Vue.component('playlist', {
                     self.playlist.episodes = response.data;
                     self.loaded = true;
                 }, function (response) {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         moveUp: function moveUp(episode){
@@ -20382,7 +20418,10 @@ Vue.component('playlist', {
                     self.playlist.episodes = response.data;
                     self.loaded = true;
                 }, function (response) {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         moveDown: function moveDown(episode){
@@ -20396,7 +20435,10 @@ Vue.component('playlist', {
                     self.playlist.episodes = response.data;
                     self.loaded = true;
                 }, function (response) {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         moveToBottom: function moveToBottom(episode){
@@ -20410,7 +20452,10 @@ Vue.component('playlist', {
                     self.playlist.episodes = response.data;
                     self.loaded = true;
                 }, function (response) {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         yesImSureRemoveEpisode: function yesImSureRemoveEpisode(){
@@ -20430,7 +20475,10 @@ Vue.component('playlist', {
                     self.loaded = true;
                 }, function (response) {
                     this$1.areYouSure.busy = false;
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         loadPlaylist: function loadPlaylist() {
@@ -20441,7 +20489,10 @@ Vue.component('playlist', {
                     self.playlist = response.data;
                     self.loaded = true;
                 }, function (response) {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
         },
     }
@@ -20482,7 +20533,10 @@ Vue.component('playlists', {
                     self.userPlaylists = response.data;
                     self.userPlaylistsLoaded = true;
                 }, function (response) {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
         },
         loadPopularPlaylists: function loadPopularPlaylists() {
@@ -20493,7 +20547,10 @@ Vue.component('playlists', {
                     self.popularPlaylists = response.data;
                     self.popularPlaylistsLoaded = true;
                 }, function (response) {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
         }
     },
@@ -20534,7 +20591,10 @@ Vue.component('recommendation', {
                     self.loadRecommenation();
                     self.busy = false;
                 }, function (response) {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         reject: function reject(){
@@ -20548,7 +20608,10 @@ Vue.component('recommendation', {
                     self.loadRecommenation();
                     self.busy = false;
                 }, function (response) {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         makePending: function makePending(){
@@ -20562,7 +20625,10 @@ Vue.component('recommendation', {
                     self.loadRecommenation();
                     self.busy = false;
                 }, function (response) {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         loadRecommenation: function loadRecommenation() {
@@ -20579,7 +20645,10 @@ Vue.component('recommendation', {
                             window.location.href = '/';
                             break;
                         default:
-                            // alert('error');
+                            $("#modal-error").modal('show');
+                            setTimeout(function(){
+                                $("#modal-error").modal('hide');
+                            }, 8000);
                             break;
                     }
                 });
@@ -20629,7 +20698,10 @@ Vue.component('recommendations', {
                     self.loadRecommendationsPending();
                     self.loadRecommendationsAccepted();
                 }, function (response) {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         reject: function reject(r){
@@ -20647,7 +20719,10 @@ Vue.component('recommendations', {
                     self.loadRecommendationsPending();
                     self.loadRecommendationsAccepted();
                 }, function (response) {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         makePending: function makePending(r){
@@ -20665,7 +20740,10 @@ Vue.component('recommendations', {
                     self.loadRecommendationsPending();
                     self.loadRecommendationsAccepted();
                 }, function (response) {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         loadRecommendationsPending: function loadRecommendationsPending(){
@@ -20678,7 +20756,10 @@ Vue.component('recommendations', {
                     self.recommendations_pending_loaded = true;
                 },
                 function (response) {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
         },
         loadRecommendationsAccepted: function loadRecommendationsAccepted(){
@@ -20691,7 +20772,10 @@ Vue.component('recommendations', {
                     self.recommendations_accepted_loaded = true;
                 },
                 function (response) {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
         },
     }
@@ -20748,7 +20832,10 @@ Vue.component('show', {
                 self.show = response.data;
             },
             function (response) {
-                // alert('error');
+                $("#modal-error").modal('show');
+                setTimeout(function(){
+                    $("#modal-error").modal('hide');
+                }, 8000);
             });
         if (this.user){
             this.getRecentRecommendees();
@@ -20762,7 +20849,10 @@ Vue.component('show', {
                 .then(function (response) {
                     self.updateShow(response.data.total_likes, response.data.this_user_likes);
                 }, function (response) {
-                    //alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         unlikeShow: function unlikeShow() {
@@ -20771,7 +20861,10 @@ Vue.component('show', {
                 .then(function (response) {
                     self.updateShow(response.data.total_likes, response.data.this_user_likes);
                 }, function (response) {
-                    //alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         showMore: function showMore() {
@@ -20780,7 +20873,10 @@ Vue.component('show', {
                 .then(function (response) {
                     self.show.episodes = self.show.episodes.concat(response.data);
                 }, function (response) {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
         },
         updateShow: function updateShow(total_likes, this_user_likes){
@@ -20931,7 +21027,10 @@ Vue.component('shows-search', {
                         self.shows = response.data;
                         this$1.holdText = '';
                     }, function (response) {
-                        // alert('error')
+                        $("#modal-error").modal('show');
+                        setTimeout(function(){
+                            $("#modal-error").modal('hide');
+                        }, 8000);
                     })
             }
         }, 500)
@@ -20998,28 +21097,40 @@ Vue.component('view-user', {
                 .then(function (response) {
                     self.viewed_user = response.data;
                 }, function (response) {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
             this.$http.get('/api/users/' + this.slug + '/episodes_liked')
                 .then(function (response) {
                     self.episodes_liked = response.data;
                     self.episodes_liked_loaded = true;
                 }, function (response) {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
             this.$http.get('/api/users/' + this.slug + '/shows_liked')
                 .then(function (response) {
                     self.shows_liked = response.data;
                     self.shows_liked_loaded = true;
                 }, function (response) {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
             this.$http.get('/api/users/' + this.slug + '/playlists')
                 .then(function (response) {
                     self.playlists = response.data;
                     self.playlists_loaded = true;
                 }, function (response) {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
             this.$http.get('/api/users/' + this.slug + '/connections')
                 .then(function (response) {
@@ -21027,14 +21138,20 @@ Vue.component('view-user', {
                     self.connections.pending = response.data.pending;
                     self.connections_loaded = true;
                 }, function (response) {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
             this.$http.get('/api/users/' + this.slug + '/recommendations_accepted')
                 .then(function (response) {
                     self.recommendations_accepted = response.data;
                     self.recommendations_loaded = true;
                 }, function (response) {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
         },
         viewed_user_name: function viewed_user_name(options) {

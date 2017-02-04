@@ -43,7 +43,10 @@ Vue.component('show', {
                 self.show = response.data;
             },
             response => {
-                // alert('error');
+                $("#modal-error").modal('show');
+                setTimeout(function(){
+                    $("#modal-error").modal('hide');
+                }, 8000);
             });
         if (this.user){
             this.getRecentRecommendees();
@@ -57,7 +60,10 @@ Vue.component('show', {
                 .then(response => {
                     self.updateShow(response.data.total_likes, response.data.this_user_likes);
                 }, response => {
-                    //alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         unlikeShow() {
@@ -66,7 +72,10 @@ Vue.component('show', {
                 .then(response => {
                     self.updateShow(response.data.total_likes, response.data.this_user_likes);
                 }, response => {
-                    //alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         showMore() {
@@ -75,7 +84,10 @@ Vue.component('show', {
                 .then(response => {
                     self.show.episodes = self.show.episodes.concat(response.data);
                 }, response => {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
         },
         updateShow(total_likes, this_user_likes){

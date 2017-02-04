@@ -19,7 +19,10 @@ module.exports = {
                 .then(response => {
                     self.playlists = response.data;
                 }, response => {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
         },
         selectEpisodeForAddingToPlaylist(episode){
@@ -45,7 +48,10 @@ module.exports = {
                         $("#modal-add-to-playlist-success").modal('hide');
                     }, 7000);
                 }, response => {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         getRecentRecommendees(){
@@ -54,7 +60,10 @@ module.exports = {
                 .then(response => {
                     self.recentRecommendees = response.data;
                 }, response => {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         recommendEpisodeToExistingUser(user_slug) {
@@ -67,7 +76,10 @@ module.exports = {
                     self.getRecentRecommendees();
                     self.selectedEpisode.total_recommendations = response.data.total_recommendations;
                 }, response => {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
         },
         recommendEpisode(episode) {
@@ -93,7 +105,10 @@ module.exports = {
                     this.showSuccessModal();
                     this.getRecentRecommendees();
                 }, response => {
-                    // alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 });
         },
         showSuccessModal(){
