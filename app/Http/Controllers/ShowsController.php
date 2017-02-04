@@ -73,7 +73,15 @@ class ShowsController extends Controller
     }
     
     public function apiListing($user_id = null){
-        return Show::orderBy('name')->get();
+        $shows = Show::where('active', '1')
+            ->select('name', 'slug', 'description')
+            ->orderBy('name')->get();
+            
+        foreach($shows as $show){
+            $show->description = strip_tags($show->description,"<p></p>");
+        }
+        
+        return $shows;
     }
     
     public function apiShow($slug){
