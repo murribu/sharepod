@@ -21,7 +21,7 @@ class Episode extends Model {
 		}else if($this->show && $this->show->img_url && $this->show->img_url != ''){
 			return $this->show->img_url;
 		}else{
-		    return 'https://www.gravatar.com/avatar/'.md5(Str::lower('')).'.jpg?s=200&d=mm';
+		    return 'http://shaarepod-murribu.c9users.io/img/logo.png';
 		}
 	}
     
