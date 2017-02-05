@@ -104,7 +104,7 @@ class Episode extends Model {
     public static function popular($limit = 10){
         $user_id = Auth::user() ? Auth::user()->id : -1;
         $vars = [$user_id, $user_id, $limit];
-        $episodes = Episode::selectRaw("episodes.id, episodes.name, episodes.slug, episodes.description, episodes.img_url, episodes.pubdate, s.name show_name, s.slug show_slug, 
+        $episodes = Episode::selectRaw("episodes.id, episodes.name, episodes.slug, episodes.description, episodes.img_url, episodes.pubdate, episodes.show_id, s.name show_name, s.slug show_slug, 
             (
             100 * (select count(id) from likes 
                 where fk = episodes.id 
@@ -149,6 +149,7 @@ class Episode extends Model {
         ->groupBy('s.name')
         ->groupBy('s.slug')
         ->groupBy('episodes.created_at')
+        ->groupBy('episodes.show_id')
         ->orderBy('score', 'desc')
         ->limit($limit)
         ->get();
