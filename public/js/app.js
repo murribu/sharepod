@@ -20924,7 +20924,9 @@ Vue.component('shows-browse', {
     props: ['user'],
     data: function data() {
         return {
-            shows: [],
+            shows: {},
+            categories: [],
+            selectedCategory: 'All',
             processing: false,
             error: false,
         };
@@ -20948,12 +20950,13 @@ Vue.component('shows-browse', {
             this.$http.get('api/shows')
                 .then(function (response) {
                     self.processing = false;
-                    self.shows = response.data;
+                    self.shows = response.data.shows;
+                    self.categories = response.data.categories;
                 }, function (response) {
                     self.processing = false;
                     self.error = true;
                 });
-        },
+        }
     }
 });
 

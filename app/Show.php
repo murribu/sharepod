@@ -212,6 +212,31 @@ class Show extends Model {
         }
     }
     
+    public static function popular($user, $category = null){
+        $limit = 10;
+        $user_id = Auth::user() ? Auth::user()->id : -1;
+        $shows = Show::selectRaw("shows.id, shows.name, shows.slug, shows.img_url, shows.description,
+            (
+            9 * (select count(id) from likes
+                where fk = shows.id
+                    and type = 'show'
+                    and (user_id in (select recommender_id from connections where user_id = $user_id and status = 'approved')
+                        or
+                        user_id = $user_id)
+            ) +
+            (select count(id) from likes
+                where fk = shows.id
+                    and type = 'show')
+            ) score")
+        ->orderBy('score', 'desc')
+        ->limit($limit);
+        
+        if ($category){
+            $shows = $shows->where('category', $category);
+        }
+        return $shows->get();
+    }
+    
     public static function howLongAgo($pubdate){
         $short = false;
         $etime = time() - $pubdate;
