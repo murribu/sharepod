@@ -133,7 +133,7 @@ class Episode extends Model {
                 where episode_id = episodes.id
                 and created_at > date_sub(now(), interval 1 week)
             )
-            ) * (9999999999 - TIMESTAMPDIFF(SECOND, '2000-1-1', episodes.created_at)) score")
+            ) * TIMESTAMPDIFF(SECOND, '2000-1-1', least(episodes.created_at, from_unixtime(episodes.pubdate))) score")
         ->leftJoin('shows as s', 's.id', '=', 'episodes.show_id')
         ->groupBy('episodes.id')
         ->groupBy('episodes.name')
