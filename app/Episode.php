@@ -3,6 +3,7 @@ use Auth;
 use DB;
 use Mail;
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 
 class Episode extends Model {
@@ -15,10 +16,12 @@ class Episode extends Model {
     protected static $slug_reserved_words = ['new', 'search', 'undefined', 'popular'];
     
 	public function img_url_default(){
-		if ($this->img_url){
+		if ($this->img_url && $this->img_url != ''){
 			return $this->img_url;
+		}else if($this->show && $this->show->img_url && $this->show->img_url != ''){
+			return $this->show->img_url;
 		}else{
-			return $this->podcast->img_url;
+		    return 'https://www.gravatar.com/avatar/'.md5(Str::lower('')).'.jpg?s=200&d=mm';
 		}
 	}
     
@@ -30,6 +33,7 @@ class Episode extends Model {
         $this->howLongAgo = self::howLongAgo($this->pubdate);
         $this->pubdate_str = date('g:i A - j M Y', $this->pubdate);
         $this->description = strip_tags($this->description,"<p></p>");
+        $this->img_url = $this->img_url_default();
         if (isset($this->likeddate)){
             $this->likedHowLongAgo = self::howLongAgo(strtotime($this->likeddate));
             $this->likeddate_str = date('g:i A - j M Y', strtotime($this->likeddate));

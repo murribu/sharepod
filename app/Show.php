@@ -44,7 +44,7 @@ class Show extends Model {
             ->leftJoin('playlist_episodes as pe', 'pe.episode_id', '=', 'episodes.id')
             ->leftJoin('recommendations', 'recommendations.episode_id', '=', 'episodes.id')
             ->where('show_id', $this->id)
-            ->selectRaw('episodes.id, episodes.slug, episodes.name, episodes.description, episodes.duration, episodes.explicit, episodes.filesize, episodes.img_url, episodes.pubdate, count(total_likes.id) as total_likes, count(this_user_likes.id) as this_user_likes, count(recommendations.id) total_recommendations, count(distinct pe.playlist_id) total_playlists')
+            ->selectRaw('episodes.show_id, episodes.id, episodes.slug, episodes.name, episodes.description, episodes.duration, episodes.explicit, episodes.filesize, episodes.img_url, episodes.pubdate, count(total_likes.id) as total_likes, count(this_user_likes.id) as this_user_likes, count(recommendations.id) total_recommendations, count(distinct pe.playlist_id) total_playlists')
             ->where('active', 1)
             ->orderBy('pubdate', 'desc')
             ->groupBy('episodes.id')
@@ -56,6 +56,7 @@ class Show extends Model {
             ->groupBy('episodes.filesize')
             ->groupBy('episodes.img_url')
             ->groupBy('episodes.pubdate')
+            ->groupBy('episodes.show_id')
             ->limit($limit);
         if ($pubdate){
             $episodes = $episodes->where('pubdate', '<', $pubdate);
