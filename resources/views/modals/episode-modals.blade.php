@@ -66,16 +66,15 @@
                         <h4 class="modal-title">@{{show ? show.name : ''}}<br>@{{selectedEpisode.name}}</h4>
                     </div>
                     <div class="modal-body">
-                        <div>
-                            Recommend this episode via email:
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <input class="form-control" v-model="recommendEmail" placeholder="sam@example.com" />
+                        <div class="row form-group" :class="{'has-error': errors.has('recommendEmail') }">
+                            <label class="control-label col-xs-12 col-sm-2" for="recommendEmail">Email</label>
+                            <div class="col-xs-12 col-sm-10">
+                                <input class="form-control" v-model="recommendEmail" v-validate="recommendEmail" data-vv-rules="required|email" type="email" placeholder="sam@example.com" />
+                                <p class="text-danger" v-if="errors.has('recommendEmail')">Please enter a valid email address</p>
                             </div>
                         </div>
                         <div class="row" style="margin-top:10px;">
-                            <button class="btn btn-primary pull-right" style="margin-right: 15px;" @click="sendRecommendation()">
+                            <button class="btn btn-primary pull-right" style="margin-right: 15px;" @click="sendRecommendation()" :disabled="errors.has('recommendEmail')">
                                 <span>
                                     <i class="fa fa-btn" :class="{'fa-spinner fa-spin': recommendForm.busy, 'fa-check-circle': !recommendForm.busy}"></i>Send recommendation
                                 </span>
