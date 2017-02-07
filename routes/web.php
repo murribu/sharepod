@@ -35,6 +35,8 @@ Route::get('/recommendations/{slug}', 'RecommendationsController@getRecommendati
 
 Route::get('/help', 'HelpController@index');
 
+Route::get('/manifest.json', 'HomeController@getManifest');
+
 
 $router->group(['middleware' => 'auth'], function ($router) {
     Route::post('/recommend', 'EpisodesController@recommend');
