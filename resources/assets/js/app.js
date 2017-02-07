@@ -18,6 +18,9 @@ require('spark-bootstrap');
 
 require('./components/bootstrap');
 
+import VeeValidate from 'vee-validate';
+Vue.use(VeeValidate);
+
 var app = new Vue({
     mixins: [require('spark')]
 });
