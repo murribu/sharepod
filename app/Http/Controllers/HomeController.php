@@ -25,6 +25,9 @@ class HomeController extends Controller
      */
     public function show()
     {
+        if ($_SERVER['HTTPS'] != "on") { 
+        	return redirect('https://'.env('APP_URL'));
+        }
         return view('home', ['activelink' => 'home']);
     }
     
@@ -35,19 +38,29 @@ class HomeController extends Controller
     
     public function getManifest(){
         $manifest = [
-            'name'              => env('APP_NAME'),
-            'short_name'        => env('APP_SHORT_NAME'),
-            'start_url'         => '.',
+            'manifest_version'  => 1,
+            'name'              => env('APP_NAME')."1",
+            'version'           => '0.1',
+            'short_name'        => env('APP_SHORT_NAME')."1",
+            
+            'start_url'         => '/shows',
             'display'           => 'standalone',
-            'background_color'  => '#fff',
+            'background_color'  => '#000',
             'description'       => env('APP_DESCRIPTION'),
             'icons' => [
-                    'src'       => 'img/logo.png',
-                    'sizes'     => '48x48',
-                    'type'      => 'image/png'
+                    [
+                        'src'       => 'img/logo.png',
+                        'sizes'     => '48x48',
+                        'type'      => 'image/png'
+                    ]
                 ],
             'related_applications' => [
-                    'platform'  => 'web'
+                    [
+                        'platform'  => 'web'
+                    ]
+                ],
+            'intent_filter' => [
+                    
                 ]
         ];
         
