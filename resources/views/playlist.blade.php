@@ -27,14 +27,18 @@
                     </div>
                 </div>
                 <div class="col-xs-12 col-md-8">
-                    <div class="panel panel-default">
-                        <div class="panel-heading centered">
-                            Episodes
+                    <div class="panel panel-default panel-list-item" v-for="(episode, index) in playlist.episodes">
+                        <div class="panel-heading">
+                            <a :href="'/shows/' + episode.show_slug">@{{episode.show_name}}</a>
+                            <br>
+                            <a :href="'/episodes/' + episode.slug">
+                                <img :src="episode.img_url" class="episode-image" />
+                                <strong>@{{episode.name}}</strong>
+                            </a>
+                            <small v-tooltip :title="episode.pubdate_str">@{{episode.howLongAgo}}</small>
                         </div>
-                        <div class="panel-body panel-list-item" v-for="(episode, index) in playlist.episodes">
-                            <div :class="{'col-xs-8': user, 'col-xs-12': !user}">
-                                @{{index + 1}}. <a :href="'/episodes/' + episode.slug">@{{episode.name}}</a> from <a :href="'/shows/' + episode.show_slug">@{{episode.show_name}}</a>
-                            </div>
+                        <div class="panel-body">
+                            <div :class="{'col-xs-8': user, 'col-xs-12': !user}" v-html="episode.description"></div>
                             <div class="col-xs-4" v-if="user">
                                 <div class="episode-action col-xs-2">
                                     <button class="btn-move-to-top" @click.prevent="moveToTop(episode)" :disabled="!loaded">
@@ -73,7 +77,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="panel-body centered" v-if="loaded && playlist.episodes.length == 0">
+                    </div>
+                    <div class="panel" v-if="loaded && playlist.episodes.length == 0">
+                        <div class="panel-body centered">
                             This playlist has no episodes
                         </div>
                     </div>

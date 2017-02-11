@@ -69,14 +69,9 @@ class PlaylistController extends Controller {
             $ret['description'] = $playlist->description;
             $ret['user_name'] = $playlist->user->name;
             $ret['user_slug'] = $playlist->user->slug;
-            $episodes = [];
-            foreach($playlist->episodes() as $e){
-                $episodes[] = [
-                    'show_name' => $e->show->name,
-                    'show_slug' => $e->show->slug,
-                    'name' => $e->name,
-                    'slug' => $e->slug,
-                ];
+            $episodes = $playlist->episodes();
+            foreach($episodes as $e){
+                $e = $e->prepare();
             }
             $ret['episodes'] = $episodes;
         }
