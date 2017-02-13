@@ -85,10 +85,11 @@ class Show extends Model {
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             $str = curl_exec($ch);
             curl_close($ch);
-              
+
+            $str = mb_convert_encoding($str, 'UTF-8', 'UTF-8'); // This removes nasty characters
             $str = str_replace("itunes:","itunes_",$str);
             $str = str_replace("sy:","sy_",$str);
-            if (@$content = simplexml_load_string($str)){
+            if ($content = simplexml_load_string($str)){
 				//Update podcast info
 				$this->name = $content->channel->title;
                 if (!$this->slug || $this->slug == ''){
@@ -136,7 +137,7 @@ class Show extends Model {
                         $episode->slug = Episode::findSlug($this->name."-".$episode->name);
 						$episode->description = (string)$item->description;
 						//remove emojis
-						$episode->description =  preg_replace('/([0-9|#][\x{20E3}])|[\x{00ae}|\x{00a9}|\x{203C}|\x{2047}|\x{2048}|\x{2049}|\x{3030}|\x{303D}|\x{2139}|\x{2122}|\x{3297}|\x{3299}][\x{FE00}-\x{FEFF}]?|[\x{2190}-\x{21FF}][\x{FE00}-\x{FEFF}]?|[\x{2300}-\x{23FF}][\x{FE00}-\x{FEFF}]?|[\x{2460}-\x{24FF}][\x{FE00}-\x{FEFF}]?|[\x{25A0}-\x{25FF}][\x{FE00}-\x{FEFF}]?|[\x{2600}-\x{27BF}][\x{FE00}-\x{FEFF}]?|[\x{2900}-\x{297F}][\x{FE00}-\x{FEFF}]?|[\x{2B00}-\x{2BF0}][\x{FE00}-\x{FEFF}]?|[\x{1F000}-\x{1F6FF}][\x{FE00}-\x{FEFF}]?/u', '', $episode->description);
+						$episode->description = preg_replace('/([0-9|#][\x{20E3}])|[\x{00ae}|\x{00a9}|\x{203C}|\x{2047}|\x{2048}|\x{2049}|\x{3030}|\x{303D}|\x{2139}|\x{2122}|\x{3297}|\x{3299}][\x{FE00}-\x{FEFF}]?|[\x{2190}-\x{21FF}][\x{FE00}-\x{FEFF}]?|[\x{2300}-\x{23FF}][\x{FE00}-\x{FEFF}]?|[\x{2460}-\x{24FF}][\x{FE00}-\x{FEFF}]?|[\x{25A0}-\x{25FF}][\x{FE00}-\x{FEFF}]?|[\x{2600}-\x{27BF}][\x{FE00}-\x{FEFF}]?|[\x{2900}-\x{297F}][\x{FE00}-\x{FEFF}]?|[\x{2B00}-\x{2BF0}][\x{FE00}-\x{FEFF}]?|[\x{1F000}-\x{1F6FF}][\x{FE00}-\x{FEFF}]?/u', '', $episode->description);
 						$episode->duration = 0;
 						if ($item->itunes_duration){
 							$duration = explode(":",(string)$item->itunes_duration);
