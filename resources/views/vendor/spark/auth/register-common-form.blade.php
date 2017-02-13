@@ -34,6 +34,7 @@
     @endif
     
     <div class="form-group">
+        <!--
         <div class="row" style="margin-bottom:15px;margin-top:30px;">
             <div class="col-xs-6 col-xs-offset-3">
                 <a title="Twitter" class="btn btn-block btn-social btn-twitter" href="/auth/twitter" @click.prevent="signInWithTwitter">
@@ -41,6 +42,7 @@
                 </a>
             </div>
         </div>
+        -->
         <div class="row">
             <div class="col-xs-6 col-xs-offset-3">
                 <a title="Facebook" class="btn btn-block btn-social btn-facebook" href="/auth/facebook" @click.prevent="signInWithFacebook">
