@@ -229,6 +229,7 @@ class Show extends Model {
                 where fk = shows.id
                     and type = 'show')
             ) score")
+        ->where('active', '1')
         ->orderBy('score', 'desc')
         ->limit($limit);
         
