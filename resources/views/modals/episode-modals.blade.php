@@ -49,11 +49,20 @@
                         <h4 class="modal-title">@{{show ? show.name : ''}}<br>@{{selectedEpisode.name}}</h4>
                     </div>
                     <div class="modal-body">
-                        <div>
-                            Recommend this episode to:
+                        <div class="row">
+                            <label class="control-label col-xs-12" for="comment">Comment (optional):</label>
+                            <div class="col-xs-12">
+                                <textarea name="comment" class="form-control" type="textarea" v-model="recommendationComment" placeholder="This episode made me think of you!" ></textarea>
+                            </div>                        
                         </div>
-                        <button class="btn btn-primary btn-separate-from-other-buttons" v-for="user in recentRecommendees" @click.prevent="recommendEpisodeToExistingUser(user.slug)">@{{user.name}}</button>
-                        <button class="btn btn-primary" @click.prevent="recommendEpisodeToSomeoneElse">Someone else</button>
+                        <hr>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                Recommend this episode to:
+                                <button class="btn btn-primary btn-separate-from-other-buttons" v-for="user in recentRecommendees" @click.prevent="recommendEpisodeToExistingUser(user.slug)">@{{user.name}}</button>
+                                <button class="btn btn-primary" @click.prevent="recommendEpisodeToSomeoneElse">Someone else</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -66,6 +75,13 @@
                         <h4 class="modal-title">@{{show ? show.name : ''}}<br>@{{selectedEpisode.name}}</h4>
                     </div>
                     <div class="modal-body">
+                        <div class="row">
+                            <label class="control-label col-xs-12" for="comment">Comment (optional):</label>
+                            <div class="col-xs-12">
+                                <textarea name="comment" class="form-control" type="textarea" v-model="recommendationComment" placeholder="This episode made me think of you!" ></textarea>
+                            </div>
+                        </div>
+                        <hr>
                         <div class="row form-group" :class="{'has-error': errors.has('recommendEmail') }">
                             <label class="control-label col-xs-12 col-sm-2" for="recommendEmail">Email</label>
                             <div class="col-xs-12 col-sm-10">

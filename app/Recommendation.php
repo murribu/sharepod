@@ -45,6 +45,7 @@ class Recommendation extends Model {
             $r->episode_id      = $args['episode_id'];
             $r->action          = isset($args['action']) ? $args['action'] : null;
             $r->autoaction      = isset($args['autoaction']) ? $args['autoaction'] : null;
+            $r->comment         = isset($args['comment']) ? $args['comment'] : null;
             $r->slug            = Recommendation::findSlug();
             $r->save();
         }

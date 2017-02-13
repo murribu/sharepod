@@ -8,6 +8,7 @@ module.exports = {
             recentRecommendees: [],
             recommendEmail: '',
             recommendTwitter: '',
+            recommendationComment: '',
             playlists: [],
             selectedPlaylist: {}
         };
@@ -69,7 +70,7 @@ module.exports = {
         recommendEpisodeToExistingUser(user_slug) {
             var self = this;
             this.recommendForm.busy = true;
-            this.$http.post('/recommend', {slug: this.selectedEpisode.slug, user_slug: user_slug})
+            this.$http.post('/recommend', {slug: this.selectedEpisode.slug, user_slug: user_slug, comment: this.recommendationComment})
                 .then(response => {
                     self.recommendForm.busy = false;
                     self.showSuccessModal();
