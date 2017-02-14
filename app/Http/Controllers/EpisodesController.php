@@ -86,6 +86,8 @@ class EpisodesController extends Controller
         $ep = Episode::where('slug', Input::get('slug'))->first();
         if ($ep->like(Auth::user())){
             return ['success' => 1, 'total_likes' => $ep->likeCount(), 'this_user_likes' => 1];
+        }else{
+            return response()->json(['message' => 'Liking Error'], 500);
         }
     }
     
@@ -93,10 +95,21 @@ class EpisodesController extends Controller
         $ep = Episode::where('slug', Input::get('slug'))->first();
         if ($ep->unlike(Auth::user())){
             return ['success' => 1, 'total_likes' => $ep->likeCount(), 'this_user_likes' => 0];
+        }else{
+            return response()->json(['message' => 'Unliking Error'], 500);
         }
     }
     
     public function apiGetPopular(){
         return Episode::popular();
+    }
+    
+    public function apiArchive(){
+        $ep = Episode::where('slug', Input::get('slug'))->first();
+        if ($ep->archive(Auth::user())){
+            return ['success' => 1];
+        }else{
+            return response()->json(['message' => 'Archiving Error'], 500);
+        }
     }
 }

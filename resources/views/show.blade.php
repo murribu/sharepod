@@ -90,6 +90,13 @@
                                     </div>
                                 </button>
                             </div>
+                            <div class="episode-action">
+                                <button :class="{'active': episode.this_user_archived}" class="btn-archive-episode" @click.prevent="toggleArchiveEpisode(episode)">
+                                    <div class="icon-container" title="Archive">
+                                        <i class="fa fa-floppy-o"></i>
+                                    </div>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div class="panel panel-default panel-list-item clickable" v-if="show.episodes && show.episodeCount > show.episodes.length" @click="showMore">

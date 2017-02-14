@@ -73,8 +73,10 @@ class User extends SparkUser
     
     public function plan_permissions(){
         $ret = [
-            'can_add_a_playlist'    => false,
-            'can_recommend'         => false,
+            'can_add_a_playlist'            => false,
+            'can_recommend'                 => false,
+            'can_archive_episodes'          => false,
+            'has_reached_archive_limit'     => true,
         ];
         
         $plan = $this->plan();
@@ -103,6 +105,25 @@ class User extends SparkUser
                 || 
                     ($plan == env('PLAN_PREMIUM_NAME') && $playlist_count < intval(env('PLAN_PREMIUM_RECOMMENDATION_COUNT')))
                 );
+        }
+        
+        $ret['can_archive_episodes'] = env('PLAN_FREE_CAN_ARCHIVE') == '1' ||
+            ($plan && $plan == env('PLAN_BASIC_NAME') && env('PLAN_BASIC_CAN_ARCHIVE') == '1') ||
+            ($plan && $plan == env('PLAN_PREMIUM_NAME') && env('PLAN_PREMIUM_CAN_ARCHIVE') == '1');
+        
+        if ($ret['can_archive_episodes']){
+            $limit = 0;
+            if ($plan && $plan == env('PLAN_BASIC_NAME')){
+                $limit = intval(env('PLAN_BASIC_STORAGE_LIMIT'));
+            }
+            if ($plan && $plan == env('PLAN_PREMIUM_NAME')){
+                $limit = intval(env('PLAN_PREMIUM_STORAGE_LIMIT'));
+            }
+            $archived = DB::select('select sum(archived_episodes.filesize) s from archived_episodes where id in (select archived_episode_id from archived_episode_users where user_id = ?)', [$this->id]);
+            
+            if (intval($archived[0]->s) < $limit){
+                $ret['has_reached_archive_limit'] = false;
+            }
         }
         
         return $ret;
@@ -167,6 +188,51 @@ class User extends SparkUser
             $this->canRecommend = $permissions['can_recommend'];
         }
         return $this;
+    }
+    
+    public function archived_episodes(){
+        $self = $this;
+        
+        $archive_episodes = ArchiveEpisode::with('episode')
+            ->where('active', '1')
+            ->whereIn('id', function($query2) use ($self){
+            $query2->select('user_id')
+                ->from('archive_episode_users')
+                ->where('user_id', $self->id);
+        });
+        
+        $ret = [];
+        
+        foreach($archive_episodes as $e){
+            if ($e->episode_id){
+                $ep = $e->episode;
+            }else{
+                $ep = $e;
+            }
+            $r = [
+                'slug'          => $ep->slug,
+                'show_name'     => isset($ep->show_id) ? $ep->show->name : null,
+                'show_slug'     => isset($ep->show_id) ? $ep->show->slug : null,
+                'name'          => $ep->name,
+                'description'   => strip_tags($ep->description,"<p></p>"),
+                'explicit'      => $ep->explicit,
+                'filesize'      => $e->filesize, // Yes, always use the filesize from archive_episodes
+                'link'          => $ep->link,
+                'pubdate'       => $ep->pubdate,
+                'pubdate_str'   => date('g:i A - j M Y', $ep->pubdate),
+                'url'           => $ep->url,
+                'howLongAgo'    => Episode::howLongAgo($ep->pubdate)
+            ];
+            if ($ep->img_url && $ep->img_url != ''){
+                $r['img_url'] = $ep->img_url;
+            }else if($ep->show && $ep->show->img_url && $ep->show->img_url != ''){
+                $r['img_url'] = $ep->show->img_url;
+            }else{
+                $r['img_url'] = env('APP_URL').'/img/logo.png';
+            }
+            $ret[] = $r;
+        }
+        return $ret;
     }
     
     public function connections(){

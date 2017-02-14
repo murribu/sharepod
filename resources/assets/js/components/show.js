@@ -94,11 +94,12 @@ Vue.component('show', {
             this.show.total_likes = total_likes;
             this.show.this_user_likes = this_user_likes;
         },
-        updateEpisode(slug, total_likes, this_user_likes){
+        updateEpisode(slug, total_likes, this_user_likes, this_user_archived){
             for(var e in this.show.episodes){
                 if (this.show.episodes[e].slug == slug){
                     this.show.episodes[e].total_likes = total_likes;
                     this.show.episodes[e].this_user_likes = this_user_likes;
+                    this.show.episodes[e].this_user_archived = this_user_archived;
                 }
             }
         },

@@ -136,4 +136,12 @@ class UsersController extends Controller
         $user = User::where('slug', $slug)->first();
         return $user->info_for_feed()['episodes'];
     }
+    
+    public function apiGetUserArchivedEpisodes(){
+        $user = Auth::user();
+        if (!$user){
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+        return $user->archived_episodes();
+    }
 }

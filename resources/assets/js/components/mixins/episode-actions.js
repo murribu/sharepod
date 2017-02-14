@@ -14,6 +14,41 @@ module.exports = {
         };
     },
     methods: {
+        toggleArchiveEpisode(episode) {
+            var self = this;
+            var sent = {
+                slug: episode.slug
+            };
+            if (episode.this_user_archived){
+                this.$http.post('/api/episodes/unarchive', sent)
+                    .then(response => {
+                        self.updateEpisode(episode.slug, episode.total_likes, episode.this_user_likes, 0);
+                        $("#modal-unarchive-success").modal('show');
+                        setTimeout(function(){
+                            $("#modal-unarchive-success").modal('hide');
+                        }, 8000);
+                    }, response => {
+                        $("#modal-error").modal('show');
+                        setTimeout(function(){
+                            $("#modal-error").modal('hide');
+                        }, 8000);
+                    });
+            }else{
+                this.$http.post('/api/episodes/archive', sent)
+                    .then(response => {
+                        self.updateEpisode(episode.slug, episode.total_likes, episode.this_user_likes, 1);
+                        $("#modal-archive-success").modal('show');
+                        setTimeout(function(){
+                            $("#modal-archive-success").modal('hide');
+                        }, 8000);
+                    }, response => {
+                        $("#modal-error").modal('show');
+                        setTimeout(function(){
+                            $("#modal-error").modal('hide');
+                        }, 8000);
+                    });
+            }
+        },
         getPlaylists() {
             var self = this;
             this.$http.get('/api/playlists')
@@ -131,7 +166,7 @@ module.exports = {
             var self = this;
             this.$http.post('/api/episodes/like', {slug: episode.slug})
                 .then(response => {
-                    self.updateEpisode(episode.slug, response.data.total_likes, response.data.this_user_likes);
+                    self.updateEpisode(episode.slug, response.data.total_likes, response.data.this_user_likes, episode.this_user_archived);
                 }, response => {
                     //alert('error');
                 })
@@ -140,7 +175,7 @@ module.exports = {
             var self = this;
             this.$http.post('/api/episodes/unlike', {slug: episode.slug})
                 .then(response => {
-                    self.updateEpisode(episode.slug, response.data.total_likes, response.data.this_user_likes);
+                    self.updateEpisode(episode.slug, response.data.total_likes, response.data.this_user_likes, episode.this_user_archived);
                 }, response => {
                     //alert('error');
                 })

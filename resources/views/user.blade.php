@@ -45,6 +45,11 @@
                                             @{{connections.accepted.length + connections.pending.length}} Connections
                                         </a>
                                     </li>
+                                    <li role="presentation" v-if="isMe">
+                                        <a href="#archived" aria-controls="archived" role="tab" data-toggle="tab">
+                                            @{{episodes_archived.length}} Archived Episodes
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -177,6 +182,24 @@
                                 </div>
                                 <div class="panel-body" v-if="connections_loaded && connections.pending.length == 0">
                                     @{{viewed_user_name({verbs: verbs.to_do})}} not have any pending connections.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" role="tabpanel" id="archived">
+                            <h3 class="centered" v-if="viewed_user.name">@{{viewed_user_name({possessive: true})}} Archived Episodes</h3>
+                            <div class="panel panel-default panel-list-item episode-container" v-for="episode in episodes_archived" :key="episode.slug">
+                                <div class="panel-heading">
+                                    <a :href="'/episodes/' + episode.slug">
+                                        <img :src="episode.img_url" class="episode-image" />
+                                        <strong>@{{episode.name}}</strong>
+                                    </a>
+                                    <small v-tooltip :title="episode.pubdate_str">@{{episode.howLongAgo}}</small>
+                                </div>
+                                <div class="panel-body" v-html="episode.description"></div>
+                            </div>
+                            <div class="panel panel-default panel-list-item" v-if="episodes_archived_loaded && episodes_archived.length == 0">
+                                <div class="panel-body">
+                                    @{{viewed_user_name({verbs: verbs.to_have})}} not archived any episodes yet.
                                 </div>
                             </div>
                         </div>

@@ -15,13 +15,17 @@ class Episode extends Model {
     public static $like_type = 'episode';
     protected static $slug_reserved_words = ['new', 'search', 'undefined', 'popular'];
     
+    public function archive($user){
+        //todo next
+    }
+    
 	public function img_url_default(){
 		if ($this->img_url && $this->img_url != ''){
 			return $this->img_url;
 		}else if($this->show && $this->show->img_url && $this->show->img_url != ''){
 			return $this->show->img_url;
 		}else{
-		    return 'http://shaarepod-murribu.c9users.io/img/logo.png';
+		    return env('APP_URL').'/img/logo.png';
 		}
 	}
     

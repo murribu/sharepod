@@ -25,9 +25,6 @@ class HomeController extends Controller
      */
     public function show()
     {
-        //if (!\Request::secure()) { 
-        //	return redirect(env('APP_URL'));
-        //}
         return view('home', ['activelink' => 'home']);
     }
     

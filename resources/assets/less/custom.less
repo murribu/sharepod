@@ -2,6 +2,7 @@
 @episode-red: #e81c4f;
 @episode-green: #19cf86;
 @episode-yellow: #e2d51d;
+@episode-blue: #1d46e2;
 
 html {
     height: 100%;
@@ -184,6 +185,18 @@ button.btn-unlike:hover {
 .btn-recommend:hover{
     .icon-text-container, .icon-container{
         color: @episode-green;
+    }
+}
+
+.btn-archive-episode{
+    .icon-text-container, .icon-container{
+        font-size: large;
+    }
+}
+
+.btn-archive-episode .active, .btn-archive-episode:hover{
+    .icon-text-container, .icon-container{
+        color: @episode-blue;
     }
 }
 

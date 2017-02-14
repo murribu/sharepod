@@ -130,3 +130,44 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="modal-max-archive" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Max Archive</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div>
+                            Archiving this episode would put you over your plan's storage limitation.<br><a href="/settings#/subscription">Click here</a> to change your Plan. Or <a :href="'/users/' + user.slug + '#/archived'">click here</a> to see what episodes you have archived (and maybe remove some).
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="modal-archive-success" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">@{{show ? show.name : ''}}<br>@{{selectedEpisode.name}}</h4>
+                    </div>
+                    <div class="modal-body">
+                        Success! You have archived this episode. When you add it to a playlist, you don't have to worry about the original site taking this episode down.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="modal-unarchive-success" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">@{{show ? show.name : ''}}<br>@{{selectedEpisode.name}}</h4>
+                    </div>
+                    <div class="modal-body">
+                        Success! You have un-archived this episode.
+                    </div>
+                </div>
+            </div>
+        </div>

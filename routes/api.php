@@ -15,6 +15,9 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::post('/episodes/like', 'EpisodesController@apiLike');
     Route::post('/episodes/unlike', 'EpisodesController@apiUnlike');
+    Route::post('/episodes/archive', 'EpisodesController@apiArchive');
+    Route::post('/episodes/unarchive', 'EpisodesController@apiUnarchive');
+    
     Route::post('/shows/like', 'ShowsController@apiLike');
     Route::post('/shows/unlike', 'ShowsController@apiUnlike');
     
@@ -40,6 +43,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/playlists/{slug}/move_to_bottom', 'PlaylistController@apiPostMoveToBottom');
     Route::post('/playlists/{slug}/remove', 'PlaylistController@apiPostRemove');
     
+    Route::get('/archived_episodes', 'UsersController@apiGetUserArchivedEpisodes');
 });
 
 Route::get('/users/{slug}/episodes_liked', 'UsersController@apiGetUserEpisodesLiked');
@@ -47,3 +51,4 @@ Route::get('/users/{slug}/shows_liked', 'UsersController@apiGetUserShowsLiked');
 Route::get('/users/{slug}/playlists', 'UsersController@apiGetUserPlaylists');
 Route::get('/users/{slug}/connections', 'UsersController@apiGetUserConnections');
 Route::get('/users/{slug}/recommendations_accepted', 'UsersController@apiGetUserRecommendationsAccepted');
+

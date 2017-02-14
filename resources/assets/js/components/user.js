@@ -23,6 +23,8 @@ Vue.component('view-user', {
             connections_loaded: false,
             recommendations_accepted: [],
             recommendations_loaded: false,
+            episodes_archived: [],
+            episodes_archived_loaded: false,
             verbs:{
                 to_have:{
                     you: 'have',
@@ -52,6 +54,18 @@ Vue.component('view-user', {
             this.$http.get('/api/users/' + this.slug)
                 .then(response => {
                     self.viewed_user = response.data;
+                    if (self.isMe){
+                        self.$http.get('/api/archived_episodes')
+                            .then(response => {
+                                self.episodes_archived = response.data;
+                                self.episodes_archived_loaded = true;
+                            }, response => {
+                                $("#modal-error").modal('show');
+                                setTimeout(function(){
+                                    $("#modal-error").modal('hide');
+                                }, 8000);
+                            });
+                    }
                 }, response => {
                     $("#modal-error").modal('show');
                     setTimeout(function(){
