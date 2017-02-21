@@ -16,7 +16,7 @@ class EpisodesController extends Controller
 {
     public function __construct(NotificationRepository $notifications)
     {
-        $this->middleware('verified')->except('apiGetPopular');
+        $this->middleware('verified')->except(['apiGetPopular', 'getEpisode', 'apiGetEpisode']);
         $this->notifications = $notifications;
     }
     
