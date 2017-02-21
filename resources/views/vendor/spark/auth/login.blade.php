@@ -10,14 +10,16 @@
                 <div class="panel-body">
                     @include('spark::shared.errors')
 
-                    <div class="form-group">
-                        <div class="row" style="margin-bottom:15px;margin-top:30px;">
+                    <div class="form-group" style="margin-top:30px;">
+                        <!--
+                        <div class="row" style="margin-bottom:15px;">
                             <div class="col-md-6 col-md-offset-3 col-xs-10 col-xs-offset-1">
                                 <a title="Twitter" class="btn btn-block btn-social btn-twitter" href="/auth/twitter" onclick="window.open('/auth/twitter','auth','width=500,height=450');return false;">
                                     <span class="fa fa-twitter"></span> Sign in with Twitter
                                 </a>
                             </div>
                         </div>
+                        -->
                         <div class="row">
                             <div class="col-md-6 col-md-offset-3 col-xs-10 col-xs-offset-1">
                                 <a title="Facebook" class="btn btn-block btn-social btn-facebook" href="/auth/facebook" onclick="window.open('/auth/facebook','auth','width=500,height=450');return false;">
