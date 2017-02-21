@@ -24017,27 +24017,27 @@ Vue.component('shows-new', {
             processing: false,
             error: false,
             feedback: '',
-            addForm: new SparkForm({
-                feed: ''
-            }),
+            feed: '',
         };
     },
     methods: {
         addShow: function addShow() {
-            var this$1 = this;
-
+            var sent = {
+                feed: this.feed
+            };
+            var self = this;
             this.processing = true;
             this.error = false;
             this.feedback = '';
-            this.$http.post('/shows/new', JSON.stringify(this.addForm))
+            this.$http.post('/shows/new', sent)
                 .then(function (response) {
-                    this$1.processing = false;
-                    this$1.error = false;
-                    this$1.feedback = response.data;
+                    self.processing = false;
+                    self.error = false;
+                    self.feedback = response.data;
                 }, function (response) {
-                    this$1.processing = false;
-                    this$1.error = true;
-                    this$1.feedback = 'There was an error';
+                    self.processing = false;
+                    self.error = true;
+                    self.feedback = response.data;
                 });
         }
     },

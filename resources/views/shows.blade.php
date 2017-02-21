@@ -21,21 +21,19 @@
                             <ul class="nav left-stacked-tabs" role="tablist">
                                 <li role="presentation">
                                     <a href="#browse" aria-controls="browse" role="tab" data-toggle="tab" @click="refreshList()">
-                                        <i class="fa fa-fw fa-btn fa-bar-chart"></i>Browse
+                                        <i class="fa fa-fw fa-btn fa-folder-open"></i>Browse
                                     </a>
                                 </li>
                                 <li role="presentation" class="active">
                                     <a href="#search" aria-controls="search" role="tab" data-toggle="tab">
-                                        <i class="fa fa-fw fa-btn fa-bullhorn"></i>Search
+                                        <i class="fa fa-fw fa-btn fa-search"></i>Search
                                     </a>
                                 </li>
-                                @if (Auth::user() && Spark::developer(Auth::user()->email))
                                 <li role="presentation">
                                     <a href="#new" aria-controls="new" role="tab" data-toggle="tab">
-                                        <i class="fa fa-fw fa-btn fa-user"></i>New
+                                        <i class="fa fa-fw fa-btn fa-plus-square"></i>New
                                     </a>
                                 </li>
-                                @endif
                             </ul>
                         </div>
                     </div>
