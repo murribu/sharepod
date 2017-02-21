@@ -82,15 +82,15 @@
                             </div>
                         </div>
                         <hr>
-                        <div class="row form-group" :class="{'has-error': errors.has('recommendEmail') }">
+                        <div class="row form-group control">
                             <label class="control-label col-xs-12 col-sm-2" for="recommendEmail">Email</label>
                             <div class="col-xs-12 col-sm-10">
-                                <input class="form-control" v-model="recommendEmail" v-validate="recommendEmail" data-vv-rules="required|email" type="email" placeholder="sam@example.com" />
-                                <p class="text-danger" v-if="errors.has('recommendEmail')">Please enter a valid email address</p>
+                                <input class="form-control" v-validate="'required|email'" :class="{'input': true, 'is-danger': errors.has('recommendEmail') }" name="recommendEmail" type="text" placeholder="Email" v-model="recommendEmail">
+                                <div v-show="errors.has('recommendEmail')" class="alert alert-danger">Please enter a valid email address</div>
                             </div>
                         </div>
                         <div class="row" style="margin-top:10px;">
-                            <button class="btn btn-primary pull-right" style="margin-right: 15px;" @click="sendRecommendation()" :disabled="errors.has('recommendEmail')">
+                            <button class="btn btn-primary pull-right" style="margin-right: 15px;" @click="sendRecommendation()" :disabled="recommendEmail == '' || errors.has('recommendEmail')">
                                 <span>
                                     <i class="fa fa-btn" :class="{'fa-spinner fa-spin': recommendForm.busy, 'fa-check-circle': !recommendForm.busy}"></i>Send recommendation
                                 </span>

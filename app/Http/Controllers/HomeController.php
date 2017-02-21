@@ -36,6 +36,15 @@ class HomeController extends Controller
         return redirect('/');
     }
     
+    // public function getEmail(){
+        // $data = [
+            // 'to_name' => 'George',
+            // 'from_name' => 'Ringo',
+            // 'link' => 'https://podcast.dj'
+        // ];
+        // return view('emails.send_episode', $data);
+    // }
+    
     public function getManifest(){
         $manifest = [
             'manifest_version'  => 1,

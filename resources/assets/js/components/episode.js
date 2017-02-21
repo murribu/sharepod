@@ -23,6 +23,10 @@ Vue.component('episode', {
             this.$http.get('/api/episodes/' + this.slug)
                 .then(response => {
                     self.selectedEpisode = response.data;
+                    self.show = {
+                        name: self.selectedEpisode.show_name,
+                        slug: self.selectedEpisode.show_slug
+                    };
                 },
                 response => {
                     $("#modal-error").modal('show');
