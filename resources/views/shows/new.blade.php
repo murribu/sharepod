@@ -19,15 +19,25 @@
             </div>
         </div>
         
-        <!-- Feedback -->
-        <div class="panel panel-default" v-if="processing || feedback.length > 0">
+        <div class="panel panel-default" v-if="processing">
             <div class="panel-heading">
-                <span v-if="processing">Adding...</span>
-                <span v-if="!processing && error">Error</span>
-                <span v-if="!processing && !error">Show Added!</span>
+                Adding...
+            </div>
+        </div>
+        <div class="panel panel-default" v-if="!processing && error">
+            <div class="panel-heading">
+                Error
             </div>
             <div class="panel-body">
-                @{{feedback}}
+                @{{errorMessage}}
+            </div>
+        </div>
+        <div class="panel panel-default" v-if="!processing && !error && newShow">
+            <div class="panel-heading">
+                Show Added!
+            </div>
+            <div class="panel-body">
+                <a :href="'/shows/' + newShow.slug">@{{newShow.name}}</a> was successfully added!
             </div>
         </div>
     </div>

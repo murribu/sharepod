@@ -167,7 +167,7 @@ class User extends SparkUser
         left join recommendations as received on received.recommendee_id = users.id
         left join recommendations as given on given.recommender_id = users.id
         left join recommendations as accepted on accepted.recommendee_id = users.id and accepted.action  = \'accepted\'
-        left join recommendations as acted_upon on acted_upon.recommendee_id = users.id and (acted_upon.action is null or acted_upon.action = \'viewed\')
+        left join recommendations as acted_upon on acted_upon.recommendee_id = users.id and acted_upon.action is not null and acted_upon.action != \'viewed\'
         left join hitcounts on hitcounts.user_id = users.id and hitcounts.request = \'user_feed\'
         left join playlists on playlists.user_id = users.id
         where users.id = ?
@@ -347,7 +347,7 @@ class User extends SparkUser
                     'episode_id'        => $ep->id,
                     'action'            => $action,
                     'autoaction'        => $autoaction,
-                    'comment'           => $input['comment'] ? $input['comment'] : null
+                    'comment'           => isset($input['comment']) ? $input['comment'] : null
                 ]);
             if ($action != 'rejected'){
                 $notifications->create($recommendee, [

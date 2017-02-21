@@ -53,12 +53,10 @@
                         @include('shows.browse')
                     </div>
 
-                    @if (Auth::user() && Spark::developer(Auth::user()->email))
                     <!-- User Management -->
                     <div role="tabpanel" class="tab-pane" id="new">
                         @include('shows.new')
                     </div>
-                    @endif
                 </div>
             </div>
         </div>

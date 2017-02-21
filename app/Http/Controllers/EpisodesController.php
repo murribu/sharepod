@@ -16,7 +16,7 @@ class EpisodesController extends Controller
 {
     public function __construct(NotificationRepository $notifications)
     {
-        $this->middleware('verified')->except('apiGetPopular');
+        $this->middleware('verified')->except(['apiGetPopular', 'getEpisode', 'apiGetEpisode']);
         $this->notifications = $notifications;
     }
     
@@ -26,7 +26,7 @@ class EpisodesController extends Controller
     
     public function apiGetEpisode($slug){
         $user = Auth::user();
-        return Episode::leftJoin('likes', function($join){
+        $e = Episode::leftJoin('likes', function($join){
             $join->on('likes.fk', '=', 'episodes.id');
             $join->on('likes.type', '=', DB::raw("'episode'"));
         })
@@ -38,7 +38,9 @@ class EpisodesController extends Controller
         ->leftJoin('playlist_episodes as pe', 'pe.episode_id', '=', 'episodes.id')
         ->leftJoin('shows as s', 's.id', '=', 'episodes.show_id')
         ->leftJoin('recommendations', 'recommendations.episode_id', '=', 'episodes.id')
-        ->selectRaw('episodes.name, episodes.description, episodes.slug, s.name as show_name, s.slug as show_slug, count(this_user_likes.id) this_user_likes, count(likes.id) total_likes, count(recommendations.id) total_recommendations, count(distinct pe.playlist_id) total_playlists')
+        ->selectRaw('episodes.id, episodes.pubdate, episodes.name, episodes.description, episodes.slug, s.name as show_name, s.slug as show_slug, count(this_user_likes.id) this_user_likes, count(likes.id) total_likes, count(recommendations.id) total_recommendations, count(distinct pe.playlist_id) total_playlists')
+        ->groupBy('episodes.id')
+        ->groupBy('episodes.pubdate')
         ->groupBy('episodes.name')
         ->groupBy('episodes.description')
         ->groupBy('episodes.slug')
@@ -46,6 +48,8 @@ class EpisodesController extends Controller
         ->groupBy('s.slug')
         ->where('episodes.slug', $slug)
         ->first();
+        
+        return $e->prepare();
     }
     
     public function recommend(){

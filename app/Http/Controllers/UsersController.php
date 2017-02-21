@@ -134,7 +134,11 @@ class UsersController extends Controller
     
     public function apiGetUserRecommendationsAccepted($slug){
         $user = User::where('slug', $slug)->first();
-        return $user->info_for_feed()['episodes'];
+        $episodes = $user->info_for_feed()['episodes'];
+        foreach($episodes as $e){
+            $e = $e->prepare();
+        }
+        return $episodes;
     }
     
     public function apiGetUserArchivedEpisodes(){

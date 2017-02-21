@@ -41,6 +41,21 @@
                 </div>
             </div>
         </div>
+        <div class="row" v-if="recommendation.action == 'accepted'">
+            <div class="panel panel-default">
+                <div class="panel-heading centered">
+                    <h4 class="centered">Now what?</h4>
+                </div>
+                <div class="panel-body centered">
+                    <div v-if="user.hasRegisteredTheirFeed">
+                        If you have <a href="/help#/register-my-feed">registered your feed</a>, this episode will automatically show up!
+                    </div>
+                    <div v-if="!user.hasRegisteredTheirFeed">
+                        Once you <a href="/help#/register-my-feed">registered your feed</a>, this episode will automatically show up in your podcast listening app!
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </recommendation>
 @endsection

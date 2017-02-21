@@ -66,6 +66,9 @@ $router->group(['middleware' => 'dev'], function ($router) {
     Route::post('/shows/new', 'ShowsController@postNew');
 });
 
+// Route::get('/email', 'HomeController@getEmail');
+
+
 
 /** API endpoints for which I want to allow anonymous access, but use Auth::user(), if present **/
 

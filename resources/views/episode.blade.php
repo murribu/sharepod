@@ -15,7 +15,7 @@
                         <div class="panel-footer" v-if="user && user.verified">
                             <div class="episode-action">
                                 <button class="btn-recommend" @click.prevent="recommendEpisode(selectedEpisode)">
-                                    <div class="icon-container" title="Recommend">
+                                    <div class="icon-container" title="Recommend" v-tooltip>
                                         <i class="fa fa-reply"></i>
                                     </div>
                                     <div class="icon-text-container">
@@ -25,7 +25,7 @@
                             </div>
                             <div class="episode-action">
                                 <button :class="{'btn-episode-unlike': selectedEpisode.this_user_likes, 'btn-episode-like' : !selectedEpisode.this_user_likes}" @click.prevent="toggleLikeEpisode(selectedEpisode)">
-                                    <div class="icon-container" title="Like">
+                                    <div class="icon-container" :title="selectedEpisode.this_user_likes ? 'Unlike' : 'Like'" :data-original-title="selectedEpisode.this_user_likes ? 'Unlike' : 'Like'" v-tooltip>
                                         <div class="heart-container">
                                             <div class="heart"></div>
                                         </div>
@@ -37,7 +37,7 @@
                             </div>
                             <div class="episode-action">
                                 <button class="btn-add-to-playlist" @click.prevent="selectEpisodeForAddingToPlaylist(selectedEpisode)">
-                                    <div class="icon-container" title="Add To Playlist">
+                                    <div class="icon-container" title="Add To Playlist" v-tooltip>
                                         <i class="fa fa-plus"></i>
                                     </div>
                                     <div class="icon-text-container">
