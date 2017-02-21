@@ -281,7 +281,7 @@ class User extends SparkUser
                     'episode_id'        => $ep->id,
                     'action'            => $action,
                     'autoaction'        => $autoaction,
-                    'comment'           => $input['comment'] ? $input['comment'] : null
+                    'comment'           => isset($input['comment']) ? $input['comment'] : null
                 ]);
             if ($action != 'rejected'){
                 $notifications->create($recommendee, [
