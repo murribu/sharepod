@@ -110,10 +110,11 @@ class EpisodesController extends Controller
     
     public function apiArchive(){
         $ep = Episode::where('slug', Input::get('slug'))->first();
-        if ($ep->archive(Auth::user())){
-            return ['success' => 1];
+        $ret = $ep->request_archive(Auth::user());
+        if (isset($ret['error'])){
+            return response()->json(['message' => $ret['message']], 500);
         }else{
-            return response()->json(['message' => 'Archiving Error'], 500);
+            return ['success' => 1];
         }
     }
 }

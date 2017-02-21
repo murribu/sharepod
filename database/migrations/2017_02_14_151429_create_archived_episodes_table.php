@@ -27,13 +27,15 @@ class CreateArchivedEpisodesTable extends Migration
             $table->string('link')->nullable();
             $table->integer('pubdate')->nullable();
             $table->string('url')->nullable();
-            $table->boolean('active')->default(true);
+            $table->boolean('active')->default(false);
+            $table->enum('status_code', ['200', '401', '403', '404', '500'])->nullable();
+            $table->string('message');
             $table->timestamps();
         });
         Schema::create('archived_episode_users', function(Blueprint $table) {
             $table->increments('id');
             $table->integer('archived_episode_id')->unsigned();
-            $table->foreign('archived_episode_id')->references('id')->on('archived_episodes');
+            $table->foreign('archived_episode_id')->references('id')->on('archived_episode_id');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
@@ -47,7 +49,8 @@ class CreateArchivedEpisodesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('archived_episode_users');
+        Schema::dropIfExists('archived_episode_requests_log');
+        Schema::dropIfExists('archived_episode_requests');
         Schema::dropIfExists('archived_episodes');
     }
 }

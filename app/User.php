@@ -197,7 +197,7 @@ class User extends SparkUser
             ->where('active', '1')
             ->whereIn('id', function($query2) use ($self){
             $query2->select('user_id')
-                ->from('archive_episode_users')
+                ->from('archived_episode_users')
                 ->where('user_id', $self->id);
         });
         

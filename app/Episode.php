@@ -3,8 +3,10 @@ use Auth;
 use DB;
 use Mail;
 
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\File;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class Episode extends Model {
     
@@ -15,8 +17,84 @@ class Episode extends Model {
     public static $like_type = 'episode';
     protected static $slug_reserved_words = ['new', 'search', 'undefined', 'popular'];
     
-    public function archive($user){
-        //todo next
+    public function request_archive($user){
+        $retry_limit = 5;
+        $ae = ArchivedEpisode::where('episode_id', $this->id)
+            ->where('active', '1')
+            ->first();
+        if ($ae){
+            return ['success' => 1, 'status_code' => $ae['status_code'], 'message' => 'Episode archived!'];
+        }else{
+            $ae = ArchivedEpisode::where('episode_id', $this->id)
+                ->whereNotNull('status_code')
+                ->where('status_code', '<>', '200')
+                ->count();
+            if ($ae > $retry_limit){
+                return ['success' => 0, 'status_code' => '406', 'We failed to get this episode too many times. We\'ve deemed it unavailable. Sorry.']
+            }else{
+                $ae = new ArchivedEpisode;
+                $ae->episode_id = $this->id;
+                $ae->slug = self::findSlug();
+                $ae->save();
+                $aeu = ArchivedEpisodeUser::firstOrCreate(['archived_episode_id' => $ae->id, 'user_id' => $user->id]);
+                return ['success' => 1, 'status_code' => '200', 'message' => 'We have received your request to archive this episode.'];
+            }
+        }
+    }
+    
+    public static function archive($user){
+        //meant to be called from a cronjob
+        $lockfile = "/tmp/episode_archive.lock";
+
+        if(!file_exists($lockfile))
+            $fh = fopen($lockfile, "w");
+        else
+            $fh = fopen($lockfile, "r");
+
+        if($fh === FALSE) exit("Unable to open lock file");
+
+        if(!flock($fh, LOCK_EX)) // another process is running
+            exit("Lock file already in use");
+            
+        $ae = ArchivedEpisode::with('episode')
+            ->whereNull('status_code')
+            ->whereNotNull('episode_id')
+            ->first();
+        if ($ae){
+            $parts = split('.', $ae->episode->url);
+            $ext = $parts[count($parts) - 1];
+            $local_location = '/tmp/'.$this->slug.".".$ext;
+            $s3_location = $this->slug.".".$ext;
+            $out = fopen($local_location, "wb");
+            if ($out == FALSE){ 
+                $ae->status_code = '500';
+                $ae->message = 'File not opened';
+                $ae->save();
+                echo "Error - file not opened";
+                flock($fh, LOCK_UN);
+                return;
+            }
+            ini_set("memory_limit", "2048M");
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $this->url);
+            curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
+            curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($ch, CURLOPT_FILE, $out); 
+            curl_exec($ch);
+            if (curl_errno($ch)){
+                flock($fh, LOCK_UN);
+                return ['error' => 1, 'message' => 'Curl Error: '.curl_errno($ch), 'status_code' => curl_errno($ch)];
+            }
+            // todo - start here
+            // Check to see if the user has enough space left on their plan
+            Storage::disk('s3')->putFileAs('episodes', new File($local_location), $s3_location);
+        }
+        
+        flock($fh, LOCK_UN);
     }
     
 	public function img_url_default(){
