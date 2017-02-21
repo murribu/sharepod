@@ -67,7 +67,8 @@ class ShowsController extends Controller
             }
             $show->save();
             $show->parseFeed();
-            return $show->name.' was successfully added!';
+            $show = Show::where('slug', $show->slug)->first();
+            return ['slug' => $show->slug, 'name' => $show->name];
         }else{
             throw new Exception('Empty RSS Feed URL');
         }

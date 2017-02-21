@@ -24024,28 +24024,30 @@ Vue.component('shows-new', {
         return {
             processing: false,
             error: false,
-            feedback: '',
+            errorMessage: '',
             feed: '',
+            newShow: null,
         };
     },
     methods: {
         addShow: function addShow() {
+            this.newShow = null;
             var sent = {
                 feed: this.feed
             };
             var self = this;
             this.processing = true;
             this.error = false;
-            this.feedback = '';
+            this.errorMessage = '';
             this.$http.post('/shows/new', sent)
                 .then(function (response) {
                     self.processing = false;
                     self.error = false;
-                    self.feedback = response.data;
+                    self.newShow = response.data;
                 }, function (response) {
                     self.processing = false;
                     self.error = true;
-                    self.feedback = response.data;
+                    self.errorMessage = response.data;
                 });
         }
     },
