@@ -16,6 +16,10 @@ Vue.component('episode', {
     },
     created() {
         this.loadEpisode();
+        if (this.user){
+            this.getRecentRecommendees();
+            this.getPlaylists();
+        }
     },
     methods: {
         loadEpisode() {

@@ -23299,6 +23299,10 @@ Vue.component('episode', {
     },
     created: function created() {
         this.loadEpisode();
+        if (this.user){
+            this.getRecentRecommendees();
+            this.getPlaylists();
+        }
     },
     methods: {
         loadEpisode: function loadEpisode() {
