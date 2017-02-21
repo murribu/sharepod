@@ -5,25 +5,27 @@ Vue.component('shows-new', {
             processing: false,
             error: false,
             feedback: '',
-            addForm: new SparkForm({
-                feed: ''
-            }),
+            feed: '',
         };
     },
     methods: {
         addShow() {
+            var sent = {
+                feed: this.feed
+            };
+            var self = this;
             this.processing = true;
             this.error = false;
             this.feedback = '';
-            this.$http.post('/shows/new', JSON.stringify(this.addForm))
+            this.$http.post('/shows/new', sent)
                 .then(response => {
-                    this.processing = false;
-                    this.error = false;
-                    this.feedback = response.data;
+                    self.processing = false;
+                    self.error = false;
+                    self.feedback = response.data;
                 }, response => {
-                    this.processing = false;
-                    this.error = true;
-                    this.feedback = 'There was an error';
+                    self.processing = false;
+                    self.error = true;
+                    self.feedback = response.data;
                 });
         }
     },

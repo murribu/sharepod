@@ -50,8 +50,8 @@ Vue.component('show', {
             });
         if (this.user){
             this.getRecentRecommendees();
+            this.getPlaylists();
         }
-        this.getPlaylists();
     },
     methods: {
         likeShow() {

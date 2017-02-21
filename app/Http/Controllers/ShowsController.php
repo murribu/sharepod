@@ -57,8 +57,13 @@ class ShowsController extends Controller
         if (Input::get('feed') != ""){
             $show = Show::where('feed', Input::get('feed'))->first();
             if (!$show){
-                $show = new Show;
-                $show->feed = Input::get('feed');
+                $test_result = Show::testFeed(Input::get('feed'));
+                if (isset($test_result['error'])){
+                    return response()->json($test_result['message'], 400);
+                }else{
+                    $show = new Show;
+                    $show->feed = Input::get('feed');
+                }
             }
             $show->save();
             $show->parseFeed();

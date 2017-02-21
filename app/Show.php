@@ -79,6 +79,57 @@ class Show extends Model {
         return $ret;
     }
     
+    public static function testFeed($url){
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
+        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        $str = curl_exec($ch);
+        if (!curl_errno($ch)) {
+            switch ($http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE)) {
+                case 200:  # OK
+                    break;
+                default:
+                    curl_close($ch);
+                    return ['error' => 1, 'message' => 'That URL produced an HTTP error -  code: '. $http_code];
+            }
+        }
+        curl_close($ch);
+
+        $str = mb_convert_encoding($str, 'UTF-8', 'UTF-8'); // This removes nasty characters
+        $str = str_replace("itunes:","itunes_",$str);
+        $str = str_replace("sy:","sy_",$str);
+        
+        if (@$content = simplexml_load_string($str)){
+            if (!isset($content->channel)){
+                return ['error' => 1, 'message' => 'The Feed must start with a \'channel\' node'];
+            }
+            if (!isset($content->channel->title)){
+                return ['error' => 1, 'message' => 'The \'channel\' node must have a title'];
+            }
+            if (count($content->channel->item) == 0){
+                return ['error' => 1, 'message' => 'This podcast has no episodes'];
+            }
+            $i = 0;
+			foreach($content->channel->item as $item){
+				$guid = (string)$item->guid;
+			    $exists = Episode::where('guid', $guid)->first();
+			    if ($exists){
+			        return ['error' => 1, 'message' => 'It looks like we already have this show in our database. Check out <a href="/shows/'.$exists->show->slug.'">'.$exists->show->name.'</a>. If this is wrong, please let us know at <a href="https://twitter.com/'.env('TWITTER_HANDLE').'">@'.env('TWITTER_HANDLE').'</a>.'];
+			    }
+			    if ($i++ == 10){
+			        return ['success' => 1];
+			    }
+			}
+        }else{
+            return ['error' => 1, 'message' => 'We could not parse the result from this URL. Please make sure you\'re using the podcast\'s RSS feed.'];
+        }
+    }
+    
     public function parseFeed(){
         $newEpisodes = 0;
         if ($this->feed != ""){
@@ -91,6 +142,7 @@ class Show extends Model {
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
             $str = curl_exec($ch);
             curl_close($ch);
 

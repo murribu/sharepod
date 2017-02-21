@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 use Auth;
+use Carbon\Carbon;
 use Laravel\Spark\Spark;
 use Laravel\Spark\Providers\AppServiceProvider as ServiceProvider;
 
@@ -9,6 +10,8 @@ use Laravel\Spark\Contracts\Repositories\UserRepository;
 use Laravel\Spark\Events\Profile\ContactInformationUpdated;
 
 use Jrean\UserVerification\Facades\UserVerification;
+
+use App\User;
 
 class SparkServiceProvider extends ServiceProvider
 {
@@ -19,7 +22,7 @@ class SparkServiceProvider extends ServiceProvider
      */
     protected $details = [
         'vendor' => 'Murribu, inc',
-        'product' => 'Sharepod',
+        'product' => 'PodcastDJ',
         'street' => '',
         'location' => 'Franklin, TN 37069',
         'phone' => '615-555-5555',
@@ -92,6 +95,21 @@ class SparkServiceProvider extends ServiceProvider
 
             event(new ContactInformationUpdated($user));
 
+            return $user;
+        });
+        
+        Spark::swap('Laravel\Spark\Contracts\Repositories\UserRepository@create', function(array $data){
+            $user = Spark::user();
+    
+            $user->forceFill([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => bcrypt($data['password']),
+                'last_read_announcements_at' => Carbon::now(),
+                'trial_ends_at' => Carbon::now()->addDays(Spark::trialDays()),
+                'slug' => User::findSlug($data['name']),
+            ])->save();
+    
             return $user;
         });
         
