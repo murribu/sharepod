@@ -35,7 +35,7 @@ class CreateArchivedEpisodesTable extends Migration
         Schema::create('archived_episode_users', function(Blueprint $table) {
             $table->increments('id');
             $table->integer('archived_episode_id')->unsigned();
-            $table->foreign('archived_episode_id')->references('id')->on('archived_episode_id');
+            $table->foreign('archived_episode_id')->references('id')->on('archived_episodes');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();

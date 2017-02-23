@@ -26,11 +26,11 @@ class Episode extends Model {
             return ['success' => 1, 'status_code' => $ae['status_code'], 'message' => 'Episode archived!'];
         }else{
             $ae = ArchivedEpisode::where('episode_id', $this->id)
-                ->whereNotNull('status_code')
-                ->where('status_code', '<>', '200')
+                ->whereNull('status_code')
+                ->where('active', '0')
                 ->count();
             if ($ae > $retry_limit){
-                return ['success' => 0, 'status_code' => '406', 'We failed to get this episode too many times. We\'ve deemed it unavailable. Sorry.']
+                return ['success' => 0, 'status_code' => '406', 'We failed to get this episode too many times. We\'ve deemed it unavailable. Sorry.'];
             }else{
                 $ae = new ArchivedEpisode;
                 $ae->episode_id = $this->id;
@@ -44,6 +44,7 @@ class Episode extends Model {
     
     public static function archive($user){
         //meant to be called from a cronjob
+        //todo - But it needs to communicate back to a Controller so that the controller can send the user a notification about whether the archiving was successful
         $lockfile = "/tmp/episode_archive.lock";
 
         if(!file_exists($lockfile))
@@ -57,10 +58,12 @@ class Episode extends Model {
             exit("Lock file already in use");
             
         $ae = ArchivedEpisode::with('episode')
+            ->where('active', '1')
             ->whereNull('status_code')
             ->whereNotNull('episode_id')
             ->first();
         if ($ae){
+            //todo - find out if it's already archived by someone else. If so, just latch onto it!
             $parts = split('.', $ae->episode->url);
             $ext = $parts[count($parts) - 1];
             $local_location = '/tmp/'.$this->slug.".".$ext;
@@ -91,7 +94,26 @@ class Episode extends Model {
             }
             // todo - start here
             // Check to see if the user has enough space left on their plan
+            $limit = 0;
+            $plan = $user->plan();
+            if ($plan && $plan == env('PLAN_BASIC_NAME')){
+                $limit = intval(env('PLAN_BASIC_STORAGE_LIMIT'));
+            }
+            if ($plan && $plan == env('PLAN_PREMIUM_NAME')){
+                $limit = intval(env('PLAN_PREMIUM_STORAGE_LIMIT'));
+            }
+            $ae->filesize = File::size($local_location);
+            if ($user->storage() + File::size($local_location) > $limit){
+                $ae->active = 0;
+                $ae->message = 'The user has reached their storage limit';
+                $ae->save();
+                flock($fh, LOCK_UN);
+                return ['error' => 1, 'message' => 'You have reached your storage limit'];
+            }
             Storage::disk('s3')->putFileAs('episodes', new File($local_location), $s3_location);
+            
+            flock($fh, LOCK_UN);
+            return ['success' => 1, 'message' => 'Episode was archived'];
         }
         
         flock($fh, LOCK_UN);

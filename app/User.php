@@ -54,6 +54,16 @@ class User extends SparkUser
         'uses_two_factor_auth' => 'boolean',
     ];
     
+    public function storage(){
+        $self = $this;
+        return ArchivedEpisode::whereIn('id', function($query) use ($self){
+                $query->select('archived_episode_id')
+                    ->from('archived_episode_users')
+                    ->where('user_id', $self->id);
+            })
+            ->sum('filesize');
+    }
+    
     public function getPhotoUrlAttribute($value)
     {
         if (empty($value)){
@@ -119,7 +129,7 @@ class User extends SparkUser
             if ($plan && $plan == env('PLAN_PREMIUM_NAME')){
                 $limit = intval(env('PLAN_PREMIUM_STORAGE_LIMIT'));
             }
-            $archived = DB::select('select sum(archived_episodes.filesize) s from archived_episodes where id in (select archived_episode_id from archived_episode_users where user_id = ?)', [$this->id]);
+            $archived = DB::select('select sum(archived_episodes.filesize) s from archived_episodes where active = 1 and id in (select archived_episode_id from archived_episode_users where user_id = ?)', [$this->id]);
             
             if (intval($archived[0]->s) < $limit){
                 $ret['has_reached_archive_limit'] = false;
