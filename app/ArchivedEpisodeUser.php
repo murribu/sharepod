@@ -10,4 +10,8 @@ class ArchivedEpisodeUser extends Model {
     public function archived_episode(){
         return $this->belongsTo('App\ArchivedEpisode');
     }
+    
+    public function user(){
+        return $this->belongsTo('App\User');
+    }
 }

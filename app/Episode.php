@@ -20,7 +20,7 @@ class Episode extends Model {
     public function request_archive($user){
         $retry_limit = 5;
         $ae = ArchivedEpisode::where('episode_id', $this->id)
-            ->where('status_code', '200')
+            ->where('result_slug', 'ok')
             ->first();
         if ($ae){
             $aeu = $ae->create_archived_episode_user($user);
@@ -28,7 +28,7 @@ class Episode extends Model {
         }else{
             $ae = ArchivedEpisode::where('episode_id', $this->id)
                 ->whereNotNull('processed_at')
-                ->where('status_code', '<>', '200')
+                ->whereNotIn('result_slug', ['ok', 'dj-storage-limit-exceeded'])
                 ->count();
             if ($ae > $retry_limit){
                 return ['success' => 0, 'We failed to get this episode too many times. We\'ve deemed it unavailable. Sorry.'];
