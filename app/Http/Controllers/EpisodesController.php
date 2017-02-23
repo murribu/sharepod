@@ -20,6 +20,45 @@ class EpisodesController extends Controller
         $this->notifications = $notifications;
     }
     
+    public function cronArchiveEpisode(){
+        //meant to be called from a cronjob
+        //todo - But it needs to communicate back to a Controller so that the controller can send the user a notification about whether the archiving was successful
+        $lockfile = "/tmp/episode_archive.lock";
+
+        if(!file_exists($lockfile))
+            $fh = fopen($lockfile, "w");
+        else
+            $fh = fopen($lockfile, "r");
+
+        if($fh === FALSE) exit("Unable to open lock file");
+
+        if(!flock($fh, LOCK_EX)) // another process is running
+            exit("Lock file already in use");
+            
+        $ae = ArchivedEpisode::with('episode')
+            ->where('active', '1')
+            ->whereNull('status_code')
+            ->whereNotNull('episode_id')
+            ->first();
+        if ($ae){
+            $plan = $user->plan();
+            if ($plan && $plan == env('PLAN_BASIC_NAME')){
+                $limit = intval(env('PLAN_BASIC_STORAGE_LIMIT'));
+            }
+            if ($plan && $plan == env('PLAN_PREMIUM_NAME')){
+                $limit = intval(env('PLAN_PREMIUM_STORAGE_LIMIT'));
+            }
+            $ae->filesize = File::size($local_location);
+            if ($user->storage() + File::size($local_location) > $limit){
+                $ae->active = 0;
+                $ae->message = 'The user has reached their storage limit';
+                $ae->save();
+                flock($fh, LOCK_UN);
+                return ['error' => 1, 'message' => 'You have reached your storage limit'];
+            }
+        }
+    }
+    
     public function getEpisode(){
         return view('episode', ['activelink' => 'shows']);
     }
@@ -114,7 +153,7 @@ class EpisodesController extends Controller
         if (isset($ret['error'])){
             return response()->json(['message' => $ret['message']], 500);
         }else{
-            return ['success' => 1];
+            return $ret;
         }
     }
 }

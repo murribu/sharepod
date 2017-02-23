@@ -20,6 +20,7 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'email' => $faker->unique()->safeEmail,
         'password' => $password ?: $password = bcrypt('secret'),
         'remember_token' => str_random(10),
+        'slug' => App\User::findSlug(),
     ];
 });
 
@@ -32,10 +33,30 @@ $factory->define(App\Episode::class, function(Faker\Generator $faker){
     ];
 });
 
-
 $factory->define(App\Show::class, function(Faker\Generator $faker){
     return [
         'slug' => App\Show::findSlug(),
         'feed' => $faker->url
+    ];
+});
+
+$factory->define(App\ArchivedEpisode::class, function(Faker\Generator $faker){
+    return [
+        'slug' => App\ArchivedEpisode::findSlug(),
+        'episode_id' => function() {
+            return factory(App\Episode::class)->create()->id;
+        }
+    ];
+});
+
+$factory->define(App\ArchivedEpisodeUser::class, function(Faker\Generator $faker){
+    return [
+        'archived_episode_id' => function() {
+            return factory(App\ArchivedEpisode::class)->create()->id;
+        },
+        'user_id' => function() {
+            return factory(App\User::class)->create()->id;
+        },
+        'active' => 1,
     ];
 });

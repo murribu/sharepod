@@ -21,15 +21,15 @@ class CreateArchivedEpisodesTable extends Migration
             $table->string('name')->nullable();
             $table->longText('description')->nullable();
             $table->integer('duration')->nullable();
-            $table->boolean('explicit')->default(false);
-            $table->integer('filesize')->unsigned();
+            $table->boolean('explicit')->nullable();
+            $table->integer('filesize')->unsigned()->nullable();
             $table->string('img_url')->nullable();
             $table->string('link')->nullable();
             $table->integer('pubdate')->nullable();
             $table->string('url')->nullable();
-            $table->boolean('active')->default(false);
             $table->enum('status_code', ['200', '401', '403', '404', '500'])->nullable();
-            $table->string('message');
+            $table->string('status_message')->nullable();
+            $table->timestamp('processed_at')->nullable()->index();
             $table->timestamps();
         });
         Schema::create('archived_episode_users', function(Blueprint $table) {
@@ -38,6 +38,7 @@ class CreateArchivedEpisodesTable extends Migration
             $table->foreign('archived_episode_id')->references('id')->on('archived_episodes');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
+            $table->boolean('active')->default(false)->index();
             $table->timestamps();
         });
     }

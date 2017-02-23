@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class ArchiveEpisode extends Model {
+class ArchivedEpisode extends Model {
     use HasSlug;
     
     public $table = 'archived_episodes';
@@ -15,6 +15,12 @@ class ArchiveEpisode extends Model {
                     ->where('archived_episode_id', $self->id)
                     ->where('status', 'success');
             })->get();
+    }
+    
+    public function create_archived_episode_user($user){
+        $aeu = ArchivedEpisodeUser::firstOrCreate(['archived_episode_id' => $this->id, 'user_id' => $user->id]);
+        $aeu->active = 1;
+        $aeu->save();
     }
     
     public function episode(){

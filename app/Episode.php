@@ -20,24 +20,25 @@ class Episode extends Model {
     public function request_archive($user){
         $retry_limit = 5;
         $ae = ArchivedEpisode::where('episode_id', $this->id)
-            ->where('active', '1')
+            ->where('status_code', '200')
             ->first();
         if ($ae){
-            return ['success' => 1, 'status_code' => $ae['status_code'], 'message' => 'Episode archived!'];
+            $aeu = $ae->create_archived_episode_user($user);
+            return ['success' => 1, 'message' => 'Episode archived!'];
         }else{
             $ae = ArchivedEpisode::where('episode_id', $this->id)
-                ->whereNull('status_code')
-                ->where('active', '0')
+                ->whereNotNull('processed_at')
+                ->where('status_code', '<>', '200')
                 ->count();
             if ($ae > $retry_limit){
-                return ['success' => 0, 'status_code' => '406', 'We failed to get this episode too many times. We\'ve deemed it unavailable. Sorry.'];
+                return ['success' => 0, 'We failed to get this episode too many times. We\'ve deemed it unavailable. Sorry.'];
             }else{
                 $ae = new ArchivedEpisode;
                 $ae->episode_id = $this->id;
-                $ae->slug = self::findSlug();
+                $ae->slug = ArchivedEpisode::findSlug();
                 $ae->save();
-                $aeu = ArchivedEpisodeUser::firstOrCreate(['archived_episode_id' => $ae->id, 'user_id' => $user->id]);
-                return ['success' => 1, 'status_code' => '200', 'message' => 'We have received your request to archive this episode.'];
+                $aeu = $ae->create_archived_episode_user($user);
+                return ['success' => 1, 'message' => 'We have received your request to archive this episode.'];
             }
         }
     }
