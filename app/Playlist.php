@@ -19,7 +19,7 @@ class Playlist extends Model {
         $episodes = Episode::join('playlist_episodes', 'playlist_episodes.episode_id', '=', 'episodes.id')
             ->leftJoin('shows', 'shows.id', '=', 'episodes.show_id')
             ->where('playlist_episodes.playlist_id', $this->id)
-            ->selectRaw('episodes.show_id, episodes.id, episodes.slug, episodes.name, episodes.description, episodes.duration, episodes.explicit, episodes.filesize, episodes.img_url, episodes.pubdate, shows.name show_name, shows.slug show_slug')
+            ->selectRaw('episodes.show_id, episodes.id, episodes.slug, episodes.name, episodes.description, episodes.duration, episodes.explicit, episodes.filesize, episodes.img_url, episodes.pubdate, episodes.url, shows.name show_name, shows.slug show_slug')
             ->orderBy('ordering')
             ->orderBy('id')
             ->get();
