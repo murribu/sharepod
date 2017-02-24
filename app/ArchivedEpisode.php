@@ -3,7 +3,9 @@
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Spark\Contracts\Repositories\NotificationRepository;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\File;
+use File;
+use Illuminate\Support\Facades\Storage;
+use SplFileInfo;
 
 class ArchivedEpisode extends Model {
     use HasSlug;
@@ -31,7 +33,7 @@ class ArchivedEpisode extends Model {
             ->first();
             
         if ($ae){
-            $success_message = 'The episode was archived!';
+            $success_message = 'Success! The episode was archived!';
             $failure_message = 'The episode has not been archived We had a problem.';
             $notifications_to_send = [];
             $parts = explode('.', $ae->episode->url);
@@ -90,8 +92,8 @@ class ArchivedEpisode extends Model {
                                 'notification'  => [
                                     'icon'          => 'fa-times',
                                     'body'          => 'The episode has not been archived. It would put you over your storage limit.',
-                                    'action_text'   => 'View Episode',
-                                    'action_url'    => '/episodes/'.$ae->episode->slug,
+                                    'action_text'   => 'Change Plan',
+                                    'action_url'    => '/settings#/subscription',
                                 ]
                             ];
                         }else{
@@ -109,8 +111,9 @@ class ArchivedEpisode extends Model {
                         if ($needs_to_be_archived){
                             $ae->result_slug = 'ok';
                             $ae->processed_at = Carbon::now();
+                            $local_file = new SplFileInfo($local_location);
                             try {
-                                Storage::disk('s3')->putFileAs('episodes', new File($local_location), $s3_location);
+                                Storage::disk('s3')->putFileAs('episodes', $local_file, $s3_location, 'public');
                             }
                             catch (Exception $e){
                                 $ae->result_slug = 'dj-s3-file-storage-problem';
@@ -130,10 +133,10 @@ class ArchivedEpisode extends Model {
                     }
                 }
             }
-        }
-        
-        foreach($notifications_to_send as $n){
-            $notifications->create($n['user'], $n['notification']);
+            
+            foreach($notifications_to_send as $n){
+                $notifications->create($n['user'], $n['notification']);
+            }
         }
 
         flock($fh, LOCK_UN);

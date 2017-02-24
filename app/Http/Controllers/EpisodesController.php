@@ -117,4 +117,14 @@ class EpisodesController extends Controller
             return $ret;
         }
     }
+    
+    public function apiUnarchive(){
+        $ep = Episode::where('slug', Input::get('slug'))->first();
+        $ret = $ep->unarchive(Auth::user());
+        if (isset($ret['error'])){
+            return response()->json(['message' => $ret['message']], 500);
+        }else{
+            return $ret;
+        }
+    }
 }

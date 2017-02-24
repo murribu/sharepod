@@ -32,6 +32,7 @@ class Show extends Model {
     }
     
     public function limitedEpisodes($user = null, $limit = 10, $pubdate = false){
+        
         $episodes = Episode::leftJoin('likes as total_likes', function($join) use ($user){
                 $join->on('total_likes.fk', '=', 'episodes.id');
                 $join->on('total_likes.type', '=', DB::raw("'episode'"));
@@ -44,12 +45,13 @@ class Show extends Model {
             ->leftJoin('playlist_episodes as pe', 'pe.episode_id', '=', 'episodes.id')
             ->leftJoin('recommendations', 'recommendations.episode_id', '=', 'episodes.id')
             ->leftJoin('archived_episodes', function($join){
-                $join->on('archived_episodes.active', '=', DB::raw('1'));
+                $join->on('archived_episodes.result_slug', '=', DB::raw("'ok'"));
                 $join->on('archived_episodes.episode_id', '=', 'episodes.id');
             })
             ->leftJoin('archived_episode_users as this_user_archived', function($join) use ($user){
                 $join->on('this_user_archived.archived_episode_id', '=', 'archived_episodes.id');
                 $join->on('this_user_archived.user_id', '=', DB::raw($user ? $user->id : DB::raw("-1")));
+                $join->on('this_user_archived.active', DB::raw("'1'"));
             })
             ->where('show_id', $this->id)
             ->selectRaw('episodes.show_id, episodes.id, episodes.slug, episodes.name, episodes.description, episodes.duration, episodes.explicit, episodes.filesize, episodes.img_url, episodes.pubdate, count(total_likes.id) as total_likes, count(this_user_likes.id) as this_user_likes, count(recommendations.id) total_recommendations, count(distinct pe.playlist_id) total_playlists, count(this_user_archived.id) this_user_archived')
@@ -74,6 +76,7 @@ class Show extends Model {
         
         foreach($ret as $e){
             $e = $e->prepare();
+            unset($e->show);
         }
         
         return $ret;

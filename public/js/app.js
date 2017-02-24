@@ -5095,7 +5095,9 @@ module.exports = {
             recommendTwitter: '',
             recommendationComment: '',
             playlists: [],
-            selectedPlaylist: {}
+            selectedPlaylist: {},
+            archiveResultMessage: '',
+            archiveResultHeader: '',
         };
     },
     methods: {
@@ -5112,6 +5114,7 @@ module.exports = {
                         setTimeout(function(){
                             $("#modal-unarchive-success").modal('hide');
                         }, 8000);
+                        self.updateEpisode(episode.slug, response.data.total_likes, response.data.this_user_likes, episode.this_user_archived);
                     }, function (response) {
                         $("#modal-error").modal('show');
                         setTimeout(function(){
@@ -5122,10 +5125,13 @@ module.exports = {
                 this.$http.post('/api/episodes/archive', sent)
                     .then(function (response) {
                         self.updateEpisode(episode.slug, episode.total_likes, episode.this_user_likes, 1);
-                        $("#modal-archive-success").modal('show');
+                        $("#modal-archive-result").modal('show');
+                        self.archiveResultHeader = response.data.header;
+                        self.archiveResultMessage = response.data.message;
                         setTimeout(function(){
-                            $("#modal-archive-success").modal('hide');
-                        }, 8000);
+                            $("#modal-archive-result").modal('hide');
+                        }, 10000);
+                        self.updateEpisode(episode.slug, response.data.total_likes, response.data.this_user_likes, episode.this_user_archived);
                     }, function (response) {
                         $("#modal-error").modal('show');
                         setTimeout(function(){

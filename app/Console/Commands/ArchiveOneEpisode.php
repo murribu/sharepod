@@ -12,5 +12,8 @@ class ArchiveOneEpisode extends Command{
     
     public function handle(NotificationRepository $notifications) {
         $ret = ArchivedEpisode::archive_one_episode($notifications);
+        if(count($ret) > 0){
+            var_dump($ret);
+        }
     }
 }

@@ -7551,9 +7551,9 @@ button.btn-unlike:hover {
 .btn-archive-episode .icon-container {
   font-size: large;
 }
-.btn-archive-episode .active .icon-text-container,
+.btn-archive-episode.active .icon-text-container,
 .btn-archive-episode:hover .icon-text-container,
-.btn-archive-episode .active .icon-container,
+.btn-archive-episode.active .icon-container,
 .btn-archive-episode:hover .icon-container {
   color: #1d46e2;
 }

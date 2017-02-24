@@ -17,6 +17,19 @@ class Episode extends Model {
     public static $like_type = 'episode';
     protected static $slug_reserved_words = ['new', 'search', 'undefined', 'popular'];
     
+    public function unarchive($user){
+        $self = $this;
+        ArchivedEpisodeUser::whereIn('archived_episode_id', function($query) use ($self){
+            $query->select('id')
+                ->from('archived_episodes')
+                ->where('episode_id', $self->id);
+        })
+        ->where('user_id', $user->id)
+        ->update(['active' => 0]);
+        
+        return ['success' => 1];
+    }
+    
     public function request_archive($user){
         $retry_limit = 5;
         $ae = ArchivedEpisode::where('episode_id', $this->id)
@@ -24,100 +37,23 @@ class Episode extends Model {
             ->first();
         if ($ae){
             $aeu = $ae->create_archived_episode_user($user);
-            return ['success' => 1, 'message' => 'Episode archived!'];
+            return ['success' => 1, 'header' => 'Episode archived!', 'message' => 'You have archived this episode. When you add it to a playlist, you don\'t have to worry about the original site taking this episode down.'];
         }else{
             $ae = ArchivedEpisode::where('episode_id', $this->id)
                 ->whereNotNull('processed_at')
                 ->whereNotIn('result_slug', ['ok', 'dj-storage-limit-exceeded'])
                 ->count();
             if ($ae > $retry_limit){
-                return ['success' => 0, 'We failed to get this episode too many times. We\'ve deemed it unavailable. Sorry.'];
+                return ['success' => 0, 'message' => 'We failed to get this episode too many times. We\'ve deemed it unavailable. Sorry.', 'header' => 'Episode Unavailable'];
             }else{
                 $ae = new ArchivedEpisode;
                 $ae->episode_id = $this->id;
                 $ae->slug = ArchivedEpisode::findSlug();
                 $ae->save();
                 $aeu = $ae->create_archived_episode_user($user);
-                return ['success' => 1, 'message' => 'We have received your request to archive this episode.'];
+                return ['success' => 1, 'message' => 'We have received your request to archive this episode. When your request has been processed, you will get a notification (click on the little bell on the top-right of this page).', 'header' => 'Archive Requested'];
             }
         }
-    }
-    
-    public static function archive($user){
-        //meant to be called from a cronjob
-        //todo - But it needs to communicate back to a Controller so that the controller can send the user a notification about whether the archiving was successful
-        $lockfile = "/tmp/episode_archive.lock";
-
-        if(!file_exists($lockfile))
-            $fh = fopen($lockfile, "w");
-        else
-            $fh = fopen($lockfile, "r");
-
-        if($fh === FALSE) exit("Unable to open lock file");
-
-        if(!flock($fh, LOCK_EX)) // another process is running
-            exit("Lock file already in use");
-            
-        $ae = ArchivedEpisode::with('episode')
-            ->where('active', '1')
-            ->whereNull('status_code')
-            ->whereNotNull('episode_id')
-            ->first();
-        if ($ae){
-            //todo - find out if it's already archived by someone else. If so, just latch onto it!
-            $parts = split('.', $ae->episode->url);
-            $ext = $parts[count($parts) - 1];
-            $local_location = '/tmp/'.$this->slug.".".$ext;
-            $s3_location = $this->slug.".".$ext;
-            $out = fopen($local_location, "wb");
-            if ($out == FALSE){ 
-                $ae->status_code = '500';
-                $ae->message = 'File not opened';
-                $ae->save();
-                echo "Error - file not opened";
-                flock($fh, LOCK_UN);
-                return;
-            }
-            ini_set("memory_limit", "2048M");
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $this->url);
-            curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
-            curl_setopt($ch, CURLOPT_TIMEOUT, 60);
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-            curl_setopt($ch, CURLOPT_FILE, $out); 
-            curl_exec($ch);
-            if (curl_errno($ch)){
-                flock($fh, LOCK_UN);
-                return ['error' => 1, 'message' => 'Curl Error: '.curl_errno($ch), 'status_code' => curl_errno($ch)];
-            }
-            // todo - start here
-            // Check to see if the user has enough space left on their plan
-            $limit = 0;
-            $plan = $user->plan();
-            if ($plan && $plan == env('PLAN_BASIC_NAME')){
-                $limit = intval(env('PLAN_BASIC_STORAGE_LIMIT'));
-            }
-            if ($plan && $plan == env('PLAN_PREMIUM_NAME')){
-                $limit = intval(env('PLAN_PREMIUM_STORAGE_LIMIT'));
-            }
-            $ae->filesize = File::size($local_location);
-            if ($user->storage() + File::size($local_location) > $limit){
-                $ae->active = 0;
-                $ae->message = 'The user has reached their storage limit';
-                $ae->save();
-                flock($fh, LOCK_UN);
-                return ['error' => 1, 'message' => 'You have reached your storage limit'];
-            }
-            Storage::disk('s3')->putFileAs('episodes', new File($local_location), $s3_location);
-            
-            flock($fh, LOCK_UN);
-            return ['success' => 1, 'message' => 'Episode was archived'];
-        }
-        
-        flock($fh, LOCK_UN);
     }
     
 	public function img_url_default(){

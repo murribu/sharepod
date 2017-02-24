@@ -92,7 +92,10 @@
                             </div>
                             <div class="episode-action">
                                 <button :class="{'active': episode.this_user_archived}" class="btn-archive-episode" @click.prevent="toggleArchiveEpisode(episode)">
-                                    <div class="icon-container" title="Archive">
+                                    <div class="icon-container" title="Archive" v-if="!episode.this_user_archived">
+                                        <i class="fa fa-floppy-o"></i>
+                                    </div>
+                                    <div class="icon-container" title="Unarchive" v-if="episode.this_user_archived">
                                         <i class="fa fa-floppy-o"></i>
                                     </div>
                                 </button>

@@ -3,6 +3,10 @@ namespace Tests;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Faker\Factory as Faker;
+use Laravel\Spark\Spark;
+use Laravel\Spark\Contracts\Interactions\Subscribe;
+
+use Tests\Traits\InteractsWithPaymentProviders;
 
 use App\ArchivedEpisode;
 use App\ArchivedEpisodeUser;
@@ -13,6 +17,7 @@ use App\User;
 class ArchivedEpisodeTest extends TestCase
 {
     use DatabaseTransactions;
+    use InteractsWithPaymentProviders;
     
     protected $user1;
     protected $ep;
@@ -43,9 +48,8 @@ class ArchivedEpisodeTest extends TestCase
             ->post('/api/episodes/archive', ['slug' => $ae->episode->slug]);
             
         $response = json_decode($ret->response->getContent());
-        
         $this->assertEquals($response->success, '1');
-        $this->assertEquals($response->message, 'Episode archived!');
+        $this->assertEquals($response->header, 'Episode archived!');
     }
     
     public function test_requesting_to_archive_an_episode_that_has_failed_multiple_times_before(){
@@ -57,6 +61,9 @@ class ArchivedEpisodeTest extends TestCase
         $response = json_decode($ret->response->getContent());
         
         $this->assertEquals($response->success, '0');
+        
+        // Run this so that there isn't a stray record for subsequent tests
+        $ret = $this->artisan('archive_one_episode');
     }
     
     public function test_archiving_an_episode_with_no_plan(){
@@ -68,5 +75,49 @@ class ArchivedEpisodeTest extends TestCase
         $this->assertEquals($ae->result_slug, 'dj-storage-limit-exceeded');
         $notification = Notification::where('user_id', $aeu->user_id)->first();
         $this->assertContains('limit', $notification->body);
+    }
+
+    public function test_archiving_an_episode_with_a_valid_plan(){
+        $this->actingAs($this->user1)
+                ->json('POST', '/settings/subscription', [
+                    'stripe_token' => $this->getStripeToken(),
+                    'plan' => env('PLAN_BASIC_NAME'),
+                ]);
+                        
+        $ae = factory(\App\ArchivedEpisode::class)->create(['episode_id' => $this->ep->id]);
+        $aeu = factory(\App\ArchivedEpisodeUser::class)->create(['archived_episode_id' => $ae->id, 'user_id' => $this->user1->id]);
+        
+        $ret = $this->artisan('archive_one_episode');
+        $ae = $ae->fresh();
+        $this->assertEquals($ae->result_slug, 'ok');
+        $notification = Notification::where('user_id', $aeu->user_id)->first();
+        $this->assertContains('Success', $notification->body);
+    }
+    
+    public function test_unarchiving_an_episode(){
+        $this->actingAs($this->user1)
+                ->json('POST', '/settings/subscription', [
+                    'stripe_token' => $this->getStripeToken(),
+                    'plan' => env('PLAN_BASIC_NAME'),
+                ]);
+        $ae = factory(\App\ArchivedEpisode::class)->create(['episode_id' => $this->ep->id]);
+        $aeu = factory(\App\ArchivedEpisodeUser::class)->create(['archived_episode_id' => $ae->id, 'user_id' => $this->user1->id]);
+                
+        $ret = $this->actingAs($this->user1)
+            ->post('/api/episodes/unarchive', ['slug' => $this->ep->slug]);
+        $response = json_decode($ret->response->getContent());
+            
+        $this->assertEquals($response->success, '1');
+        
+        $self = $this;
+        $ae = ArchivedEpisodeUser::whereIn('archived_episode_id', function($query) use ($self){
+            $query->select('id')
+                ->from('archived_episodes')
+                ->where('episode_id', $self->ep->id);
+        })
+        ->where('user_id', $this->user1->id)
+        ->first();
+        
+        $this->assertEquals($ae->active, 0);
     }
 }

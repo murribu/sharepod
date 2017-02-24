@@ -129,7 +129,7 @@ class User extends SparkUser
             if ($plan && $plan == env('PLAN_PREMIUM_NAME')){
                 $limit = intval(env('PLAN_PREMIUM_STORAGE_LIMIT'));
             }
-            $archived = DB::select('select sum(archived_episodes.filesize) s from archived_episodes where active = 1 and id in (select archived_episode_id from archived_episode_users where user_id = ?)', [$this->id]);
+            $archived = DB::select('select sum(archived_episodes.filesize) s from archived_episodes where result_slug = \'ok\' and id in (select archived_episode_id from archived_episode_users where active = 1 and user_id = ?)', [$this->id]);
             
             if (intval($archived[0]->s) < $limit){
                 $ret['has_reached_archive_limit'] = false;
