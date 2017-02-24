@@ -67,14 +67,16 @@ class ArchivedEpisodeTest extends TestCase
     }
     
     public function test_archiving_an_episode_with_no_plan(){
-        $ae = factory(\App\ArchivedEpisode::class)->create(['episode_id' => $this->ep->id]);
-        $aeu = factory(\App\ArchivedEpisodeUser::class)->create(['archived_episode_id' => $ae->id, 'user_id' => $this->user1->id]);
         
-        $ret = $this->artisan('archive_one_episode');
-        $ae = ArchivedEpisode::find($ae->id);
+        $ret = $this->actingAs($this->user1)
+            ->post('/api/episodes/archive', ['slug' => $this->ep->slug]);
+            
+        $response = json_decode($ret->response->getContent());
+        $aeu = ArchivedEpisodeUser::where('user_id', $this->user1->id)->first();
+        $ae = $ae->archived_episode;
+        $this->assertEquals($aeu->active, 0);
         $this->assertEquals($ae->result_slug, 'dj-storage-limit-exceeded');
-        $notification = Notification::where('user_id', $aeu->user_id)->first();
-        $this->assertContains('limit', $notification->body);
+        $this->assertContains('limit', $response->message);
     }
 
     public function test_archiving_an_episode_with_a_valid_plan(){

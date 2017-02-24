@@ -31,11 +31,20 @@ class Episode extends Model {
     }
     
     public function request_archive($user){
+        $limit = 0;
+        $plan = $user->plan();
+        if ($plan && $plan == env('PLAN_BASIC_NAME')){
+            $limit = intval(env('PLAN_BASIC_STORAGE_LIMIT'));
+        }
+        if ($plan && $plan == env('PLAN_PREMIUM_NAME')){
+            $limit = intval(env('PLAN_PREMIUM_STORAGE_LIMIT'));
+        }
         $retry_limit = 5;
         $ae = ArchivedEpisode::where('episode_id', $this->id)
             ->where('result_slug', 'ok')
             ->first();
         if ($ae){
+            //todo - check the filesize to make sure it doesn't put the user over their limit
             $aeu = $ae->create_archived_episode_user($user);
             return ['success' => 1, 'header' => 'Episode archived!', 'message' => 'You have archived this episode. When you add it to a playlist, you don\'t have to worry about the original site taking this episode down.'];
         }else{
@@ -46,6 +55,7 @@ class Episode extends Model {
             if ($ae > $retry_limit){
                 return ['success' => 0, 'message' => 'We failed to get this episode too many times. We\'ve deemed it unavailable. Sorry.', 'header' => 'Episode Unavailable'];
             }else{
+                //todo - if limit == 0, deny the request immediately
                 $ae = new ArchivedEpisode;
                 $ae->episode_id = $this->id;
                 $ae->slug = ArchivedEpisode::findSlug();
