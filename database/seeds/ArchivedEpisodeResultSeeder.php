@@ -48,6 +48,11 @@ class ArchivedEpisodeResultSeeder extends Seeder{
                 'name'      => 'Internal Error - Could not create a file in the /tmp directory',
                 'success'   => '0',
             ),
+            array(
+                'slug'      => 'dj-s3-file-storage-problem',
+                'name'      => 'Internal Error - Could not create a file in the s3 repository',
+                'success'   => '0',
+            ),
         );
         
         foreach($results as $result){

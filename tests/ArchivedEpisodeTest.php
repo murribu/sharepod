@@ -7,6 +7,7 @@ use Faker\Factory as Faker;
 use App\ArchivedEpisode;
 use App\ArchivedEpisodeUser;
 use App\Episode;
+use App\Notification;
 use App\User;
 
 class ArchivedEpisodeTest extends TestCase
@@ -58,11 +59,14 @@ class ArchivedEpisodeTest extends TestCase
         $this->assertEquals($response->success, '0');
     }
     
-    public function test_archiving_an_episode(){
+    public function test_archiving_an_episode_with_no_plan(){
         $ae = factory(\App\ArchivedEpisode::class)->create(['episode_id' => $this->ep->id]);
         $aeu = factory(\App\ArchivedEpisodeUser::class)->create(['archived_episode_id' => $ae->id, 'user_id' => $this->user1->id]);
         
         $ret = $this->artisan('archive_one_episode');
-        dd($ret);
+        $ae = ArchivedEpisode::find($ae->id);
+        $this->assertEquals($ae->result_slug, 'dj-storage-limit-exceeded');
+        $notification = Notification::where('user_id', $aeu->user_id)->first();
+        $this->assertContains('limit', $notification->body);
     }
 }

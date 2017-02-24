@@ -3,6 +3,7 @@
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Spark\Contracts\Repositories\NotificationRepository;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\File;
 
 class ArchivedEpisode extends Model {
     use HasSlug;
@@ -11,6 +12,7 @@ class ArchivedEpisode extends Model {
     
     public static function archive_one_episode(NotificationRepository $notifications){
         //meant to be called from a cronjob
+        $ret = [];
         $lockfile = "/tmp/episode_archive.lock";
 
         if(!file_exists($lockfile))
@@ -18,21 +20,24 @@ class ArchivedEpisode extends Model {
         else
             $fh = fopen($lockfile, "r");
 
-        if($fh === FALSE) exit("Unable to open lock file");
+        if($fh === FALSE) return ['error' => "Unable to open lock file"];
 
         if(!flock($fh, LOCK_EX)) // another process is running
-            exit("Lock file already in use");
+            return [];
             
-        $ae = ArchivedEpisode::where('active', '1')
+        $ae = ArchivedEpisode::whereNull('processed_at')
             ->whereNull('result_slug')
             ->whereNotNull('episode_id')
             ->first();
+            
         if ($ae){
+            $success_message = 'The episode was archived!';
+            $failure_message = 'The episode has not been archived We had a problem.';
             $notifications_to_send = [];
-            $parts = split('.', $ae->episode->url);
+            $parts = explode('.', $ae->episode->url);
             $ext = $parts[count($parts) - 1];
-            $local_location = '/tmp/'.$this->slug.".".$ext;
-            $s3_location = $this->slug.".".$ext;
+            $local_location = '/tmp/'.$ae->slug.".".$ext;
+            $s3_location = $ae->slug.".".$ext;
             $out = fopen($local_location, "wb");
             if (!$out){ 
                 $ae->result_slug = 'dj-local-file-storage-problem';
@@ -42,10 +47,10 @@ class ArchivedEpisode extends Model {
                     $aeu->active = 0;
                     $aeu->save();
                     $notifications_to_send[] = [
-                        'user_id'       => $aeu->user_id,
+                        'user'          => $aeu->user,
                         'notification'  => [
                             'icon'          => 'fa-times',
-                            'body'          => 'The episode has not been archived We had a problem.',
+                            'body'          => $failure_message,
                             'action_text'   => 'View Episode',
                             'action_url'    => '/episodes/'.$ae->episode->slug,
                         ]
@@ -55,7 +60,7 @@ class ArchivedEpisode extends Model {
             }else{
                 ini_set("memory_limit", "2048M");
                 $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, $this->url);
+                curl_setopt($ch, CURLOPT_URL, $ae->episode->url);
                 curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
                 curl_setopt($ch, CURLOPT_TIMEOUT, 60);
                 curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
@@ -65,37 +70,73 @@ class ArchivedEpisode extends Model {
                 curl_setopt($ch, CURLOPT_FILE, $out); 
                 curl_exec($ch);
                 if (curl_errno($ch)){
-                    flock($fh, LOCK_UN);
-                    return ['error' => 1, 'message' => 'Curl Error: '.curl_errno($ch), 'status_code' => curl_errno($ch)];
-                }
-                $needs_to_be_archived = false;
-                foreach($ae->archived_episode_users as $aeu){
-                    // Check to see if the user has enough space left on their plan
-                    $limit = 0;
-                    $plan = $aeu->user->plan();
-                    if ($plan && $plan == env('PLAN_BASIC_NAME')){
-                        $limit = intval(env('PLAN_BASIC_STORAGE_LIMIT'));
-                    }
-                    if ($plan && $plan == env('PLAN_PREMIUM_NAME')){
-                        $limit = intval(env('PLAN_PREMIUM_STORAGE_LIMIT'));
-                    }
-                    $ae->filesize = File::size($local_location);
-                    if ($user->storage() + File::size($local_location) > $limit){
-                        $ae->result_slug = 'dj-storage-limit-exceeded';
-                        $ae->message = 'The user has reached their storage limit';
-                        $ae->save();
-                        // return ['error' => 1, 'message' => 'You have reached your storage limit'];
-                    }else{
-                        
+                    $ret = ['error' => 1, 'message' => 'Curl Error: '.curl_errno($ch), 'status_code' => curl_errno($ch)];
+                }else{
+                    $needs_to_be_archived = false;
+                    foreach($ae->archived_episode_users as $aeu){
+                        // Check to see if the user has enough space left on their plan
+                        $limit = 0;
+                        $plan = $aeu->user->plan();
+                        if ($plan && $plan == env('PLAN_BASIC_NAME')){
+                            $limit = intval(env('PLAN_BASIC_STORAGE_LIMIT'));
+                        }
+                        if ($plan && $plan == env('PLAN_PREMIUM_NAME')){
+                            $limit = intval(env('PLAN_PREMIUM_STORAGE_LIMIT'));
+                        }
+                        $ae->filesize = File::size($local_location);
+                        if ($aeu->user->storage() + File::size($local_location) > $limit){
+                            $notifications_to_send[] = [
+                                'user'          => $aeu->user,
+                                'notification'  => [
+                                    'icon'          => 'fa-times',
+                                    'body'          => 'The episode has not been archived. It would put you over your storage limit.',
+                                    'action_text'   => 'View Episode',
+                                    'action_url'    => '/episodes/'.$ae->episode->slug,
+                                ]
+                            ];
+                        }else{
+                            $needs_to_be_archived = true;
+                            $notifications_to_send[] = [
+                                'user'          => $aeu->user,
+                                'notification'  => [
+                                    'icon'          => 'fa-plus',
+                                    'body'          => $success_message,
+                                    'action_text'   => 'View Episode',
+                                    'action_url'    => '/episodes/'.$ae->episode->slug,
+                                ]
+                            ];
+                        }
+                        if ($needs_to_be_archived){
+                            $ae->result_slug = 'ok';
+                            $ae->processed_at = Carbon::now();
+                            try {
+                                Storage::disk('s3')->putFileAs('episodes', new File($local_location), $s3_location);
+                            }
+                            catch (Exception $e){
+                                $ae->result_slug = 'dj-s3-file-storage-problem';
+                                foreach ($notifications_to_send as $n){
+                                    if ($n['body'] == $success_message){
+                                        $n['body'] = $failure_message;
+                                    }
+                                }
+                                $ret = ['error' => 's3', 'message' => $e->getMessage()];
+                            }
+                            $ae->save();
+                        }else{
+                            $ae->result_slug = 'dj-storage-limit-exceeded';
+                            $ae->processed_at = Carbon::now();
+                            $ae->save();
+                        }
                     }
                 }
             }
         }
-        flock($fh, LOCK_UN);
         
         foreach($notifications_to_send as $n){
-            $notifications->create($n['user_id'], $n['notification']);
+            $notifications->create($n['user'], $n['notification']);
         }
+
+        flock($fh, LOCK_UN);
         
         return $ret;
     }
@@ -121,6 +162,6 @@ class ArchivedEpisode extends Model {
     }
     
     public function archived_episode_users(){
-        return $this->hasMany('App\ArchivedUserEpisode');
+        return $this->hasMany('App\ArchivedEpisodeUser');
     }
 }
