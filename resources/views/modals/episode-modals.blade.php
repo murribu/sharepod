@@ -137,8 +137,7 @@
                         <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
                         <h4 class="modal-title">@{{archiveResultHeader}}</h4>
                     </div>
-                    <div class="modal-body">
-                        @{{archiveResultMessage}}
+                    <div class="modal-body" v-html="archiveResultMessage">
                     </div>
                 </div>
             </div>

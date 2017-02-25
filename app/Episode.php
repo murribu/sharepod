@@ -39,14 +39,20 @@ class Episode extends Model {
         if ($plan && $plan == env('PLAN_PREMIUM_NAME')){
             $limit = intval(env('PLAN_PREMIUM_STORAGE_LIMIT'));
         }
+        if ($limit == 0){
+            return ['success' => 0, 'header' => 'Paid Feature', 'message' => 'Your plan does not allow archiving episodes. <a href="/settings#/subscription">Click here</a> to change your plan.'];
+        }
         $retry_limit = 5;
         $ae = ArchivedEpisode::where('episode_id', $this->id)
             ->where('result_slug', 'ok')
             ->first();
         if ($ae){
-            //todo - check the filesize to make sure it doesn't put the user over their limit
-            $aeu = $ae->create_archived_episode_user($user);
-            return ['success' => 1, 'header' => 'Episode archived!', 'message' => 'You have archived this episode. When you add it to a playlist, you don\'t have to worry about the original site taking this episode down.'];
+            if ($user->storage() + $ae->filesize > $limit){
+                return ['success' => 0, 'header' => 'Storage Limitation', 'message' => 'The episode has not been archived. It would put you over your storage limit.'];
+            }else{
+                $aeu = $ae->create_archived_episode_user($user);
+                return ['success' => 1, 'header' => 'Episode archived!', 'message' => 'You have archived this episode. When you add it to a playlist, you don\'t have to worry about the original site taking this episode down.'];
+            }
         }else{
             $ae = ArchivedEpisode::where('episode_id', $this->id)
                 ->whereNotNull('processed_at')
@@ -55,13 +61,16 @@ class Episode extends Model {
             if ($ae > $retry_limit){
                 return ['success' => 0, 'message' => 'We failed to get this episode too many times. We\'ve deemed it unavailable. Sorry.', 'header' => 'Episode Unavailable'];
             }else{
-                //todo - if limit == 0, deny the request immediately
-                $ae = new ArchivedEpisode;
-                $ae->episode_id = $this->id;
-                $ae->slug = ArchivedEpisode::findSlug();
-                $ae->save();
-                $aeu = $ae->create_archived_episode_user($user);
-                return ['success' => 1, 'message' => 'We have received your request to archive this episode. When your request has been processed, you will get a notification (click on the little bell on the top-right of this page).', 'header' => 'Archive Requested'];
+                if ($limit == 0){
+                    return ['success' => 0, 'header' => 'Paid Feature', 'message' => 'Your plan does not allow archiving episodes. <a href="/settings#/subscription">Click here</a> to change your plan.'];
+                }else{
+                    $ae = new ArchivedEpisode;
+                    $ae->episode_id = $this->id;
+                    $ae->slug = ArchivedEpisode::findSlug();
+                    $ae->save();
+                    $aeu = $ae->create_archived_episode_user($user);
+                    return ['success' => 1, 'message' => 'We have received your request to archive this episode. When your request has been processed, you will get a notification (click on the little bell on the top-right of this page).', 'header' => 'Archive Requested'];
+                }
             }
         }
     }

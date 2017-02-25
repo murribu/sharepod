@@ -18,7 +18,6 @@ class Playlist extends Model {
     public function episodes(){
         $self = $this;
         
-        // DB::enableQueryLog();
         $episodes = Episode::join('playlist_episodes', 'playlist_episodes.episode_id', '=', 'episodes.id')
             ->leftJoin('shows', 'shows.id', '=', 'episodes.show_id')
             ->leftJoin(DB::raw('(select episode_id, filesize, url, slug from archived_episodes where result_slug = \'ok\' and id in (select archived_episode_id from archived_episode_users where active = 1 and user_id = '.$this->user_id.')) ae'), 'ae.episode_id', '=', 'episodes.id')
@@ -27,8 +26,7 @@ class Playlist extends Model {
             ->orderBy('ordering')
             ->orderBy('id')
             ->get();
-        // dd(DB::getQueryLog());
-            
+
         foreach ($episodes as $e){
             $e = $e->prepare();
         }
