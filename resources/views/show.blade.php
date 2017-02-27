@@ -48,7 +48,7 @@
                     </div>
                 </div>
                 <div class="col-xs-12 col-lg-9 col-md-8">
-                    <div class="panel panel-default panel-list-item episode-container" v-for="episode in displayEpisodes" :key="episode.slug">
+                    <div class="panel panel-default panel-list-item episode-container" v-for="episode in displayEpisodes" :key="episode.slug" :data-slug="episode.slug">
                         <div class="panel-heading">
                             <a :href="'/episodes/' + episode.slug">
                                 <img :src="episode.img_url" class="episode-image" />

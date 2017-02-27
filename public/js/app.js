@@ -23995,16 +23995,12 @@ Vue.component('show', {
                     this$1.show.episodes[e].total_likes = total_likes;
                     this$1.show.episodes[e].this_user_likes = this_user_likes;
                     this$1.show.episodes[e].this_user_archived = this_user_archived;
+                    $('[data-slug=' + slug + '] .btn-archive-episode .icon-container').attr('data-original-title', this_user_archived ? 'Unarchive' : 'Archive');
                 }
             }
-            Vue.nextTick(function(){
-                $('[title]').tooltip('destroy');
-                $('[title]').tooltip();
-            });
         },
     }
 });
-
 
 /***/ },
 /* 154 */
