@@ -23657,15 +23657,19 @@ Vue.component('playlists', {
         };
     },
     created: function created() {
-        this.loadUserPlaylists();
+        if (this.user){
+            this.loadUserPlaylists();
+        }
         this.loadPopularPlaylists();
     },
     methods: {
         addPlaylist: function addPlaylist(){
-            if (this.user.canAddAPlaylist){
-                window.location.href = '/playlists/new';
-            }else{
-                $("#modal-max-playlists").modal('show');
+            if (this.user){
+                if (this.user.canAddAPlaylist){
+                    window.location.href = '/playlists/new';
+                }else{
+                    $("#modal-max-playlists").modal('show');
+                }
             }
         },
         loadUserPlaylists: function loadUserPlaylists() {
@@ -23698,8 +23702,6 @@ Vue.component('playlists', {
         }
     },
 });
-
-//document.execCommand('copy')
 
 /***/ },
 /* 151 */

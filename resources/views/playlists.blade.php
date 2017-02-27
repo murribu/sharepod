@@ -3,7 +3,7 @@
 @section('content')
 <playlists :user="user" inline-template>
     <div>
-        <button class="btn btn-primary pull-right btn-plus-new" @click.prevent="addPlaylist">&plus;</button>
+        <button class="btn btn-primary pull-right btn-plus-new" @click.prevent="addPlaylist" v-if="user">&plus;</button>
         <div class="container">
             <h3 class="centered">Playlists</h3>
             @if (session('msg'))
@@ -31,7 +31,7 @@
                             Popular Playlists
                         </div>
                             <div class="panel-body" v-if="popularPlaylistsLoaded && popularPlaylists.length == 0">
-                            You have no playlists
+                            There are no playlists yet
                         </div>
                         <div class="panel-body panel-list-item" v-for="playlist in popularPlaylists">
                             <a :href="'/playlists/' + playlist.slug">@{{playlist.name}}</a>
