@@ -60,3 +60,14 @@ $factory->define(App\ArchivedEpisodeUser::class, function(Faker\Generator $faker
         'active' => 1,
     ];
 });
+
+$factory->define(App\Playlist::class, function(Faker\Generator $faker){
+    return [
+        'slug' => App\Playlist::findSlug(),
+        'name' => $faker->name,
+        'description' => $faker->sentence,
+        'user_id' => function() {
+            return factory(App\User::class)->create()->id;
+        }
+    ];
+});
