@@ -27,14 +27,13 @@ module.exports = {
             }else{
                 this.$http.post('/api/episodes/archive', sent)
                     .then(response => {
-                        self.updateEpisode(episode.slug, episode.total_likes, episode.this_user_likes, 1);
                         $("#modal-archive-result").modal('show');
                         self.archiveResultHeader = response.data.header;
                         self.archiveResultMessage = response.data.message;
                         setTimeout(function(){
                             $("#modal-archive-result").modal('hide');
                         }, 10000);
-                        self.updateEpisode(episode.slug, response.data.total_likes, response.data.this_user_likes, episode.this_user_archived);
+                        self.updateEpisode(episode.slug, episode.total_recommendations, episode.total_likes, episode.total_playlists, episode.this_user_likes, 1, episode.result_slug);
                     }, response => {
                         $("#modal-error").modal('show');
                         setTimeout(function(){
@@ -52,7 +51,7 @@ module.exports = {
             this.$http.post('/api/episodes/unarchive', sent)
                 .then(response => {
                     $("#modal-unarchive-are-you-sure").modal('hide');
-                    self.updateEpisode(episode.slug, episode.total_likes, episode.this_user_likes, 0);
+                    self.updateEpisode(episode.slug, episode.total_recommendations, episode.total_likes, episode.total_playlists, episode.this_user_likes, 0, null);
                     $("#modal-unarchive-success").modal('show');
                     setTimeout(function(){
                         $("#modal-unarchive-success").modal('hide');
@@ -89,8 +88,9 @@ module.exports = {
         },
         addSelectedEpisodeToPlaylist(playlist){
             var self = this;
+            var episode = this.selectedEpisode;
             var sent = {
-                slug: this.selectedEpisode.slug,
+                slug: episode.slug,
             };
             this.selectedPlaylist = playlist;
             this.$http.post('/api/playlists/' + playlist.slug + '/add_episode', sent)
@@ -99,6 +99,7 @@ module.exports = {
                     setTimeout(function(){
                         $("#modal-add-to-playlist-success").modal('hide');
                     }, 7000);
+                    self.updateEpisode(episode.slug, episode.total_recommendations, episode.total_likes, response.data.total_playlists, episode.this_user_likes, episode.this_user_archived, episode.result_slug);
                 }, response => {
                     $("#modal-error").modal('show');
                     setTimeout(function(){
@@ -182,7 +183,7 @@ module.exports = {
             var self = this;
             this.$http.post('/api/episodes/like', {slug: episode.slug})
                 .then(response => {
-                    self.updateEpisode(episode.slug, response.data.total_likes, response.data.this_user_likes, episode.this_user_archived);
+                    self.updateEpisode(episode.slug, episode.total_recommendations, response.data.total_likes, episode.total_playlists, response.data.this_user_likes, episode.this_user_archived, episode.result_slug);
                 }, response => {
                     //alert('error');
                 })
@@ -191,7 +192,8 @@ module.exports = {
             var self = this;
             this.$http.post('/api/episodes/unlike', {slug: episode.slug})
                 .then(response => {
-                    self.updateEpisode(episode.slug, response.data.total_likes, response.data.this_user_likes, episode.this_user_archived);
+                    //slug, total_recommendations, total_likes, total_playlists, this_user_likes, this_user_archived, result_slug
+                    self.updateEpisode(episode.slug, episode.total_recommendations, response.data.total_likes, episode.total_playlists, response.data.this_user_likes, episode.this_user_archived, episode.result_slug);
                 }, response => {
                     //alert('error');
                 })

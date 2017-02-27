@@ -5112,14 +5112,13 @@ module.exports = {
             }else{
                 this.$http.post('/api/episodes/archive', sent)
                     .then(function (response) {
-                        self.updateEpisode(episode.slug, episode.total_likes, episode.this_user_likes, 1);
                         $("#modal-archive-result").modal('show');
                         self.archiveResultHeader = response.data.header;
                         self.archiveResultMessage = response.data.message;
                         setTimeout(function(){
                             $("#modal-archive-result").modal('hide');
                         }, 10000);
-                        self.updateEpisode(episode.slug, response.data.total_likes, response.data.this_user_likes, episode.this_user_archived);
+                        self.updateEpisode(episode.slug, episode.total_recommendations, episode.total_likes, episode.total_playlists, episode.this_user_likes, 1, episode.result_slug);
                     }, function (response) {
                         $("#modal-error").modal('show');
                         setTimeout(function(){
@@ -5137,7 +5136,7 @@ module.exports = {
             this.$http.post('/api/episodes/unarchive', sent)
                 .then(function (response) {
                     $("#modal-unarchive-are-you-sure").modal('hide');
-                    self.updateEpisode(episode.slug, episode.total_likes, episode.this_user_likes, 0);
+                    self.updateEpisode(episode.slug, episode.total_recommendations, episode.total_likes, episode.total_playlists, episode.this_user_likes, 0, null);
                     $("#modal-unarchive-success").modal('show');
                     setTimeout(function(){
                         $("#modal-unarchive-success").modal('hide');
@@ -5174,8 +5173,9 @@ module.exports = {
         },
         addSelectedEpisodeToPlaylist: function addSelectedEpisodeToPlaylist(playlist){
             var self = this;
+            var episode = this.selectedEpisode;
             var sent = {
-                slug: this.selectedEpisode.slug,
+                slug: episode.slug,
             };
             this.selectedPlaylist = playlist;
             this.$http.post('/api/playlists/' + playlist.slug + '/add_episode', sent)
@@ -5184,6 +5184,7 @@ module.exports = {
                     setTimeout(function(){
                         $("#modal-add-to-playlist-success").modal('hide');
                     }, 7000);
+                    self.updateEpisode(episode.slug, episode.total_recommendations, episode.total_likes, response.data.total_playlists, episode.this_user_likes, episode.this_user_archived, episode.result_slug);
                 }, function (response) {
                     $("#modal-error").modal('show');
                     setTimeout(function(){
@@ -5269,7 +5270,7 @@ module.exports = {
             var self = this;
             this.$http.post('/api/episodes/like', {slug: episode.slug})
                 .then(function (response) {
-                    self.updateEpisode(episode.slug, response.data.total_likes, response.data.this_user_likes, episode.this_user_archived);
+                    self.updateEpisode(episode.slug, episode.total_recommendations, response.data.total_likes, episode.total_playlists, response.data.this_user_likes, episode.this_user_archived, episode.result_slug);
                 }, function (response) {
                     //alert('error');
                 })
@@ -5278,7 +5279,8 @@ module.exports = {
             var self = this;
             this.$http.post('/api/episodes/unlike', {slug: episode.slug})
                 .then(function (response) {
-                    self.updateEpisode(episode.slug, response.data.total_likes, response.data.this_user_likes, episode.this_user_archived);
+                    //slug, total_recommendations, total_likes, total_playlists, this_user_likes, this_user_archived, result_slug
+                    self.updateEpisode(episode.slug, episode.total_recommendations, response.data.total_likes, episode.total_playlists, response.data.this_user_likes, episode.this_user_archived, episode.result_slug);
                 }, function (response) {
                     //alert('error');
                 })
@@ -23373,9 +23375,14 @@ Vue.component('episode', {
                     }, 8000);
                 });
         },
-        updateEpisode: function updateEpisode(slug, total_likes, this_user_likes){
+        updateEpisode: function updateEpisode(slug, total_recommendations, total_likes, total_playlists, this_user_likes, this_user_archived, result_slug){
+            this.selectedEpisode.total_recommendations = total_recommendations;
             this.selectedEpisode.total_likes = total_likes;
+            this.selectedEpisode.total_playlists = total_playlists;
             this.selectedEpisode.this_user_likes = this_user_likes;
+            this.selectedEpisode.this_user_archived = this_user_archived;
+            this.selectedEpisode.result_slug = result_slug;
+            $('.btn-archive-episode .icon-container').attr('data-original-title', this_user_archived ? 'Unarchive' : 'Archive');
         },
     }
 });
@@ -23450,11 +23457,12 @@ Vue.component('playlist-edit', {
 /* 149 */
 /***/ function(module, exports, __webpack_require__) {
 
+var episodeActions = __webpack_require__(6);
 var copyFeed = __webpack_require__(4);
 
 Vue.component('playlist', {
     props: ['user'],
-    mixins: [copyFeed],
+    mixins: [episodeActions, copyFeed],
     data: function data() {
         return {
             playlist: {
@@ -23467,7 +23475,9 @@ Vue.component('playlist', {
             areYouSure: {
                 busy: false,
                 episode_slug: ''
-            }
+            },
+            show: {},
+            selectedEpisode: {},
         };
     },
     created: function created() {
@@ -23598,6 +23608,21 @@ Vue.component('playlist', {
                         $("#modal-error").modal('hide');
                     }, 8000);
                 });
+        },
+        updateEpisode: function updateEpisode(slug, total_recommendations, total_likes, total_playlists, this_user_likes, this_user_archived, result_slug){
+            var this$1 = this;
+
+            for(var e in this.playlist.episodes){
+                if (this$1.playlist.episodes[e].slug == slug){
+                    this$1.playlist.episodes[e].total_recommendations = total_recommendations;
+                    this$1.playlist.episodes[e].total_likes = total_likes;
+                    this$1.playlist.episodes[e].total_playlists = total_playlists;
+                    this$1.playlist.episodes[e].this_user_likes = this_user_likes;
+                    this$1.playlist.episodes[e].this_user_archived = this_user_archived;
+                    this$1.playlist.episodes[e].result_slug = result_slug;
+                    $('[data-slug=' + slug + '] .btn-archive-episode .icon-container').attr('data-original-title', this_user_archived ? 'Unarchive' : 'Archive');
+                }
+            }
         },
     }
 });
@@ -23987,14 +24012,17 @@ Vue.component('show', {
             this.show.total_likes = total_likes;
             this.show.this_user_likes = this_user_likes;
         },
-        updateEpisode: function updateEpisode(slug, total_likes, this_user_likes, this_user_archived){
+        updateEpisode: function updateEpisode(slug, total_recommendations, total_likes, total_playlists, this_user_likes, this_user_archived, result_slug){
             var this$1 = this;
 
             for(var e in this.show.episodes){
                 if (this$1.show.episodes[e].slug == slug){
+                    this$1.show.episodes[e].total_recommendations = total_recommendations;
                     this$1.show.episodes[e].total_likes = total_likes;
+                    this$1.show.episodes[e].total_playlists = total_playlists;
                     this$1.show.episodes[e].this_user_likes = this_user_likes;
                     this$1.show.episodes[e].this_user_archived = this_user_archived;
+                    this$1.show.episodes[e].result_slug = result_slug;
                     $('[data-slug=' + slug + '] .btn-archive-episode .icon-container').attr('data-original-title', this_user_archived ? 'Unarchive' : 'Archive');
                 }
             }

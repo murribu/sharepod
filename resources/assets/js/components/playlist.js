@@ -1,8 +1,9 @@
+var episodeActions = require('./mixins/episode-actions');
 var copyFeed = require('./mixins/copy-feed');
 
 Vue.component('playlist', {
     props: ['user'],
-    mixins: [copyFeed],
+    mixins: [episodeActions, copyFeed],
     data() {
         return {
             playlist: {
@@ -15,7 +16,9 @@ Vue.component('playlist', {
             areYouSure: {
                 busy: false,
                 episode_slug: ''
-            }
+            },
+            show: {},
+            selectedEpisode: {},
         };
     },
     created() {
@@ -144,6 +147,19 @@ Vue.component('playlist', {
                         $("#modal-error").modal('hide');
                     }, 8000);
                 });
+        },
+        updateEpisode(slug, total_recommendations, total_likes, total_playlists, this_user_likes, this_user_archived, result_slug){
+            for(var e in this.playlist.episodes){
+                if (this.playlist.episodes[e].slug == slug){
+                    this.playlist.episodes[e].total_recommendations = total_recommendations;
+                    this.playlist.episodes[e].total_likes = total_likes;
+                    this.playlist.episodes[e].total_playlists = total_playlists;
+                    this.playlist.episodes[e].this_user_likes = this_user_likes;
+                    this.playlist.episodes[e].this_user_archived = this_user_archived;
+                    this.playlist.episodes[e].result_slug = result_slug;
+                    $('[data-slug=' + slug + '] .btn-archive-episode .icon-container').attr('data-original-title', this_user_archived ? 'Unarchive' : 'Archive');
+                }
+            }
         },
     }
 });
