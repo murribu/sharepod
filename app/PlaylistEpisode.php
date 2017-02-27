@@ -10,4 +10,7 @@ class PlaylistEpisode extends Model {
     
     protected $fillable = ['playlist_id', 'episode_id'];
     
+    public function episode(){
+        return $this->belongsTo('App\Episode');
+    }
 }
