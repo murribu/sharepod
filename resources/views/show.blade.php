@@ -97,6 +97,12 @@
                                     </div>
                                     <div class="icon-container" title="Unarchive" v-if="episode.this_user_archived">
                                         <i class="fa fa-floppy-o"></i>
+                                        <div class="btn-hover-container" v-if="episode.result_slug == 'ok'">
+                                            Archived
+                                        </div>
+                                        <div class="btn-hover-container" v-if="!episode.result_slug">
+                                            Archive Requested
+                                        </div>
                                     </div>
                                 </button>
                             </div>

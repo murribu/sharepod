@@ -23987,10 +23987,13 @@ Vue.component('show', {
                     this$1.show.episodes[e].this_user_archived = this_user_archived;
                 }
             }
+            Vue.nextTick(function(){
+                $('[title]').tooltip('destroy');
+                $('[title]').tooltip();
+            });
         },
     }
 });
-
 
 
 /***/ },
