@@ -22,20 +22,8 @@ module.exports = {
                 slug: episode.slug
             };
             if (episode.this_user_archived){
-                this.$http.post('/api/episodes/unarchive', sent)
-                    .then(response => {
-                        self.updateEpisode(episode.slug, episode.total_likes, episode.this_user_likes, 0);
-                        $("#modal-unarchive-success").modal('show');
-                        setTimeout(function(){
-                            $("#modal-unarchive-success").modal('hide');
-                        }, 8000);
-                        self.updateEpisode(episode.slug, response.data.total_likes, response.data.this_user_likes, episode.this_user_archived);
-                    }, response => {
-                        $("#modal-error").modal('show');
-                        setTimeout(function(){
-                            $("#modal-error").modal('hide');
-                        }, 8000);
-                    });
+                $("#modal-unarchive-are-you-sure").modal('show');
+                this.selectedEpisode = episode;
             }else{
                 this.$http.post('/api/episodes/archive', sent)
                     .then(response => {
@@ -54,6 +42,28 @@ module.exports = {
                         }, 8000);
                     });
             }
+        },
+        unArchive() {
+            var episode = this.selectedEpisode;
+            var sent = {
+                slug: episode.slug
+            };
+            this.$http.post('/api/episodes/unarchive', sent)
+                .then(response => {
+                    $("#modal-unarchive-are-you-sure").modal('hide');
+                    self.updateEpisode(episode.slug, episode.total_likes, episode.this_user_likes, 0);
+                    $("#modal-unarchive-success").modal('show');
+                    setTimeout(function(){
+                        $("#modal-unarchive-success").modal('hide');
+                    }, 8000);
+                    self.updateEpisode(episode.slug, response.data.total_likes, response.data.this_user_likes, episode.this_user_archived);
+                }, response => {
+                    $("#modal-unarchive-are-you-sure").modal('hide');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
+                });
         },
         getPlaylists() {
             var self = this;

@@ -51,7 +51,7 @@ class Show extends Model {
                 $join->on('this_user_archived.active', DB::raw("'1'"));
             })
             ->where('show_id', $this->id)
-            ->selectRaw('episodes.show_id, episodes.id, episodes.slug, episodes.name, episodes.description, episodes.duration, episodes.explicit, coalesce(ae.url, concat(\'https://s3.us-east-2.amazonaws.com/podcastdj/episodes/\', ae.slug, \'.mp3\'), episodes.url) url, coalesce(ae.filesize, ae.result_slug, episodes.filesize) filesize, episodes.img_url, episodes.pubdate, ae.result_slug, count(total_likes.id) as total_likes, count(this_user_likes.id) as this_user_likes, count(recommendations.id) total_recommendations, count(distinct pe.playlist_id) total_playlists, count(this_user_archived.id) this_user_archived')
+            ->selectRaw('episodes.show_id, episodes.id, episodes.slug, episodes.name, episodes.description, episodes.duration, episodes.explicit, coalesce(ae.url, concat(\'https://s3.us-east-2.amazonaws.com/podcastdj/episodes/\', ae.slug, \'.mp3\'), episodes.url) url, coalesce(ae.filesize, episodes.filesize) filesize, episodes.img_url, episodes.pubdate, ae.result_slug, count(total_likes.id) as total_likes, count(this_user_likes.id) as this_user_likes, count(recommendations.id) total_recommendations, count(distinct pe.playlist_id) total_playlists, count(this_user_archived.id) this_user_archived')
             ->where('episodes.active', 1)
             ->orderBy('pubdate', 'desc')
             ->groupBy('episodes.id')
@@ -69,7 +69,6 @@ class Show extends Model {
             ->groupBy('ae.slug')
             ->groupBy('ae.filesize')
             ->groupBy('ae.result_slug')
-            ->groupBy('ae.id')
             ->limit($limit);
         if ($pubdate){
             $episodes = $episodes->where('pubdate', '<', $pubdate);

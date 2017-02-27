@@ -142,6 +142,26 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="modal-unarchive-are-you-sure" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Are you sure?</h4>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to remove your archived copy of this episode?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">No, Never mind</button>
+
+                        <button type="button" class="btn btn-danger" @click="unArchive">
+                            Yes
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="modal fade" id="modal-unarchive-success" tabindex="-1" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
