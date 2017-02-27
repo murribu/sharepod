@@ -44,7 +44,10 @@ class Episode extends Model {
         }
         $retry_limit = 5;
         $ae = ArchivedEpisode::where('episode_id', $this->id)
-            ->where('result_slug', 'ok')
+            ->where(function($query){
+                $query->where('result_slug', 'ok');
+                $query->orWhereNull('result_slug');
+            })
             ->first();
         if ($ae){
             if ($user->storage() + $ae->filesize > $limit){
@@ -164,7 +167,7 @@ class Episode extends Model {
     public static function popular($limit = 10){
         $user_id = Auth::user() ? Auth::user()->id : -1;
         $vars = [$user_id, $user_id, $limit];
-        $episodes = Episode::selectRaw("episodes.id, episodes.name, episodes.slug, episodes.description, episodes.img_url, episodes.pubdate, episodes.show_id, s.name show_name, s.slug show_slug, 
+        $episodes = Episode::selectRaw("episodes.id, episodes.name, episodes.slug, episodes.description, episodes.img_url, episodes.pubdate, episodes.show_id, s.name show_name, s.slug show_slug, ae.result_slug, count(total_likes.id) as total_likes, count(this_user_likes.id) as this_user_likes, count(recommendations.id) total_recommendations, count(distinct pe.playlist_id) total_playlists, count(ae.id) this_user_archived, 
             (
             100 * (select count(id) from likes 
                 where fk = episodes.id 
@@ -199,6 +202,18 @@ class Episode extends Model {
             )
             ) * TIMESTAMPDIFF(SECOND, '2000-1-1', least(episodes.created_at, from_unixtime(episodes.pubdate))) score")
         ->leftJoin('shows as s', 's.id', '=', 'episodes.show_id')
+        ->leftJoin('likes as total_likes', function($join){
+            $join->on('total_likes.fk', '=', 'episodes.id');
+            $join->on('total_likes.type', '=', DB::raw("'episode'"));
+        })
+        ->leftJoin('likes as this_user_likes', function($join) use ($user_id){
+            $join->on('this_user_likes.user_id', '=', DB::raw($user_id));
+            $join->on('this_user_likes.fk', '=', 'episodes.id');
+            $join->on('this_user_likes.type', '=', DB::raw("'episode'"));
+        })
+        ->leftJoin('playlist_episodes as pe', 'pe.episode_id', '=', 'episodes.id')
+        ->leftJoin(DB::raw('(select archived_episodes.id, url, slug, filesize, result_slug, episode_id from archived_episodes inner join archived_episode_users on archived_episodes.id = archived_episode_users.archived_episode_id where (result_slug is null or result_slug = \'ok\') and user_id = '.$user_id.' and active = 1 limit 1) ae'), 'ae.episode_id', '=', 'episodes.id')
+        ->leftJoin('recommendations', 'recommendations.episode_id', '=', 'episodes.id')
         ->groupBy('episodes.id')
         ->groupBy('episodes.name')
         ->groupBy('episodes.slug')
@@ -210,18 +225,20 @@ class Episode extends Model {
         ->groupBy('s.slug')
         ->groupBy('episodes.created_at')
         ->groupBy('episodes.show_id')
+        ->groupBy('ae.result_slug')
         ->orderBy('score', 'desc')
         ->limit($limit)
         ->get();
         
         
         foreach($episodes as $e){
-            unset($e->score);
             $e->likers = $e->likers(Auth::user());
             if (Auth::user()){
                 $e->friend_recommenders = $e->friend_recommenders(Auth::user());
             }
             $e->prepare();
+            unset($e->score);
+            unset($e->show);
         }
         
         return $episodes;

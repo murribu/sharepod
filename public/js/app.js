@@ -23404,13 +23404,18 @@ Vue.component('help', {
 
 /***/ },
 /* 147 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
+
+var episodeActions = __webpack_require__(6);
 
 Vue.component('home', {
     props: ['user'],
+    mixins: [episodeActions],
     data: function data(){
         return {
-            episodes:[]
+            episodes:[],
+            show: {},
+            selectedEpisode: {},
         };
     },
     computed: {
@@ -23432,13 +23437,19 @@ Vue.component('home', {
             this.$http.get('/api/episodes/popular')
                 .then(function (response) {
                     self.episodes = response.data;
+                    for(var e in self.episodes){
+                        $('.btn-archive-episode .icon-container').attr('data-original-title', e.this_user_archived ? 'Unarchive' : 'Archive');
+                    }
                 }, function (response) {
                     $("#modal-error").modal('show');
                     setTimeout(function(){
                         $("#modal-error").modal('hide');
                     }, 8000);
                 });
-        }
+        },
+        updateEpisode: function updateEpisode(slug, total_recommendations, total_likes, total_playlists, this_user_likes, this_user_archived, result_slug){
+            this.loadPopularEpisodes();
+        },
     }
 });
 

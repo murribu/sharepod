@@ -43,7 +43,7 @@ class Show extends Model {
             })
             ->leftJoin('playlist_episodes as pe', 'pe.episode_id', '=', 'episodes.id')
             ->leftJoin('recommendations', 'recommendations.episode_id', '=', 'episodes.id')
-            ->leftJoin(DB::raw('(select archived_episodes.id, url, slug, filesize, result_slug, episode_id from archived_episodes inner join archived_episode_users on archived_episodes.id = archived_episode_users.archived_episode_id where result_slug is null or result_slug = \'ok\' and user_id = '.($user ? $user->id : DB::raw("-1")).' and active = 1 limit 1) ae'), 'ae.episode_id', '=', 'episodes.id')
+            ->leftJoin(DB::raw('(select archived_episodes.id, url, slug, filesize, result_slug, episode_id from archived_episodes inner join archived_episode_users on archived_episodes.id = archived_episode_users.archived_episode_id where (result_slug is null or result_slug = \'ok\') and user_id = '.($user ? $user->id : DB::raw("-1")).' and active = 1 limit 1) ae'), 'ae.episode_id', '=', 'episodes.id')
             ->where('show_id', $this->id)
             ->selectRaw('episodes.show_id, episodes.id, episodes.slug, episodes.name, episodes.description, episodes.duration, episodes.explicit, coalesce(ae.url, concat(\''.env('S3_URL').'/'.env('S3_BUCKET').'/episodes/\', ae.slug, \'.mp3\'), episodes.url) url, coalesce(ae.filesize, episodes.filesize) filesize, episodes.img_url, episodes.pubdate, ae.result_slug, count(total_likes.id) as total_likes, count(this_user_likes.id) as this_user_likes, count(recommendations.id) total_recommendations, count(distinct pe.playlist_id) total_playlists, count(ae.id) this_user_archived')
             ->where('episodes.active', 1)
