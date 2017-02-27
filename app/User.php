@@ -54,6 +54,48 @@ class User extends SparkUser
         'uses_two_factor_auth' => 'boolean',
     ];
     
+    public function liked_episodes(){
+        $user_id = $this->id;
+
+        $episodes = Episode::leftJoin('shows', 'shows.id', '=', 'episodes.show_id')
+                ->join('likes', function($join){
+                    $join->on('likes.type', '=', DB::raw("'episode'"));
+                    $join->on('fk', '=', 'episodes.id');
+                })
+                ->leftJoin('likes as total_likes', function($join){
+                    $join->on('total_likes.fk', '=', 'episodes.id');
+                    $join->on('total_likes.type', '=', DB::raw("'episode'"));
+                })
+                ->leftJoin('likes as this_user_likes', function($join) use ($user_id){
+                    $join->on('this_user_likes.user_id', '=', DB::raw($user_id));
+                    $join->on('this_user_likes.fk', '=', 'episodes.id');
+                    $join->on('this_user_likes.type', '=', DB::raw("'episode'"));
+                })
+                ->leftJoin('playlist_episodes as pe', 'pe.episode_id', '=', 'episodes.id')
+                ->leftJoin(DB::raw('(select archived_episodes.id, url, slug, filesize, result_slug, episode_id from archived_episodes inner join archived_episode_users on archived_episodes.id = archived_episode_users.archived_episode_id where (result_slug is null or result_slug = \'ok\') and user_id = '.$user_id.' and active = 1) ae'), 'ae.episode_id', '=', 'episodes.id')
+                ->leftJoin('recommendations', 'recommendations.episode_id', '=', 'episodes.id')
+                ->where('likes.user_id', $user_id)
+                ->selectRaw('likes.created_at as likeddate, episodes.name, episodes.slug, episodes.description, episodes.pubdate, episodes.id, shows.name as show_name, shows.slug as show_slug, ae.result_slug, count(total_likes.id) as total_likes, count(this_user_likes.id) as this_user_likes, count(recommendations.id) total_recommendations, count(distinct pe.playlist_id) total_playlists, count(ae.id) this_user_archived')
+                ->groupBy('likes.created_at')
+                ->groupBy('episodes.name')
+                ->groupBy('episodes.slug')
+                ->groupBy('episodes.description')
+                ->groupBy('episodes.pubdate')
+                ->groupBy('episodes.id')
+                ->groupBy('shows.name')
+                ->groupBy('shows.slug')
+                ->groupBy('ae.result_slug')
+                ->orderBy('likes.created_at', 'desc')
+                ->get();
+                
+        foreach($episodes as $e){
+            $e = $e->prepare();
+            unset($e->show);
+        }
+        
+        return $episodes;
+    }
+    
     public function storage(){
         $self = $this;
         return ArchivedEpisode::whereIn('id', function($query) use ($self){
@@ -201,48 +243,45 @@ class User extends SparkUser
     }
     
     public function archived_episodes(){
-        $self = $this;
-        
-        $archive_episodes = ArchivedEpisode::with('episode')
-            ->where('active', '1')
-            ->whereIn('id', function($query2) use ($self){
-            $query2->select('user_id')
-                ->from('archived_episode_users')
-                ->where('user_id', $self->id);
-        });
-        
-        $ret = [];
-        
-        foreach($archive_episodes as $e){
-            if ($e->episode_id){
-                $ep = $e->episode;
-            }else{
-                $ep = $e;
-            }
-            $r = [
-                'slug'          => $ep->slug,
-                'show_name'     => isset($ep->show_id) ? $ep->show->name : null,
-                'show_slug'     => isset($ep->show_id) ? $ep->show->slug : null,
-                'name'          => $ep->name,
-                'description'   => strip_tags($ep->description,"<p></p>"),
-                'explicit'      => $ep->explicit,
-                'filesize'      => $e->filesize, // Yes, always use the filesize from archive_episodes
-                'link'          => $ep->link,
-                'pubdate'       => $ep->pubdate,
-                'pubdate_str'   => date('g:i A - j M Y', $ep->pubdate),
-                'url'           => $ep->url,
-                'howLongAgo'    => Episode::howLongAgo($ep->pubdate)
-            ];
-            if ($ep->img_url && $ep->img_url != ''){
-                $r['img_url'] = $ep->img_url;
-            }else if($ep->show && $ep->show->img_url && $ep->show->img_url != ''){
-                $r['img_url'] = $ep->show->img_url;
-            }else{
-                $r['img_url'] = env('APP_URL').'/img/logo.png';
-            }
-            $ret[] = $r;
+        $user = $this;
+        $episodes = Episode::join(DB::raw('(select archived_episodes.id, url, slug, filesize, result_slug, episode_id from archived_episodes inner join archived_episode_users on archived_episodes.id = archived_episode_users.archived_episode_id where (result_slug is null or result_slug = \'ok\') and user_id = '.$user->id.' and active = 1) ae'), 'ae.episode_id', '=', 'episodes.id')
+            ->leftJoin('likes as total_likes', function($join){
+                $join->on('total_likes.fk', '=', 'episodes.id');
+                $join->on('total_likes.type', '=', DB::raw("'episode'"));
+            })
+            ->leftJoin('likes as this_user_likes', function($join) use ($user){
+                $join->on('this_user_likes.user_id', '=', DB::raw($user ? $user->id : DB::raw("-1")));
+                $join->on('this_user_likes.fk', '=', 'episodes.id');
+                $join->on('this_user_likes.type', '=', DB::raw("'episode'"));
+            })
+            ->leftJoin('playlist_episodes as pe', 'pe.episode_id', '=', 'episodes.id')
+            ->leftJoin('recommendations', 'recommendations.episode_id', '=', 'episodes.id')
+            ->selectRaw('episodes.show_id, episodes.id, episodes.slug, episodes.name, episodes.description, episodes.duration, episodes.explicit, coalesce(ae.url, concat(\''.env('S3_URL').'/'.env('S3_BUCKET').'/episodes/\', ae.slug, \'.mp3\'), episodes.url) url, coalesce(ae.filesize, episodes.filesize) filesize, episodes.img_url, episodes.pubdate, ae.result_slug, count(total_likes.id) as total_likes, count(this_user_likes.id) as this_user_likes, count(recommendations.id) total_recommendations, count(distinct pe.playlist_id) total_playlists, count(ae.id) this_user_archived')
+            ->where('episodes.active', 1)
+            ->orderBy('pubdate', 'desc')
+            ->groupBy('episodes.id')
+            ->groupBy('episodes.slug')
+            ->groupBy('episodes.name')
+            ->groupBy('episodes.description')
+            ->groupBy('episodes.duration')
+            ->groupBy('episodes.explicit')
+            ->groupBy('episodes.filesize')
+            ->groupBy('episodes.img_url')
+            ->groupBy('episodes.pubdate')
+            ->groupBy('episodes.show_id')
+            ->groupBy('episodes.url')
+            ->groupBy('ae.url')
+            ->groupBy('ae.slug')
+            ->groupBy('ae.filesize')
+            ->groupBy('ae.result_slug')
+            ->get();
+
+        foreach($episodes as $e){
+            $e = $e->prepare();
+            unset($e->show);
         }
-        return $ret;
+        
+        return $episodes;
     }
     
     public function connections(){

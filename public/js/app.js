@@ -4525,6 +4525,215 @@ module.exports = {
 /***/ function(module, exports) {
 
 module.exports = {
+    data: function data() {
+        return {
+            recommendToEmailAddress: '',
+            recommendForm: {
+                busy: false
+            },
+            recentRecommendees: [],
+            recommendEmail: '',
+            recommendTwitter: '',
+            recommendationComment: '',
+            playlists: [],
+            selectedPlaylist: {},
+            archiveResultMessage: '',
+            archiveResultHeader: '',
+        };
+    },
+    methods: {
+        toggleArchiveEpisode: function toggleArchiveEpisode(episode) {
+            var self = this;
+            var sent = {
+                slug: episode.slug
+            };
+            if (episode.this_user_archived){
+                $("#modal-unarchive-are-you-sure").modal('show');
+                this.selectedEpisode = episode;
+            }else{
+                this.$http.post('/api/episodes/archive', sent)
+                    .then(function (response) {
+                        $("#modal-archive-result").modal('show');
+                        self.archiveResultHeader = response.data.header;
+                        self.archiveResultMessage = response.data.message;
+                        setTimeout(function(){
+                            $("#modal-archive-result").modal('hide');
+                        }, 10000);
+                        self.updateEpisode(episode.slug, episode.total_recommendations, episode.total_likes, episode.total_playlists, episode.this_user_likes, 1, episode.result_slug);
+                    }, function (response) {
+                        $("#modal-error").modal('show');
+                        setTimeout(function(){
+                            $("#modal-error").modal('hide');
+                        }, 8000);
+                    });
+            }
+        },
+        unArchive: function unArchive() {
+            var episode = this.selectedEpisode;
+            var self = this;
+            var sent = {
+                slug: episode.slug
+            };
+            this.$http.post('/api/episodes/unarchive', sent)
+                .then(function (response) {
+                    $("#modal-unarchive-are-you-sure").modal('hide');
+                    self.updateEpisode(episode.slug, episode.total_recommendations, episode.total_likes, episode.total_playlists, episode.this_user_likes, 0, null);
+                    $("#modal-unarchive-success").modal('show');
+                    setTimeout(function(){
+                        $("#modal-unarchive-success").modal('hide');
+                    }, 8000);
+                }, function (response) {
+                    $("#modal-unarchive-are-you-sure").modal('hide');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
+                });
+        },
+        getPlaylists: function getPlaylists() {
+            var self = this;
+            this.$http.get('/api/playlists')
+                .then(function (response) {
+                    self.playlists = response.data;
+                }, function (response) {
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
+                });
+        },
+        selectEpisodeForAddingToPlaylist: function selectEpisodeForAddingToPlaylist(episode){
+            this.selectedEpisode = episode;
+            if (this.playlists.length == 0){
+                $("#modal-no-playlists").modal('show');
+            }else if (this.playlists.length == 1){
+                this.addSelectedEpisodeToPlaylist(this.playlists[0]);
+            }else{
+                $("#modal-select-playlist").modal('show');
+            }
+        },
+        addSelectedEpisodeToPlaylist: function addSelectedEpisodeToPlaylist(playlist){
+            var self = this;
+            var episode = this.selectedEpisode;
+            var sent = {
+                slug: episode.slug,
+            };
+            this.selectedPlaylist = playlist;
+            this.$http.post('/api/playlists/' + playlist.slug + '/add_episode', sent)
+                .then(function (response) {
+                    $("#modal-add-to-playlist-success").modal('show');
+                    setTimeout(function(){
+                        $("#modal-add-to-playlist-success").modal('hide');
+                    }, 7000);
+                    self.updateEpisode(episode.slug, episode.total_recommendations, episode.total_likes, response.data.total_playlists, episode.this_user_likes, episode.this_user_archived, episode.result_slug);
+                }, function (response) {
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
+                })
+        },
+        getRecentRecommendees: function getRecentRecommendees(){
+            var self = this;
+            this.$http.get('/api/recent_recommendees')
+                .then(function (response) {
+                    self.recentRecommendees = response.data;
+                }, function (response) {
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
+                })
+        },
+        recommendEpisodeToExistingUser: function recommendEpisodeToExistingUser(user_slug) {
+            var self = this;
+            this.recommendForm.busy = true;
+            this.$http.post('/recommend', {slug: this.selectedEpisode.slug, user_slug: user_slug, comment: this.recommendationComment})
+                .then(function (response) {
+                    self.recommendForm.busy = false;
+                    self.showSuccessModal();
+                    self.getRecentRecommendees();
+                    self.selectedEpisode.total_recommendations = response.data.total_recommendations;
+                }, function (response) {
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
+                });
+        },
+        recommendEpisode: function recommendEpisode(episode) {
+            if (this.user.canRecommend){
+                this.selectedEpisode = episode;
+                if (this.recentRecommendees.length == 0){
+                    $('#modal-recommend-episode-2').modal('show');
+                }else{
+                    $('#modal-recommend-episode-1').modal('show');
+                }
+            }else{
+                $("#modal-max-recommendations").modal('show');
+            }
+        },
+        recommendEpisodeToSomeoneElse: function recommendEpisodeToSomeoneElse(){
+            $('#modal-recommend-episode-1').modal('hide');
+            $('#modal-recommend-episode-2').modal('show');
+        },
+        sendRecommendation: function sendRecommendation(){
+            var this$1 = this;
+
+            this.$http.post('/recommend', {slug: this.selectedEpisode.slug, email_address: this.recommendEmail, twitter_handle: this.recommendTwitter})
+                .then(function (response) {
+                    this$1.recommendForm.busy = false;
+                    this$1.showSuccessModal();
+                    this$1.getRecentRecommendees();
+                }, function (response) {
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
+                });
+        },
+        showSuccessModal: function showSuccessModal(){
+            $('#modal-recommend-episode-1').modal('hide');
+            $('#modal-recommend-episode-2').modal('hide');
+            $('#modal-recommend-success').modal('show');
+            setTimeout(function(){
+                $('#modal-recommend-success').modal('hide');
+            }, 2500);
+        },
+        toggleLikeEpisode: function toggleLikeEpisode(episode){
+            if (episode.this_user_likes){
+                return this.unlikeEpisode(episode);
+            }else{
+                return this.likeEpisode(episode);
+            }
+        },
+        likeEpisode: function likeEpisode(episode) {
+            var self = this;
+            this.$http.post('/api/episodes/like', {slug: episode.slug})
+                .then(function (response) {
+                    self.updateEpisode(episode.slug, episode.total_recommendations, response.data.total_likes, episode.total_playlists, response.data.this_user_likes, episode.this_user_archived, episode.result_slug);
+                }, function (response) {
+                    //alert('error');
+                })
+        },
+        unlikeEpisode: function unlikeEpisode(episode) {
+            var self = this;
+            this.$http.post('/api/episodes/unlike', {slug: episode.slug})
+                .then(function (response) {
+                    //slug, total_recommendations, total_likes, total_playlists, this_user_likes, this_user_archived, result_slug
+                    self.updateEpisode(episode.slug, episode.total_recommendations, response.data.total_likes, episode.total_playlists, response.data.this_user_likes, episode.this_user_archived, episode.result_slug);
+                }, function (response) {
+                    //alert('error');
+                })
+        },
+    }
+}
+
+/***/ },
+/* 3 */
+/***/ function(module, exports) {
+
+module.exports = {
     pushStateSelector: null,
 
 
@@ -4620,7 +4829,7 @@ module.exports = {
 
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4840,7 +5049,7 @@ function doResolve(fn, promise) {
 
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -4895,7 +5104,7 @@ module.exports = {
 }
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports) {
 
 /*
@@ -5078,215 +5287,6 @@ module.exports = {
     }
 };
 
-
-/***/ },
-/* 6 */
-/***/ function(module, exports) {
-
-module.exports = {
-    data: function data() {
-        return {
-            recommendToEmailAddress: '',
-            recommendForm: {
-                busy: false
-            },
-            recentRecommendees: [],
-            recommendEmail: '',
-            recommendTwitter: '',
-            recommendationComment: '',
-            playlists: [],
-            selectedPlaylist: {},
-            archiveResultMessage: '',
-            archiveResultHeader: '',
-        };
-    },
-    methods: {
-        toggleArchiveEpisode: function toggleArchiveEpisode(episode) {
-            var self = this;
-            var sent = {
-                slug: episode.slug
-            };
-            if (episode.this_user_archived){
-                $("#modal-unarchive-are-you-sure").modal('show');
-                this.selectedEpisode = episode;
-            }else{
-                this.$http.post('/api/episodes/archive', sent)
-                    .then(function (response) {
-                        $("#modal-archive-result").modal('show');
-                        self.archiveResultHeader = response.data.header;
-                        self.archiveResultMessage = response.data.message;
-                        setTimeout(function(){
-                            $("#modal-archive-result").modal('hide');
-                        }, 10000);
-                        self.updateEpisode(episode.slug, episode.total_recommendations, episode.total_likes, episode.total_playlists, episode.this_user_likes, 1, episode.result_slug);
-                    }, function (response) {
-                        $("#modal-error").modal('show');
-                        setTimeout(function(){
-                            $("#modal-error").modal('hide');
-                        }, 8000);
-                    });
-            }
-        },
-        unArchive: function unArchive() {
-            var episode = this.selectedEpisode;
-            var self = this;
-            var sent = {
-                slug: episode.slug
-            };
-            this.$http.post('/api/episodes/unarchive', sent)
-                .then(function (response) {
-                    $("#modal-unarchive-are-you-sure").modal('hide');
-                    self.updateEpisode(episode.slug, episode.total_recommendations, episode.total_likes, episode.total_playlists, episode.this_user_likes, 0, null);
-                    $("#modal-unarchive-success").modal('show');
-                    setTimeout(function(){
-                        $("#modal-unarchive-success").modal('hide');
-                    }, 8000);
-                }, function (response) {
-                    $("#modal-unarchive-are-you-sure").modal('hide');
-                    $("#modal-error").modal('show');
-                    setTimeout(function(){
-                        $("#modal-error").modal('hide');
-                    }, 8000);
-                });
-        },
-        getPlaylists: function getPlaylists() {
-            var self = this;
-            this.$http.get('/api/playlists')
-                .then(function (response) {
-                    self.playlists = response.data;
-                }, function (response) {
-                    $("#modal-error").modal('show');
-                    setTimeout(function(){
-                        $("#modal-error").modal('hide');
-                    }, 8000);
-                });
-        },
-        selectEpisodeForAddingToPlaylist: function selectEpisodeForAddingToPlaylist(episode){
-            this.selectedEpisode = episode;
-            if (this.playlists.length == 0){
-                $("#modal-no-playlists").modal('show');
-            }else if (this.playlists.length == 1){
-                this.addSelectedEpisodeToPlaylist(this.playlists[0]);
-            }else{
-                $("#modal-select-playlist").modal('show');
-            }
-        },
-        addSelectedEpisodeToPlaylist: function addSelectedEpisodeToPlaylist(playlist){
-            var self = this;
-            var episode = this.selectedEpisode;
-            var sent = {
-                slug: episode.slug,
-            };
-            this.selectedPlaylist = playlist;
-            this.$http.post('/api/playlists/' + playlist.slug + '/add_episode', sent)
-                .then(function (response) {
-                    $("#modal-add-to-playlist-success").modal('show');
-                    setTimeout(function(){
-                        $("#modal-add-to-playlist-success").modal('hide');
-                    }, 7000);
-                    self.updateEpisode(episode.slug, episode.total_recommendations, episode.total_likes, response.data.total_playlists, episode.this_user_likes, episode.this_user_archived, episode.result_slug);
-                }, function (response) {
-                    $("#modal-error").modal('show');
-                    setTimeout(function(){
-                        $("#modal-error").modal('hide');
-                    }, 8000);
-                })
-        },
-        getRecentRecommendees: function getRecentRecommendees(){
-            var self = this;
-            this.$http.get('/api/recent_recommendees')
-                .then(function (response) {
-                    self.recentRecommendees = response.data;
-                }, function (response) {
-                    $("#modal-error").modal('show');
-                    setTimeout(function(){
-                        $("#modal-error").modal('hide');
-                    }, 8000);
-                })
-        },
-        recommendEpisodeToExistingUser: function recommendEpisodeToExistingUser(user_slug) {
-            var self = this;
-            this.recommendForm.busy = true;
-            this.$http.post('/recommend', {slug: this.selectedEpisode.slug, user_slug: user_slug, comment: this.recommendationComment})
-                .then(function (response) {
-                    self.recommendForm.busy = false;
-                    self.showSuccessModal();
-                    self.getRecentRecommendees();
-                    self.selectedEpisode.total_recommendations = response.data.total_recommendations;
-                }, function (response) {
-                    $("#modal-error").modal('show');
-                    setTimeout(function(){
-                        $("#modal-error").modal('hide');
-                    }, 8000);
-                });
-        },
-        recommendEpisode: function recommendEpisode(episode) {
-            if (this.user.canRecommend){
-                this.selectedEpisode = episode;
-                if (this.recentRecommendees.length == 0){
-                    $('#modal-recommend-episode-2').modal('show');
-                }else{
-                    $('#modal-recommend-episode-1').modal('show');
-                }
-            }else{
-                $("#modal-max-recommendations").modal('show');
-            }
-        },
-        recommendEpisodeToSomeoneElse: function recommendEpisodeToSomeoneElse(){
-            $('#modal-recommend-episode-1').modal('hide');
-            $('#modal-recommend-episode-2').modal('show');
-        },
-        sendRecommendation: function sendRecommendation(){
-            var this$1 = this;
-
-            this.$http.post('/recommend', {slug: this.selectedEpisode.slug, email_address: this.recommendEmail, twitter_handle: this.recommendTwitter})
-                .then(function (response) {
-                    this$1.recommendForm.busy = false;
-                    this$1.showSuccessModal();
-                    this$1.getRecentRecommendees();
-                }, function (response) {
-                    $("#modal-error").modal('show');
-                    setTimeout(function(){
-                        $("#modal-error").modal('hide');
-                    }, 8000);
-                });
-        },
-        showSuccessModal: function showSuccessModal(){
-            $('#modal-recommend-episode-1').modal('hide');
-            $('#modal-recommend-episode-2').modal('hide');
-            $('#modal-recommend-success').modal('show');
-            setTimeout(function(){
-                $('#modal-recommend-success').modal('hide');
-            }, 2500);
-        },
-        toggleLikeEpisode: function toggleLikeEpisode(episode){
-            if (episode.this_user_likes){
-                return this.unlikeEpisode(episode);
-            }else{
-                return this.likeEpisode(episode);
-            }
-        },
-        likeEpisode: function likeEpisode(episode) {
-            var self = this;
-            this.$http.post('/api/episodes/like', {slug: episode.slug})
-                .then(function (response) {
-                    self.updateEpisode(episode.slug, episode.total_recommendations, response.data.total_likes, episode.total_playlists, response.data.this_user_likes, episode.this_user_archived, episode.result_slug);
-                }, function (response) {
-                    //alert('error');
-                })
-        },
-        unlikeEpisode: function unlikeEpisode(episode) {
-            var self = this;
-            this.$http.post('/api/episodes/unlike', {slug: episode.slug})
-                .then(function (response) {
-                    //slug, total_recommendations, total_likes, total_playlists, this_user_likes, this_user_archived, result_slug
-                    self.updateEpisode(episode.slug, episode.total_recommendations, response.data.total_likes, episode.total_playlists, response.data.this_user_likes, episode.this_user_archived, episode.result_slug);
-                }, function (response) {
-                    //alert('error');
-                })
-        },
-    }
-}
 
 /***/ },
 /* 7 */
@@ -17260,8 +17260,8 @@ __webpack_require__(157);
 
 __webpack_require__(144);
 
-__webpack_require__(6);
-__webpack_require__(4);
+__webpack_require__(2);
+__webpack_require__(5);
 
 /***/ },
 /* 126 */
@@ -23334,7 +23334,7 @@ Vue.directive('tooltip', {
 /* 145 */
 /***/ function(module, exports, __webpack_require__) {
 
-var episodeActions = __webpack_require__(6);
+var episodeActions = __webpack_require__(2);
 
 Vue.component('episode', {
     props: ['user'],
@@ -23349,6 +23349,9 @@ Vue.component('episode', {
         slug: function slug() {
             return window.location.href.split('/')[4];
         },
+        episode: function episode() {
+            return this.selectedEpisode;
+        }
     },
     created: function created() {
         this.loadEpisode();
@@ -23391,8 +23394,8 @@ Vue.component('episode', {
 /* 146 */
 /***/ function(module, exports, __webpack_require__) {
 
-var copyFeed = __webpack_require__(4);
-var tabState = __webpack_require__(2);
+var copyFeed = __webpack_require__(5);
+var tabState = __webpack_require__(3);
 
 Vue.component('help', {
     props: ['user'],
@@ -23406,7 +23409,7 @@ Vue.component('help', {
 /* 147 */
 /***/ function(module, exports, __webpack_require__) {
 
-var episodeActions = __webpack_require__(6);
+var episodeActions = __webpack_require__(2);
 
 Vue.component('home', {
     props: ['user'],
@@ -23468,8 +23471,8 @@ Vue.component('playlist-edit', {
 /* 149 */
 /***/ function(module, exports, __webpack_require__) {
 
-var episodeActions = __webpack_require__(6);
-var copyFeed = __webpack_require__(4);
+var episodeActions = __webpack_require__(2);
+var copyFeed = __webpack_require__(5);
 
 Vue.component('playlist', {
     props: ['user'],
@@ -23925,8 +23928,8 @@ Vue.component('recommendations', {
 /* 153 */
 /***/ function(module, exports, __webpack_require__) {
 
-var episodeActions = __webpack_require__(6);
-var copyFeed = __webpack_require__(4);
+var episodeActions = __webpack_require__(2);
+var copyFeed = __webpack_require__(5);
 
 Vue.component('show', {
     props: ['user'],
@@ -24052,7 +24055,7 @@ __webpack_require__(155);
 
 Vue.component('shows', {
     props: ['user'],
-    mixins: [__webpack_require__(2)],
+    mixins: [__webpack_require__(3)],
     mounted: function mounted() {
         this.usePushStateForTabs('.shows-tabs');
     },
@@ -24190,12 +24193,13 @@ Vue.component('shows-search', {
 /* 157 */
 /***/ function(module, exports, __webpack_require__) {
 
-var copyFeed = __webpack_require__(4);
-var tabState = __webpack_require__(2);
+var copyFeed = __webpack_require__(5);
+var tabState = __webpack_require__(3);
+var episodeActions = __webpack_require__(2);
 
 Vue.component('view-user', {
     props: ['user'],
-    mixins: [tabState, copyFeed],
+    mixins: [episodeActions, tabState, copyFeed],
     mounted: function mounted() {
         this.usePushStateForTabs('.user-tabs');
     },
@@ -24226,7 +24230,9 @@ Vue.component('view-user', {
                     you: 'do',
                     third_person: 'does'
                 }
-            }
+            },
+            selectedEpisode: {},
+            show: false
         };
     },
     created: function created() {
@@ -24239,31 +24245,26 @@ Vue.component('view-user', {
         isMe: function isMe() {
             return this.user && this.viewed_user.id == this.user.id;
         },
+        percentStorageUsed: function percentStorageUsed(){
+            return Math.ceil(parseInt(this.viewed_user.storage_used)*10 / parseInt(this.viewed_user.plan_storage_limit)) / 10;
+        }
     },
     methods: {
-        getUser: function getUser() {
+        formatStorage: function formatStorage(s){
+            s = parseInt(s);
+            if (s > 1000000000){
+                return Math.ceil(s/10000000)/100 + ' GB';
+            }
+            if (s > 1000000){
+                return Math.ceil(s/10000)/100 + ' MB';
+            }
+            if (s > 1000){
+                return Math.ceil(s/10)/100 + ' KB';
+            }
+            return s + ' Bytes';
+        },
+        getEpisodesLiked: function getEpisodesLiked() {
             var self = this;
-            this.$http.get('/api/users/' + this.slug)
-                .then(function (response) {
-                    self.viewed_user = response.data;
-                    if (self.isMe){
-                        self.$http.get('/api/archived_episodes')
-                            .then(function (response) {
-                                self.episodes_archived = response.data;
-                                self.episodes_archived_loaded = true;
-                            }, function (response) {
-                                $("#modal-error").modal('show');
-                                setTimeout(function(){
-                                    $("#modal-error").modal('hide');
-                                }, 8000);
-                            });
-                    }
-                }, function (response) {
-                    $("#modal-error").modal('show');
-                    setTimeout(function(){
-                        $("#modal-error").modal('hide');
-                    }, 8000);
-                });
             this.$http.get('/api/users/' + this.slug + '/episodes_liked')
                 .then(function (response) {
                     self.episodes_liked = response.data;
@@ -24274,6 +24275,9 @@ Vue.component('view-user', {
                         $("#modal-error").modal('hide');
                     }, 8000);
                 });
+        },
+        getShowsLiked: function getShowsLiked() {
+            var self = this;
             this.$http.get('/api/users/' + this.slug + '/shows_liked')
                 .then(function (response) {
                     self.shows_liked = response.data;
@@ -24284,6 +24288,9 @@ Vue.component('view-user', {
                         $("#modal-error").modal('hide');
                     }, 8000);
                 });
+        },
+        getPlaylists: function getPlaylists() {
+            var self = this;
             this.$http.get('/api/users/' + this.slug + '/playlists')
                 .then(function (response) {
                     self.playlists = response.data;
@@ -24294,6 +24301,9 @@ Vue.component('view-user', {
                         $("#modal-error").modal('hide');
                     }, 8000);
                 });
+        },
+        getConnections: function getConnections() {
+            var self = this;
             this.$http.get('/api/users/' + this.slug + '/connections')
                 .then(function (response) {
                     self.connections.accepted = response.data.accepted;
@@ -24305,6 +24315,9 @@ Vue.component('view-user', {
                         $("#modal-error").modal('hide');
                     }, 8000);
                 });
+        },
+        getRecommendationsAccepted: function getRecommendationsAccepted() {
+            var self = this;
             this.$http.get('/api/users/' + this.slug + '/recommendations_accepted')
                 .then(function (response) {
                     self.recommendations_accepted = response.data;
@@ -24315,6 +24328,42 @@ Vue.component('view-user', {
                         $("#modal-error").modal('hide');
                     }, 8000);
                 });
+        },
+        getArchivedEpisodes: function getArchivedEpisodes() {
+            var self = this;
+            this.$http.get('/api/archived_episodes')
+                .then(function (response) {
+                    self.episodes_archived = response.data;
+                    self.episodes_archived_loaded = true;
+                }, function (response) {
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
+                });
+        },
+        getUser: function getUser() {
+            var this$1 = this;
+
+            var self = this;
+            this.$http.get('/api/users/' + this.slug)
+                .then(function (response) {
+                    self.viewed_user = response.data;
+                    if (self.isMe){
+                        this$1.getArchivedEpisodes();
+                    }else{
+                        $("[aria-controls='archived-episodes']").parent().hide();
+                    }
+                }, function (response) {
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
+                });
+            this.getEpisodesLiked();
+            this.getShowsLiked();
+            this.getPlaylists();
+            this.getRecommendationsAccepted();
         },
         viewed_user_name: function viewed_user_name(options) {
             if ( options === void 0 ) options = false;
@@ -24344,6 +24393,17 @@ Vue.component('view-user', {
                     ret += ' ' + options.verbs.third_person;
                 }
                 return ret;
+            }
+        },
+        updateEpisode: function updateEpisode(episode){
+            if ($("#episodes-liked:visible").length > 0){
+                this.getEpisodesLiked()
+            }
+            if ($("#recommendations-accepted:visible").length > 0){
+                this.getRecommendationsAccepted()
+            }
+            if ($("#archived-episodes:visible").length > 0){
+                this.getArchivedEpisodes();
             }
         }
     }
@@ -25995,7 +26055,7 @@ module.exports = {
     /**
      * Load mixins for the component.
      */
-    mixins: [__webpack_require__(2)],
+    mixins: [__webpack_require__(3)],
 
 
     /**
@@ -28025,7 +28085,7 @@ module.exports = {
     /**
      * Load mixins for the component.
      */
-    mixins: [__webpack_require__(2)],
+    mixins: [__webpack_require__(3)],
 
 
     /**
@@ -28060,7 +28120,7 @@ module.exports = {
      */
     mixins: [
         __webpack_require__(1),
-        __webpack_require__(5)
+        __webpack_require__(6)
     ],
 
 
@@ -28172,7 +28232,7 @@ module.exports = {
      */
     mixins: [
         __webpack_require__(1),
-        __webpack_require__(5)
+        __webpack_require__(6)
     ],
 
 
@@ -28220,7 +28280,7 @@ module.exports = {
     mixins: [
         __webpack_require__(7),
         __webpack_require__(1),
-        __webpack_require__(5)
+        __webpack_require__(6)
     ],
 
 
@@ -28323,7 +28383,7 @@ module.exports = {
      */
     mixins: [
         __webpack_require__(1),
-        __webpack_require__(5),
+        __webpack_require__(6),
         __webpack_require__(11)
     ],
 
@@ -28547,7 +28607,7 @@ module.exports = {
      */
     mixins: [
         __webpack_require__(1),
-        __webpack_require__(5)
+        __webpack_require__(6)
     ],
 
 
@@ -29346,7 +29406,7 @@ module.exports = {
     /**
      * Load mixins for the component.
      */
-    mixins: [__webpack_require__(2)],
+    mixins: [__webpack_require__(3)],
 
 
     /**
@@ -39794,7 +39854,7 @@ module.exports = __webpack_require__(271)
 "use strict";
 'use strict';
 
-var Promise = __webpack_require__(3);
+var Promise = __webpack_require__(4);
 
 module.exports = Promise;
 Promise.prototype.done = function (onFulfilled, onRejected) {
@@ -39816,7 +39876,7 @@ Promise.prototype.done = function (onFulfilled, onRejected) {
 
 //This file contains the ES6 extensions to the core Promises/A+ API
 
-var Promise = __webpack_require__(3);
+var Promise = __webpack_require__(4);
 
 module.exports = Promise;
 
@@ -39928,7 +39988,7 @@ Promise.prototype['catch'] = function (onRejected) {
 "use strict";
 'use strict';
 
-var Promise = __webpack_require__(3);
+var Promise = __webpack_require__(4);
 
 module.exports = Promise;
 Promise.prototype['finally'] = function (f) {
@@ -39951,7 +40011,7 @@ Promise.prototype['finally'] = function (f) {
 "use strict";
 'use strict';
 
-module.exports = __webpack_require__(3);
+module.exports = __webpack_require__(4);
 __webpack_require__(268);
 __webpack_require__(270);
 __webpack_require__(269);
@@ -39969,7 +40029,7 @@ __webpack_require__(273);
 // This file contains then/promise specific extensions that are only useful
 // for node.js interop
 
-var Promise = __webpack_require__(3);
+var Promise = __webpack_require__(4);
 var asap = __webpack_require__(129);
 
 module.exports = Promise;
@@ -40103,7 +40163,7 @@ Promise.prototype.nodeify = function (callback, ctx) {
 "use strict";
 'use strict';
 
-var Promise = __webpack_require__(3);
+var Promise = __webpack_require__(4);
 
 module.exports = Promise;
 Promise.enableSynchronous = function () {

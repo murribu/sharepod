@@ -31,6 +31,16 @@ class UsersController extends Controller
             ->first();
             
         $u->photo_url = $u->getPhotoUrlAttribute($u->photo_url);
+        $u->storage_used = $u->storage();
+        $plan = $u->plan();
+        $limit = 0;
+        if ($plan && $plan == env('PLAN_BASIC_NAME')){
+            $limit = intval(env('PLAN_BASIC_STORAGE_LIMIT'));
+        }
+        if ($plan && $plan == env('PLAN_PREMIUM_NAME')){
+            $limit = intval(env('PLAN_PREMIUM_STORAGE_LIMIT'));
+        }
+        $u->plan_storage_limit = $limit;
         
         return $u;
     }
@@ -52,19 +62,7 @@ class UsersController extends Controller
     public function apiGetUserEpisodesLiked($slug){
         $user = User::where('slug', $slug)->first();
         if ($user){
-            $episodes = Episode::leftJoin('shows', 'shows.id', '=', 'episodes.show_id')
-                ->join('likes', function($join){
-                    $join->on('likes.type', '=', DB::raw("'episode'"));
-                    $join->on('fk', '=', 'episodes.id');
-                })
-            ->where('user_id', $user->id)
-            ->select('likes.created_at as likeddate', 'episodes.name', 'episodes.slug', 'episodes.description', 'episodes.pubdate', 'episodes.img_url', 'shows.name as show_name', 'shows.slug as show_slug')
-            ->orderBy('likes.created_at', 'desc')
-            ->get();
-            foreach($episodes as $e){
-                $e = $e->prepare();
-            }
-            return $episodes;
+            return $user->liked_episodes();
         }
     }
     

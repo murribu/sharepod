@@ -45,8 +45,8 @@
                                             @{{connections.accepted.length + connections.pending.length}} Connections
                                         </a>
                                     </li>
-                                    <li role="presentation" v-if="isMe">
-                                        <a href="#archived" aria-controls="archived" role="tab" data-toggle="tab">
+                                    <li role="presentation">
+                                        <a href="#archived-episodes" aria-controls="archived-episodes" role="tab" data-toggle="tab">
                                             @{{episodes_archived.length}} Archived Episodes
                                         </a>
                                     </li>
@@ -83,6 +83,7 @@
                                     <small v-tooltip :title="episode.pubdate_str">@{{episode.howLongAgo}}</small>
                                 </div>
                                 <div class="panel-body" v-html="episode.description"></div>
+                                @include('partials.episode-footer')
                             </div>
                             <div class="panel panel-default panel-list-item" v-if="recommendations_loaded && recommendations_accepted.length == 0">
                                 <div class="panel-body">
@@ -109,6 +110,7 @@
                                     </small>
                                 </div>
                                 <div class="panel-body" v-html="episode.description"></div>
+                                @include('partials.episode-footer')
                             </div>
                             <div class="panel panel-default panel-list-item" v-if="episodes_liked_loaded && episodes_liked.length == 0">
                                 <div class="panel-body">
@@ -185,8 +187,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane" role="tabpanel" id="archived">
+                        <div class="tab-pane" role="tabpanel" id="archived-episodes">
                             <h3 class="centered" v-if="viewed_user.name">@{{viewed_user_name({possessive: true})}} Archived Episodes</h3>
+                            <h4 class="centered" v-if="viewed_user.name">@{{viewed_user_name({verbs: verbs.to_have})}} used @{{percentStorageUsed}}% of your alloted storage<br><small v-if="viewed_user.name">@{{formatStorage(viewed_user.storage_used)}} out of @{{formatStorage(viewed_user.plan_storage_limit)}}</small><br><small v-if="viewed_user.name">This does not include any pending Archive Requests</small></h4>
                             <div class="panel panel-default panel-list-item episode-container" v-for="episode in episodes_archived" :key="episode.slug">
                                 <div class="panel-heading">
                                     <a :href="'/episodes/' + episode.slug">
@@ -196,6 +199,7 @@
                                     <small v-tooltip :title="episode.pubdate_str">@{{episode.howLongAgo}}</small>
                                 </div>
                                 <div class="panel-body" v-html="episode.description"></div>
+                                @include('partials.episode-footer')
                             </div>
                             <div class="panel panel-default panel-list-item" v-if="episodes_archived_loaded && episodes_archived.length == 0">
                                 <div class="panel-body">
@@ -207,6 +211,7 @@
                 </div>
             </div>
         </div>
+        @include('modals.episode-modals')
     </div>
 </view-user>
 @endsection

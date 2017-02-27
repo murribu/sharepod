@@ -15,7 +15,7 @@ class Episode extends Model {
     
     public $table = 'episodes';
     public static $like_type = 'episode';
-    protected static $slug_reserved_words = ['new', 'search', 'undefined', 'popular'];
+    protected static $slug_reserved_words = ['new', 'search', 'undefined', 'popular', 'like', 'unlike', 'archive', 'unarchive'];
     
     public function unarchive($user){
         $self = $this;
@@ -54,7 +54,12 @@ class Episode extends Model {
                 return ['success' => 0, 'header' => 'Storage Limitation', 'message' => 'The episode has not been archived. It would put you over your storage limit.'];
             }else{
                 $aeu = $ae->create_archived_episode_user($user);
-                return ['success' => 1, 'header' => 'Episode archived!', 'message' => 'You have archived this episode. When you add it to a playlist, you don\'t have to worry about the original site taking this episode down.'];
+                if ($ae->result_slug){
+                    //ok
+                    return ['success' => 1, 'header' => 'Episode archived!', 'message' => 'You have archived this episode. When you add it to a playlist, you don\'t have to worry about the original site taking this episode down.'];
+                }else{
+                    return ['success' => 1, 'message' => 'We have received your request to archive this episode. When your request has been processed, you will get a notification (click on the little bell on the top-right of this page).', 'header' => 'Archive Requested'];
+                }
             }
         }else{
             $ae = ArchivedEpisode::where('episode_id', $this->id)

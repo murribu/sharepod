@@ -13,6 +13,9 @@ Vue.component('episode', {
         slug() {
             return window.location.href.split('/')[4];
         },
+        episode() {
+            return this.selectedEpisode;
+        }
     },
     created() {
         this.loadEpisode();

@@ -1,9 +1,10 @@
 var copyFeed = require('./mixins/copy-feed');
 var tabState = require('./../../../../spark/resources/assets/js/mixins/tab-state');
+var episodeActions = require('./mixins/episode-actions');
 
 Vue.component('view-user', {
     props: ['user'],
-    mixins: [tabState, copyFeed],
+    mixins: [episodeActions, tabState, copyFeed],
     mounted() {
         this.usePushStateForTabs('.user-tabs');
     },
@@ -34,7 +35,9 @@ Vue.component('view-user', {
                     you: 'do',
                     third_person: 'does'
                 }
-            }
+            },
+            selectedEpisode: {},
+            show: false
         };
     },
     created() {
@@ -47,31 +50,26 @@ Vue.component('view-user', {
         isMe() {
             return this.user && this.viewed_user.id == this.user.id;
         },
+        percentStorageUsed(){
+            return Math.ceil(parseInt(this.viewed_user.storage_used)*10 / parseInt(this.viewed_user.plan_storage_limit)) / 10;
+        }
     },
     methods: {
-        getUser() {
+        formatStorage(s){
+            s = parseInt(s);
+            if (s > 1000000000){
+                return Math.ceil(s/10000000)/100 + ' GB';
+            }
+            if (s > 1000000){
+                return Math.ceil(s/10000)/100 + ' MB';
+            }
+            if (s > 1000){
+                return Math.ceil(s/10)/100 + ' KB';
+            }
+            return s + ' Bytes';
+        },
+        getEpisodesLiked() {
             var self = this;
-            this.$http.get('/api/users/' + this.slug)
-                .then(response => {
-                    self.viewed_user = response.data;
-                    if (self.isMe){
-                        self.$http.get('/api/archived_episodes')
-                            .then(response => {
-                                self.episodes_archived = response.data;
-                                self.episodes_archived_loaded = true;
-                            }, response => {
-                                $("#modal-error").modal('show');
-                                setTimeout(function(){
-                                    $("#modal-error").modal('hide');
-                                }, 8000);
-                            });
-                    }
-                }, response => {
-                    $("#modal-error").modal('show');
-                    setTimeout(function(){
-                        $("#modal-error").modal('hide');
-                    }, 8000);
-                });
             this.$http.get('/api/users/' + this.slug + '/episodes_liked')
                 .then(response => {
                     self.episodes_liked = response.data;
@@ -82,6 +80,9 @@ Vue.component('view-user', {
                         $("#modal-error").modal('hide');
                     }, 8000);
                 });
+        },
+        getShowsLiked() {
+            var self = this;
             this.$http.get('/api/users/' + this.slug + '/shows_liked')
                 .then(response => {
                     self.shows_liked = response.data;
@@ -92,6 +93,9 @@ Vue.component('view-user', {
                         $("#modal-error").modal('hide');
                     }, 8000);
                 });
+        },
+        getPlaylists() {
+            var self = this;
             this.$http.get('/api/users/' + this.slug + '/playlists')
                 .then(response => {
                     self.playlists = response.data;
@@ -102,6 +106,9 @@ Vue.component('view-user', {
                         $("#modal-error").modal('hide');
                     }, 8000);
                 });
+        },
+        getConnections() {
+            var self = this;
             this.$http.get('/api/users/' + this.slug + '/connections')
                 .then(response => {
                     self.connections.accepted = response.data.accepted;
@@ -113,6 +120,9 @@ Vue.component('view-user', {
                         $("#modal-error").modal('hide');
                     }, 8000);
                 });
+        },
+        getRecommendationsAccepted() {
+            var self = this;
             this.$http.get('/api/users/' + this.slug + '/recommendations_accepted')
                 .then(response => {
                     self.recommendations_accepted = response.data;
@@ -123,6 +133,40 @@ Vue.component('view-user', {
                         $("#modal-error").modal('hide');
                     }, 8000);
                 });
+        },
+        getArchivedEpisodes() {
+            var self = this;
+            this.$http.get('/api/archived_episodes')
+                .then(response => {
+                    self.episodes_archived = response.data;
+                    self.episodes_archived_loaded = true;
+                }, response => {
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
+                });
+        },
+        getUser() {
+            var self = this;
+            this.$http.get('/api/users/' + this.slug)
+                .then(response => {
+                    self.viewed_user = response.data;
+                    if (self.isMe){
+                        this.getArchivedEpisodes();
+                    }else{
+                        $("[aria-controls='archived-episodes']").parent().hide();
+                    }
+                }, response => {
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
+                });
+            this.getEpisodesLiked();
+            this.getShowsLiked();
+            this.getPlaylists();
+            this.getRecommendationsAccepted();
         },
         viewed_user_name(options = false) {
             var ret = '';
@@ -150,6 +194,17 @@ Vue.component('view-user', {
                     ret += ' ' + options.verbs.third_person;
                 }
                 return ret;
+            }
+        },
+        updateEpisode(episode){
+            if ($("#episodes-liked:visible").length > 0){
+                this.getEpisodesLiked()
+            }
+            if ($("#recommendations-accepted:visible").length > 0){
+                this.getRecommendationsAccepted()
+            }
+            if ($("#archived-episodes:visible").length > 0){
+                this.getArchivedEpisodes();
             }
         }
     }
