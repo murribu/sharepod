@@ -22,7 +22,7 @@ class Playlist extends Model {
             ->leftJoin('shows', 'shows.id', '=', 'episodes.show_id')
             ->leftJoin(DB::raw('(select episode_id, filesize, url, slug from archived_episodes where result_slug = \'ok\' and id in (select archived_episode_id from archived_episode_users where active = 1 and user_id = '.$this->user_id.')) ae'), 'ae.episode_id', '=', 'episodes.id')
             ->where('playlist_episodes.playlist_id', $this->id)
-            ->selectRaw('episodes.show_id, episodes.id, episodes.slug, episodes.name, episodes.description, episodes.duration, episodes.explicit, coalesce(ae.filesize, episodes.filesize) filesize, episodes.img_url, episodes.pubdate, coalesce(ae.url, concat(\'https://s3.us-east-2.amazonaws.com/podcastdj/episodes/\', ae.slug, \'.mp3\'), episodes.url) url, shows.name show_name, shows.slug show_slug')
+            ->selectRaw('episodes.show_id, episodes.id, episodes.slug, episodes.name, episodes.description, episodes.duration, episodes.explicit, coalesce(ae.filesize, episodes.filesize) filesize, episodes.img_url, episodes.pubdate, coalesce(ae.url, concat(\''.env('S3_URL').'/'.env('S3_BUCKET').'/episodes/\', ae.slug, \'.mp3\'), episodes.url) url, shows.name show_name, shows.slug show_slug')
             ->orderBy('ordering')
             ->orderBy('id')
             ->get();
