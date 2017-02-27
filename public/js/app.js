@@ -5130,6 +5130,7 @@ module.exports = {
         },
         unArchive: function unArchive() {
             var episode = this.selectedEpisode;
+            var self = this;
             var sent = {
                 slug: episode.slug
             };
@@ -5141,7 +5142,6 @@ module.exports = {
                     setTimeout(function(){
                         $("#modal-unarchive-success").modal('hide');
                     }, 8000);
-                    self.updateEpisode(episode.slug, response.data.total_likes, response.data.this_user_likes, episode.this_user_archived);
                 }, function (response) {
                     $("#modal-unarchive-are-you-sure").modal('hide');
                     $("#modal-error").modal('show');
