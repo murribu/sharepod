@@ -203,7 +203,7 @@ class User extends SparkUser
     public function archived_episodes(){
         $self = $this;
         
-        $archive_episodes = ArchiveEpisode::with('episode')
+        $archive_episodes = ArchivedEpisode::with('episode')
             ->where('active', '1')
             ->whereIn('id', function($query2) use ($self){
             $query2->select('user_id')
