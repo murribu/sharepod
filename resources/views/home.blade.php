@@ -35,7 +35,7 @@
         </div>
         <div class="row" v-if="episodes.length > 0">
             <h3 class="centered">Recently Popular Episodes</h3>
-            <div class="panel panel-default panel-list-item episode-container" v-for="episode in episodes" :key="episode.slug">
+            <div class="panel panel-default panel-list-item episode-container" v-for="episode in episodes" :key="episode.slug" :data-slug="episode.slug">
                 <div class="panel-heading">
                     <a :href="'/episodes/' + episode.slug">
                         <img :src="episode.img_url" class="episode-image" />

@@ -23,6 +23,10 @@ Vue.component('playlist', {
     },
     created() {
         this.loadPlaylist();
+        if (this.user){
+            this.getRecentRecommendees();
+            this.getPlaylists();
+        }
     },
     computed: {
         slug() {
@@ -157,7 +161,8 @@ Vue.component('playlist', {
                     this.playlist.episodes[e].total_likes = stats.total_likes;
                     this.playlist.episodes[e].total_playlists = stats.total_playlists;
                     this.playlist.episodes[e].total_recommendations = stats.total_recommendations;
-                    $('[data-slug=' + slug + '] .btn-archive-episode .icon-container').attr('data-original-title', this_user_archived ? 'Unarchive' : 'Archive');
+                    $('[data-slug=' + slug + '] .btn-archive-episode .icon-container').attr('data-original-title', stats.this_user_archived ? 'Unarchive' : 'Archive');
+                    $('[data-slug=' + slug + '] .btn-episode-like .icon-container').attr('data-original-title', stats.this_user_likes ? 'Unlike' : 'Like');
                 }
             }
         },

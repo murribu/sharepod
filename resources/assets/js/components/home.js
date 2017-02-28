@@ -66,6 +66,8 @@ Vue.component('home', {
                     this.episodes[e].total_playlists = stats.total_playlists;
                     this.episodes[e].total_recommendations = stats.total_recommendations;
                     this.getLikers(this.episodes[e]);
+                    $('[data-slug=' + slug + '] .btn-archive-episode .icon-container').attr('data-original-title', stats.this_user_archived ? 'Unarchive' : 'Archive');
+                    $('[data-slug=' + slug + '] .btn-episode-like .icon-container').attr('data-original-title', stats.this_user_likes ? 'Unlike' : 'Like');
                 }
             }
         },

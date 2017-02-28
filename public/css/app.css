@@ -7569,11 +7569,11 @@ button.btn-unlike:hover {
   color: #e2d51d;
 }
 .btn-episode-like:hover .icon-text-container,
-.btn-episode-unlike .icon-text-container {
+.btn-episode-like.active .icon-text-container {
   color: #e81c4f;
 }
 .btn-episode-like:hover .icon-container .heart,
-.btn-episode-unlike .icon-container .heart {
+.btn-episode-like.active .icon-container .heart {
   background-position: right;
 }
 .icon-text-container,

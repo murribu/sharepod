@@ -42,6 +42,10 @@ Vue.component('view-user', {
     },
     created() {
         this.getUser();
+        if (this.user){
+            this.getRecentRecommendees();
+            this.getPlaylists();
+        }
     },
     computed: {
         slug() {
@@ -211,6 +215,8 @@ Vue.component('view-user', {
                         this.episodes_liked[e].total_likes = stats.total_likes;
                         this.episodes_liked[e].total_playlists = stats.total_playlists;
                         this.episodes_liked[e].total_recommendations = stats.total_recommendations;
+                        $('[data-slug=' + slug + '] .btn-archive-episode .icon-container').attr('data-original-title', stats.this_user_archived ? 'Unarchive' : 'Archive');
+                        $('[data-slug=' + slug + '] .btn-episode-like .icon-container').attr('data-original-title', stats.this_user_likes ? 'Unlike' : 'Like');
                     }
                 }
             }
@@ -226,6 +232,8 @@ Vue.component('view-user', {
                     this.recommendations_accepted[e].total_likes = stats.total_likes;
                     this.recommendations_accepted[e].total_playlists = stats.total_playlists;
                     this.recommendations_accepted[e].total_recommendations = stats.total_recommendations;
+                    $('[data-slug=' + slug + '] .btn-archive-episode .icon-container').attr('data-original-title', stats.this_user_archived ? 'Unarchive' : 'Archive');
+                    $('[data-slug=' + slug + '] .btn-episode-like .icon-container').attr('data-original-title', stats.this_user_likes ? 'Unlike' : 'Like');
                 }
             }
             //episodes_archived
@@ -242,6 +250,8 @@ Vue.component('view-user', {
                         this.episodes_archived[e].total_likes = stats.total_likes;
                         this.episodes_archived[e].total_playlists = stats.total_playlists;
                         this.episodes_archived[e].total_recommendations = stats.total_recommendations;
+                        $('[data-slug=' + slug + '] .btn-archive-episode .icon-container').attr('data-original-title', stats.this_user_archived ? 'Unarchive' : 'Archive');
+                        $('[data-slug=' + slug + '] .btn-episode-like .icon-container').attr('data-original-title', stats.this_user_likes ? 'Unlike' : 'Like');
                     }
                 }
             }

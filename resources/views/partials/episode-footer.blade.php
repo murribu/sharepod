@@ -10,8 +10,13 @@
         </button>
     </div>
     <div class="episode-action">
-        <button :class="{'btn-episode-unlike': episode.this_user_likes, 'btn-episode-like' : !episode.this_user_likes}" @click.prevent="toggleLikeEpisode(episode)">
-            <div class="icon-container" title="Like">
+        <button class="btn-episode-like" :class="{'active': episode.this_user_likes}" @click.prevent="toggleLikeEpisode(episode)">
+            <div class="icon-container" title="Unike" v-if="episode.this_user_likes">
+                <div class="heart-container">
+                    <div class="heart"></div>
+                </div>
+            </div>
+            <div class="icon-container" title="Like" v-if="!episode.this_user_likes">
                 <div class="heart-container">
                     <div class="heart"></div>
                 </div>
