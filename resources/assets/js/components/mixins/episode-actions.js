@@ -25,6 +25,9 @@ module.exports = {
                 $("#modal-unarchive-are-you-sure").modal('show');
                 this.selectedEpisode = episode;
             }else{
+                var new_e = {};
+                
+                this.setAttribute(episode.slug, 'archive_busy', true);
                 this.$http.post('/api/episodes/archive', sent)
                     .then(response => {
                         $("#modal-archive-result").modal('show');
@@ -33,12 +36,14 @@ module.exports = {
                         setTimeout(function(){
                             $("#modal-archive-result").modal('hide');
                         }, 10000);
+                        self.setAttribute(episode.slug, 'archive_busy', false);
                         self.updateEpisode(episode.slug, response.data.stats);
                     }, response => {
                         $("#modal-error").modal('show');
                         setTimeout(function(){
                             $("#modal-error").modal('hide');
                         }, 8000);
+                        self.setAttribute(episode.slug, 'archive_busy', false);
                     });
             }
         },
@@ -48,6 +53,9 @@ module.exports = {
             var sent = {
                 slug: episode.slug
             };
+            var new_e = {};
+            
+            this.setAttribute(episode.slug, 'archive_busy', true);
             this.$http.post('/api/episodes/unarchive', sent)
                 .then(response => {
                     $("#modal-unarchive-are-you-sure").modal('hide');
@@ -56,12 +64,14 @@ module.exports = {
                     setTimeout(function(){
                         $("#modal-unarchive-success").modal('hide');
                     }, 8000);
+                    self.setAttribute(episode.slug, 'archive_busy', false);
                 }, response => {
                     $("#modal-unarchive-are-you-sure").modal('hide');
                     $("#modal-error").modal('show');
                     setTimeout(function(){
                         $("#modal-error").modal('hide');
                     }, 8000);
+                    self.setAttribute(episode.slug, 'archive_busy', false);
                 });
         },
         getPlaylists() {
@@ -176,10 +186,14 @@ module.exports = {
             }, 2500);
         },
         toggleLikeEpisode(episode){
+            var self = this;
+            
+            this.setAttribute(episode.slug, 'like_busy', true);
+            
             if (episode.this_user_likes){
-                return this.unlikeEpisode(episode);
+                return self.unlikeEpisode(episode);
             }else{
-                return this.likeEpisode(episode);
+                return self.likeEpisode(episode);
             }
         },
         likeEpisode(episode) {
@@ -187,11 +201,13 @@ module.exports = {
             this.$http.post('/api/episodes/like', {slug: episode.slug})
                 .then(response => {
                     self.updateEpisode(episode.slug, response.data.stats);
+                    self.setAttribute(episode.slug, 'like_busy', false);
                 }, response => {
                     $("#modal-error").modal('show');
                     setTimeout(function(){
                         $("#modal-error").modal('hide');
                     }, 8000);
+                    self.setAttribute(episode.slug, 'like_busy', false);
                 })
         },
         unlikeEpisode(episode) {
@@ -199,12 +215,27 @@ module.exports = {
             this.$http.post('/api/episodes/unlike', {slug: episode.slug})
                 .then(response => {
                     self.updateEpisode(episode.slug, response.data.stats);
+                    self.setAttribute(episode.slug, 'like_busy', false);
                 }, response => {
                     $("#modal-error").modal('show');
                     setTimeout(function(){
                         $("#modal-error").modal('hide');
                     }, 8000);
+                    self.setAttribute(episode.slug, 'like_busy', false);
                 })
         },
+        setAttribute(slug, attr, val){
+            // https://vuejs.org/v2/guide/list.html#Caveats
+            var new_e = {};
+            for (var g in this.episodeGroups){
+                for (var e in this.episodeGroups[g].episodes){
+                    if (this.episodeGroups[g].episodes[e].slug == slug){
+                        new_e = this.episodeGroups[g].episodes[e];
+                        new_e[attr] = val;
+                        Vue.set(this.episodeGroups[g].episodes, e, new_e);
+                    }
+                }
+            }
+        }
     }
 }

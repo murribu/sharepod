@@ -4,30 +4,30 @@
 <playlist :user="user" inline-template>
     <div>
         <div class="container">
-            <h3 class="centered">@{{playlist.name}}</h3>
+            <h3 class="centered">@{{episodeGroups.playlist.name}}</h3>
             <div class="row">
                 <div class="col-xs-12 col-md-4">
                     <div class="panel panel-default">
                         <div class="panel-heading centered">
-                            @{{playlist.name}}
+                            @{{episodeGroups.playlist.name}}
                         </div>
                         <div class="panel-body panel-list-item">
-                            @{{playlist.description}}
+                            @{{episodeGroups.playlist.description}}
                         </div>
                         <div class="panel-body panel-list-item">
-                            @{{playlist.episodes.length}} Episode@{{playlist.episodes.length == 1 ? '' : 's'}}
+                            @{{episodeGroups.playlist.episodes.length}} Episode@{{episodeGroups.playlist.episodes.length == 1 ? '' : 's'}}
                         </div>
                         <div class="panel-body panel-list-item">
                             <a href="#" @click.prevent="copyFeed(feedUrl, 'copy-link')" id="copy-link">@{{copyLinkText}}</a>
                             <input type="text" id="copy-link-fallback" :value="feedUrl" class="fallback"/>
                         </div>
-                        <div class="panel-footer" v-if="user && playlist && playlist.user_slug == user.slug">
-                            <a :href="'/playlists/' + playlist.slug + '/edit'">Edit</a>
+                        <div class="panel-footer" v-if="user && episodeGroups.playlist && episodeGroups.playlist.user_slug == user.slug">
+                            <a :href="'/playlists/' + episodeGroups.playlist.slug + '/edit'">Edit</a>
                         </div>
                     </div>
                 </div>
                 <div class="col-xs-12 col-md-8">
-                    <div class="panel panel-default panel-list-item" v-for="(episode, index) in playlist.episodes" :data-slug="episode.slug">
+                    <div class="panel panel-default panel-list-item" v-for="(episode, index) in episodeGroups.playlist.episodes" :data-slug="episode.slug">
                         <div class="panel-heading">
                             <a :href="'/shows/' + episode.show_slug">@{{episode.show_name}}</a>
                             <br>
@@ -56,14 +56,14 @@
                                 </div>
                                 <div class="episode-action col-xs-2">
                                     <button class="btn-move-down" @click.prevent="moveDown(episode)" :disabled="!loaded">
-                                        <div class="icon-container" title="Move Episode Down" v-tooltip v-if="index != playlist.episodes.length - 1">
+                                        <div class="icon-container" title="Move Episode Down" v-tooltip v-if="index != episodeGroups.playlist.episodes.length - 1">
                                             <i class="fa fa-arrow-down"></i>
                                         </div>
                                     </button>
                                 </div>
                                 <div class="episode-action col-xs-2">
                                     <button class="btn-move-to-bottom" @click.prevent="moveToBottom(episode)" :disabled="!loaded">
-                                        <div class="icon-container" title="Move Episode to the Bottom" v-tooltip v-if="index != playlist.episodes.length - 1">
+                                        <div class="icon-container" title="Move Episode to the Bottom" v-tooltip v-if="index != episodeGroups.playlist.episodes.length - 1">
                                             <i class="fa fa-long-arrow-down"></i>
                                         </div>
                                     </button>
@@ -79,7 +79,7 @@
                         </div>
                         @include('partials.episode-footer')
                     </div>
-                    <div class="panel" v-if="loaded && playlist.episodes.length == 0">
+                    <div class="panel" v-if="loaded && episodeGroups.playlist.episodes.length == 0">
                         <div class="panel-body centered">
                             This playlist has no episodes
                         </div>

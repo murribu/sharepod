@@ -32,7 +32,10 @@ class EpisodesController extends Controller
         $e = Episode::where('episodes.active', 1)
             ->where('episodes.slug', $slug)
             ->first();
-        $e->stats = $e->stats(Auth::user());
+        $stats = $e->stats(Auth::user())->getAttributes();
+        foreach($stats as $key=>$s){
+            $e->{$key} = $s;
+        }
         $e = $e->prepare();
         unset($e->show);
         return $e;

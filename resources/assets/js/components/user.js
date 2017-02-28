@@ -10,8 +10,19 @@ Vue.component('view-user', {
     },
     data() {
         return {
+            episodeGroups: {
+                episodes_liked: {
+                    episodes: [],
+                },
+                recommendations_accepted: {
+                    episodes: [],
+                },
+                episodes_archived: {
+                    episodes: [],
+                },
+                show: {},
+            },
             viewed_user: {},
-            episodes_liked: [],
             episodes_liked_loaded: false,
             shows_liked: [],
             shows_liked_loaded: false,
@@ -22,9 +33,7 @@ Vue.component('view-user', {
                 pending: [],
             },
             connections_loaded: false,
-            recommendations_accepted: [],
             recommendations_loaded: false,
-            episodes_archived: [],
             episodes_archived_loaded: false,
             verbs:{
                 to_have:{
@@ -76,7 +85,7 @@ Vue.component('view-user', {
             var self = this;
             this.$http.get('/api/users/' + this.slug + '/episodes_liked')
                 .then(response => {
-                    self.episodes_liked = response.data;
+                    self.episodeGroups.episodes_liked.episodes = response.data;
                     self.episodes_liked_loaded = true;
                 }, response => {
                     $("#modal-error").modal('show');
@@ -129,7 +138,7 @@ Vue.component('view-user', {
             var self = this;
             this.$http.get('/api/users/' + this.slug + '/recommendations_accepted')
                 .then(response => {
-                    self.recommendations_accepted = response.data;
+                    self.episodeGroups.recommendations_accepted.episodes = response.data;
                     self.recommendations_loaded = true;
                 }, response => {
                     $("#modal-error").modal('show');
@@ -142,7 +151,7 @@ Vue.component('view-user', {
             var self = this;
             this.$http.get('/api/archived_episodes')
                 .then(response => {
-                    self.episodes_archived = response.data;
+                    self.episodeGroups.episodes_archived.episodes = response.data;
                     self.episodes_archived_loaded = true;
                 }, response => {
                     $("#modal-error").modal('show');
@@ -203,18 +212,18 @@ Vue.component('view-user', {
         updateEpisode(slug, stats){
             //episodes_liked
             var found = false;
-            for(var e in this.episodes_liked){
-                if (this.episodes_liked[e].slug == slug){
+            for(var e in this.episodeGroups.episodes_liked.episodes){
+                if (this.episodeGroups.episodes_liked.episodes[e].slug == slug){
                     found = true;
-                    if (stats.this_user_likes != this.episodes_liked[e].this_user_likes){
+                    if (stats.this_user_likes != this.episodeGroups.episodes_liked.episodes[e].this_user_likes){
                         this.getEpisodesLiked();
                     }else{
-                        this.episodes_liked[e].result_slug = stats.result_slug;
-                        this.episodes_liked[e].this_user_archived = stats.this_user_archived;
-                        this.episodes_liked[e].this_user_likes = stats.this_user_likes;
-                        this.episodes_liked[e].total_likes = stats.total_likes;
-                        this.episodes_liked[e].total_playlists = stats.total_playlists;
-                        this.episodes_liked[e].total_recommendations = stats.total_recommendations;
+                        this.episodeGroups.episodes_liked.episodes[e].result_slug = stats.result_slug;
+                        this.episodeGroups.episodes_liked.episodes[e].this_user_archived = stats.this_user_archived;
+                        this.episodeGroups.episodes_liked.episodes[e].this_user_likes = stats.this_user_likes;
+                        this.episodeGroups.episodes_liked.episodes[e].total_likes = stats.total_likes;
+                        this.episodeGroups.episodes_liked.episodes[e].total_playlists = stats.total_playlists;
+                        this.episodeGroups.episodes_liked.episodes[e].total_recommendations = stats.total_recommendations;
                         $('[data-slug=' + slug + '] .btn-archive-episode .icon-container').attr('data-original-title', stats.this_user_archived ? 'Unarchive' : 'Archive');
                         $('[data-slug=' + slug + '] .btn-episode-like .icon-container').attr('data-original-title', stats.this_user_likes ? 'Unlike' : 'Like');
                     }
@@ -224,32 +233,32 @@ Vue.component('view-user', {
                 this.getEpisodesLiked();
             }
             //recommendations_accepted
-            for(var e in this.recommendations_accepted){
-                if (this.recommendations_accepted[e].slug == slug){
-                    this.recommendations_accepted[e].result_slug = stats.result_slug;
-                    this.recommendations_accepted[e].this_user_archived = stats.this_user_archived;
-                    this.recommendations_accepted[e].this_user_likes = stats.this_user_likes;
-                    this.recommendations_accepted[e].total_likes = stats.total_likes;
-                    this.recommendations_accepted[e].total_playlists = stats.total_playlists;
-                    this.recommendations_accepted[e].total_recommendations = stats.total_recommendations;
+            for(var e in this.episodeGroups.recommendations_accepted.episodes){
+                if (this.episodeGroups.recommendations_accepted.episodes[e].slug == slug){
+                    this.episodeGroups.recommendations_accepted.episodes[e].result_slug = stats.result_slug;
+                    this.episodeGroups.recommendations_accepted.episodes[e].this_user_archived = stats.this_user_archived;
+                    this.episodeGroups.recommendations_accepted.episodes[e].this_user_likes = stats.this_user_likes;
+                    this.episodeGroups.recommendations_accepted.episodes[e].total_likes = stats.total_likes;
+                    this.episodeGroups.recommendations_accepted.episodes[e].total_playlists = stats.total_playlists;
+                    this.episodeGroups.recommendations_accepted.episodes[e].total_recommendations = stats.total_recommendations;
                     $('[data-slug=' + slug + '] .btn-archive-episode .icon-container').attr('data-original-title', stats.this_user_archived ? 'Unarchive' : 'Archive');
                     $('[data-slug=' + slug + '] .btn-episode-like .icon-container').attr('data-original-title', stats.this_user_likes ? 'Unlike' : 'Like');
                 }
             }
             //episodes_archived
             found = false;
-            for(var e in this.episodes_archived){
-                if (this.episodes_archived[e].slug == slug){
+            for(var e in this.episodeGroups.episodes_archived.episodes){
+                if (this.episodeGroups.episodes_archived.episodes[e].slug == slug){
                     found = true;
-                    if (stats.this_user_archived != this.episodes_archived[e].this_user_archived){
+                    if (stats.this_user_archived != this.episodeGroups.episodes_archived.episodes[e].this_user_archived){
                         this.getArchivedEpisodes();
                     }else{
-                        this.episodes_archived[e].result_slug = stats.result_slug;
-                        this.episodes_archived[e].this_user_archived = stats.this_user_archived;
-                        this.episodes_archived[e].this_user_likes = stats.this_user_likes;
-                        this.episodes_archived[e].total_likes = stats.total_likes;
-                        this.episodes_archived[e].total_playlists = stats.total_playlists;
-                        this.episodes_archived[e].total_recommendations = stats.total_recommendations;
+                        this.episodeGroups.episodes_archived.episodes[e].result_slug = stats.result_slug;
+                        this.episodeGroups.episodes_archived.episodes[e].this_user_archived = stats.this_user_archived;
+                        this.episodeGroups.episodes_archived.episodes[e].this_user_likes = stats.this_user_likes;
+                        this.episodeGroups.episodes_archived.episodes[e].total_likes = stats.total_likes;
+                        this.episodeGroups.episodes_archived.episodes[e].total_playlists = stats.total_playlists;
+                        this.episodeGroups.episodes_archived.episodes[e].total_recommendations = stats.total_recommendations;
                         $('[data-slug=' + slug + '] .btn-archive-episode .icon-container').attr('data-original-title', stats.this_user_archived ? 'Unarchive' : 'Archive');
                         $('[data-slug=' + slug + '] .btn-episode-like .icon-container').attr('data-original-title', stats.this_user_likes ? 'Unlike' : 'Like');
                     }

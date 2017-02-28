@@ -6,10 +6,13 @@ Vue.component('playlist', {
     mixins: [episodeActions, copyFeed],
     data() {
         return {
-            playlist: {
-                name: '',
-                description: '',
-                episodes: [],
+            episodeGroups: {
+                playlist: {
+                    name: '',
+                    description: '',
+                    episodes: [],
+                },
+                show: {},
             },
             copyLinkText: 'Click here to copy RSS Feed URL',
             loaded: false,
@@ -17,7 +20,6 @@ Vue.component('playlist', {
                 busy: false,
                 episode_slug: ''
             },
-            show: {},
             selectedEpisode: {},
         };
     },
@@ -57,7 +59,7 @@ Vue.component('playlist', {
             };
             this.$http.post('/api/playlists/' + this.slug + '/move_to_top', sent)
                 .then(response => {
-                    self.playlist.episodes = response.data;
+                    self.episodeGroups.playlist.episodes = response.data;
                     self.loaded = true;
                 }, response => {
                     $("#modal-error").modal('show');
@@ -74,7 +76,7 @@ Vue.component('playlist', {
             };
             this.$http.post('/api/playlists/' + this.slug + '/move_up', sent)
                 .then(response => {
-                    self.playlist.episodes = response.data;
+                    self.episodeGroups.playlist.episodes = response.data;
                     self.loaded = true;
                 }, response => {
                     $("#modal-error").modal('show');
@@ -91,7 +93,7 @@ Vue.component('playlist', {
             };
             this.$http.post('/api/playlists/' + this.slug + '/move_down', sent)
                 .then(response => {
-                    self.playlist.episodes = response.data;
+                    self.episodeGroups.playlist.episodes = response.data;
                     self.loaded = true;
                 }, response => {
                     $("#modal-error").modal('show');
@@ -108,7 +110,7 @@ Vue.component('playlist', {
             };
             this.$http.post('/api/playlists/' + this.slug + '/move_to_bottom', sent)
                 .then(response => {
-                    self.playlist.episodes = response.data;
+                    self.episodeGroups.playlist.episodes = response.data;
                     self.loaded = true;
                 }, response => {
                     $("#modal-error").modal('show');
@@ -128,7 +130,7 @@ Vue.component('playlist', {
             this.$http.post('/api/playlists/' + this.slug + '/remove', sent)
                 .then(response => {
                     this.areYouSure.busy = false;
-                    self.playlist.episodes = response.data;
+                    self.episodeGroups.playlist.episodes = response.data;
                     self.loaded = true;
                 }, response => {
                     this.areYouSure.busy = false;
@@ -143,7 +145,7 @@ Vue.component('playlist', {
             this.loaded = false;
             this.$http.get('/api/playlists/' + this.slug)
                 .then(response => {
-                    self.playlist = response.data;
+                    self.episodeGroups.playlist = response.data;
                     self.loaded = true;
                 }, response => {
                     $("#modal-error").modal('show');
@@ -153,16 +155,16 @@ Vue.component('playlist', {
                 });
         },
         updateEpisode(slug, stats){
-            for(var e in this.playlist.episodes){
-                if (this.playlist.episodes[e].slug == slug){
-                    this.playlist.episodes[e].result_slug = stats.result_slug;
-                    this.playlist.episodes[e].this_user_archived = stats.this_user_archived;
-                    this.playlist.episodes[e].this_user_likes = stats.this_user_likes;
-                    this.playlist.episodes[e].total_likes = stats.total_likes;
-                    this.playlist.episodes[e].total_playlists = stats.total_playlists;
-                    this.playlist.episodes[e].total_recommendations = stats.total_recommendations;
-                    $('[data-slug=' + slug + '] .btn-archive-episode .icon-container').attr('data-original-title', stats.this_user_archived ? 'Unarchive' : 'Archive');
-                    $('[data-slug=' + slug + '] .btn-episode-like .icon-container').attr('data-original-title', stats.this_user_likes ? 'Unlike' : 'Like');
+            for(var e in this.episodeGroups.playlist.episodes){
+                if (this.episodeGroups.playlist.episodes[e].slug == slug){
+                    this.episodeGroups.playlist.episodes[e].result_slug = stats.result_slug;
+                    this.episodeGroups.playlist.episodes[e].this_user_archived = stats.this_user_archived;
+                    this.episodeGroups.playlist.episodes[e].this_user_likes = stats.this_user_likes;
+                    this.episodeGroups.playlist.episodes[e].total_likes = stats.total_likes;
+                    this.episodeGroups.playlist.episodes[e].total_playlists = stats.total_playlists;
+                    this.episodeGroups.playlist.episodes[e].total_recommendations = stats.total_recommendations;
+                    $('[data-slug=' + slug + '] .btn-archive-episode').attr('data-original-title', stats.this_user_archived ? 'Unarchive' : 'Archive');
+                    $('[data-slug=' + slug + '] .btn-episode-like').attr('data-original-title', stats.this_user_likes ? 'Unlike' : 'Like');
                 }
             }
         },

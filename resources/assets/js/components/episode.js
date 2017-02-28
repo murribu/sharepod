@@ -5,8 +5,13 @@ Vue.component('episode', {
     mixins: [episodeActions],
     data() {
         return {
+            episodeGroups: {
+                one: {
+                    episodes:{}
+                },
+                show: {},
+            },
             selectedEpisode: {},
-            show: false
         }
     },
     computed: {
@@ -14,8 +19,8 @@ Vue.component('episode', {
             return window.location.href.split('/')[4];
         },
         episode() {
-            return this.selectedEpisode;
-        }
+            return this.episodeGroups.one.episodes[0];
+        },
     },
     created() {
         this.loadEpisode();
@@ -29,11 +34,14 @@ Vue.component('episode', {
             var self = this;
             this.$http.get('/api/episodes/' + this.slug)
                 .then(response => {
-                    self.selectedEpisode = response.data;
+                    self.episodeGroups.one.episodes = [response.data];
                     self.show = {
-                        name: self.selectedEpisode.show_name,
-                        slug: self.selectedEpisode.show_slug
+                        name: self.episodeGroups.one.episodes.show_name,
+                        slug: self.episodeGroups.one.episodes.show_slug
                     };
+                    for(var s in self.episodeGroups.one.episodes.stats){
+                        self.episodeGroups.one.episodes[s] = self.episodeGroups.one.episodes.stats[s];
+                    }
                 },
                 response => {
                     $("#modal-error").modal('show');
@@ -43,13 +51,14 @@ Vue.component('episode', {
                 });
         },
         updateEpisode(slug, stats){
-            this.selectedEpisode.result_slug = stats.result_slug;
-            this.selectedEpisode.this_user_archived = stats.this_user_archived;
-            this.selectedEpisode.this_user_likes = stats.this_user_likes;
-            this.selectedEpisode.total_likes = stats.total_likes;
-            this.selectedEpisode.total_playlists = stats.total_playlists;
-            this.selectedEpisode.total_recommendations = stats.total_recommendations;
-            $('.btn-archive-episode .icon-container').attr('data-original-title', this_user_archived ? 'Unarchive' : 'Archive');
+            this.episodeGroups.one.episodes[0].result_slug = stats.result_slug;
+            this.episodeGroups.one.episodes[0].this_user_archived = stats.this_user_archived;
+            this.episodeGroups.one.episodes[0].this_user_likes = stats.this_user_likes;
+            this.episodeGroups.one.episodes[0].total_likes = stats.total_likes;
+            this.episodeGroups.one.episodes[0].total_playlists = stats.total_playlists;
+            this.episodeGroups.one.episodes[0].total_recommendations = stats.total_recommendations;
+            $('[data-slug=' + slug + '] .btn-archive-episode').attr('data-original-title', stats.this_user_archived ? 'Unarchive' : 'Archive');
+            $('[data-slug=' + slug + '] .btn-episode-like').attr('data-original-title', stats.this_user_likes ? 'Unlike' : 'Like');
         },
     }
 });

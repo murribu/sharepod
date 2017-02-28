@@ -10,13 +10,14 @@
         </button>
     </div>
     <div class="episode-action">
-        <button class="btn-episode-like" :class="{'active': episode.this_user_likes}" @click.prevent="toggleLikeEpisode(episode)">
-            <div class="icon-container" title="Unike" v-if="episode.this_user_likes">
+        <button class="btn-episode-like" :class="{'active': episode.this_user_likes}" @click.prevent="toggleLikeEpisode(episode)" :disabled="episode.like_busy" :title="episode.this_user_likes ? 'Unlike' : 'Like'" v-tooltip>
+            <i class="fa fa-spinner fa-spin" v-if="episode.like_busy"></i>
+            <div class="icon-container" v-if="episode.this_user_likes && !episode.like_busy">
                 <div class="heart-container">
                     <div class="heart"></div>
                 </div>
             </div>
-            <div class="icon-container" title="Like" v-if="!episode.this_user_likes">
+            <div class="icon-container" v-if="!episode.this_user_likes && !episode.like_busy">
                 <div class="heart-container">
                     <div class="heart"></div>
                 </div>
@@ -37,11 +38,12 @@
         </button>
     </div>
     <div class="episode-action">
-        <button :class="{'active': episode.this_user_archived}" class="btn-archive-episode" @click.prevent="toggleArchiveEpisode(episode)">
-            <div class="icon-container" title="Archive" v-if="!episode.this_user_archived">
+        <button :class="{'active': episode.this_user_archived}" class="btn-archive-episode" @click.prevent="toggleArchiveEpisode(episode)" :disabled="episode.archive_busy" :title="episode.this_user_archived ? 'Unarchive' : 'Archive'">
+            <i class="fa fa-spinner fa-spin" v-if="episode.archive_busy"></i>
+            <div class="icon-container" v-if="!episode.this_user_archived && !episode.archive_busy">
                 <i class="fa fa-floppy-o"></i>
             </div>
-            <div class="icon-container" title="Unarchive" v-if="episode.this_user_archived">
+            <div class="icon-container" v-if="episode.this_user_archived && !episode.archive_busy">
                 <i class="fa fa-floppy-o"></i>
                 <div class="btn-hover-container" v-if="episode.result_slug == 'ok'">
                     Archived

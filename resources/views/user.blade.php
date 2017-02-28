@@ -22,12 +22,12 @@
                                 <ul class="nav left-stacked-tabs" role="tablist">
                                     <li role="presentation">
                                         <a href="#recommendations-accepted" aria-controls="recommendations-accepted" role="tab" data-toggle="tab">
-                                            @{{recommendations_accepted.length}} Recommendations Accepted
+                                            @{{episodeGroups.recommendations_accepted.episodes.length}} Recommendations Accepted
                                         </a>
                                     </li>
                                     <li role="presentation">
                                         <a href="#episodes-liked" aria-controls="episodes-liked" role="tab" data-toggle="tab">
-                                            @{{episodes_liked.length}} Episodes Liked
+                                            @{{episodeGroups.episodes_liked.episodes.length}} Episodes Liked
                                         </a>
                                     </li>
                                     <li role="presentation">
@@ -47,7 +47,7 @@
                                     </li>
                                     <li role="presentation">
                                         <a href="#archived-episodes" aria-controls="archived-episodes" role="tab" data-toggle="tab">
-                                            @{{episodes_archived.length}} Archived Episodes
+                                            @{{episodeGroups.episodes_archived.episodes.length}} Archived Episodes
                                         </a>
                                     </li>
                                 </ul>
@@ -74,7 +74,7 @@
                                     <input type="text" id="copy-feed-fallback" class="fallback" :value="'{{env('APP_URL')}}/feed/' + viewed_user.slug" v-tooltip title="Copy this text" /><br>
                                 </h4>
                             </div>
-                            <div class="panel panel-default panel-list-item episode-container" v-for="episode in recommendations_accepted" :key="episode.slug">
+                            <div class="panel panel-default panel-list-item episode-container" v-for="episode in episodeGroups.recommendations_accepted.episodes" :key="episode.slug">
                                 <div class="panel-heading">
                                     <a :href="'/episodes/' + episode.slug">
                                         <img :src="episode.img_url" class="episode-image" />
@@ -85,7 +85,7 @@
                                 <div class="panel-body" v-html="episode.description"></div>
                                 @include('partials.episode-footer')
                             </div>
-                            <div class="panel panel-default panel-list-item" v-if="recommendations_loaded && recommendations_accepted.length == 0">
+                            <div class="panel panel-default panel-list-item" v-if="recommendations_loaded && episodeGroups.recommendations_accepted.episodes.length == 0">
                                 <div class="panel-body">
                                     @{{viewed_user_name({verbs: verbs.to_have})}} not accepted any recommendations yet.
                                 </div>
@@ -93,7 +93,7 @@
                         </div>
                         <div class="tab-pane active" role="tabpanel" id="episodes-liked">
                             <h3 class="centered" v-if="viewed_user.name">@{{viewed_user_name({possessive: true})}} Liked Episodes</h3>
-                            <div class="panel panel-default panel-list-item episode-container" v-for="episode in episodes_liked" :key="episode.slug">
+                            <div class="panel panel-default panel-list-item episode-container" v-for="episode in episodeGroups.episodes_liked.episodes" :key="episode.slug">
                                 <div class="panel-heading">
                                     <a :href="'/episodes/' + episode.slug">
                                         <img :src="episode.img_url" class="episode-image" />
@@ -112,7 +112,7 @@
                                 <div class="panel-body" v-html="episode.description"></div>
                                 @include('partials.episode-footer')
                             </div>
-                            <div class="panel panel-default panel-list-item" v-if="episodes_liked_loaded && episodes_liked.length == 0">
+                            <div class="panel panel-default panel-list-item" v-if="episodes_liked_loaded && episodeGroups.episodes_liked.episodes.length == 0">
                                 <div class="panel-body">
                                     @{{viewed_user_name({verbs: verbs.to_have})}} not liked any episodes yet.
                                 </div>
@@ -190,7 +190,7 @@
                         <div class="tab-pane" role="tabpanel" id="archived-episodes">
                             <h3 class="centered" v-if="viewed_user.name">@{{viewed_user_name({possessive: true})}} Archived Episodes</h3>
                             <h4 class="centered" v-if="viewed_user.name">@{{viewed_user_name({verbs: verbs.to_have})}} used @{{percentStorageUsed}}% of your alloted storage<br><small v-if="viewed_user.name">@{{formatStorage(viewed_user.storage_used)}} out of @{{formatStorage(viewed_user.plan_storage_limit)}}</small></h4>
-                            <div class="panel panel-default panel-list-item episode-container" v-for="episode in episodes_archived" :key="episode.slug">
+                            <div class="panel panel-default panel-list-item episode-container" v-for="episode in episodeGroups.episodes_archived.episodes" :key="episode.slug">
                                 <div class="panel-heading">
                                     <a :href="'/episodes/' + episode.slug">
                                         <img :src="episode.img_url" class="episode-image" />
@@ -201,7 +201,7 @@
                                 <div class="panel-body" v-html="episode.description"></div>
                                 @include('partials.episode-footer')
                             </div>
-                            <div class="panel panel-default panel-list-item" v-if="episodes_archived_loaded && episodes_archived.length == 0">
+                            <div class="panel panel-default panel-list-item" v-if="episodes_archived_loaded && episodeGroups.episodes_archived.episodes.length == 0">
                                 <div class="panel-body">
                                     @{{viewed_user_name({verbs: verbs.to_have})}} not archived any episodes yet.
                                 </div>
