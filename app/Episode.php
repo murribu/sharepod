@@ -27,7 +27,7 @@ class Episode extends Model {
         ->where('user_id', $user->id)
         ->update(['active' => 0]);
         
-        return ['stats' => $this->stats(Auth::user())];
+        return ['success' => 1];
     }
     
     public function request_archive($user){
