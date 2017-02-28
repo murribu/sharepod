@@ -4559,7 +4559,7 @@ module.exports = {
                         setTimeout(function(){
                             $("#modal-archive-result").modal('hide');
                         }, 10000);
-                        self.updateEpisode(episode.slug, episode.total_recommendations, episode.total_likes, episode.total_playlists, episode.this_user_likes, 1, episode.result_slug);
+                        self.updateEpisode(episode.slug, response.data.stats);
                     }, function (response) {
                         $("#modal-error").modal('show');
                         setTimeout(function(){
@@ -4577,7 +4577,7 @@ module.exports = {
             this.$http.post('/api/episodes/unarchive', sent)
                 .then(function (response) {
                     $("#modal-unarchive-are-you-sure").modal('hide');
-                    self.updateEpisode(episode.slug, episode.total_recommendations, episode.total_likes, episode.total_playlists, episode.this_user_likes, 0, null);
+                    self.updateEpisode(self.selectedEpisode.slug, response.data.stats);
                     $("#modal-unarchive-success").modal('show');
                     setTimeout(function(){
                         $("#modal-unarchive-success").modal('hide');
@@ -4619,13 +4619,14 @@ module.exports = {
                 slug: episode.slug,
             };
             this.selectedPlaylist = playlist;
+            $("#modal-select-playlist").modal('hide');
             this.$http.post('/api/playlists/' + playlist.slug + '/add_episode', sent)
                 .then(function (response) {
                     $("#modal-add-to-playlist-success").modal('show');
                     setTimeout(function(){
                         $("#modal-add-to-playlist-success").modal('hide');
                     }, 7000);
-                    self.updateEpisode(episode.slug, episode.total_recommendations, episode.total_likes, response.data.total_playlists, episode.this_user_likes, episode.this_user_archived, episode.result_slug);
+                    self.updateEpisode(episode.slug, response.data.stats);
                 }, function (response) {
                     $("#modal-error").modal('show');
                     setTimeout(function(){
@@ -4652,8 +4653,8 @@ module.exports = {
                 .then(function (response) {
                     self.recommendForm.busy = false;
                     self.showSuccessModal();
+                    self.updateEpisode(self.selectedEpisode.slug, response.data.stats);
                     self.getRecentRecommendees();
-                    self.selectedEpisode.total_recommendations = response.data.total_recommendations;
                 }, function (response) {
                     $("#modal-error").modal('show');
                     setTimeout(function(){
@@ -4678,13 +4679,13 @@ module.exports = {
             $('#modal-recommend-episode-2').modal('show');
         },
         sendRecommendation: function sendRecommendation(){
-            var this$1 = this;
-
+            var self = this;
             this.$http.post('/recommend', {slug: this.selectedEpisode.slug, email_address: this.recommendEmail, twitter_handle: this.recommendTwitter})
                 .then(function (response) {
-                    this$1.recommendForm.busy = false;
-                    this$1.showSuccessModal();
-                    this$1.getRecentRecommendees();
+                    self.recommendForm.busy = false;
+                    self.showSuccessModal();
+                    self.getRecentRecommendees();
+                    self.updateEpisode(self.selectedEpisode.slug, response.data.stats);
                 }, function (response) {
                     $("#modal-error").modal('show');
                     setTimeout(function(){
@@ -4711,19 +4712,24 @@ module.exports = {
             var self = this;
             this.$http.post('/api/episodes/like', {slug: episode.slug})
                 .then(function (response) {
-                    self.updateEpisode(episode.slug, episode.total_recommendations, response.data.total_likes, episode.total_playlists, response.data.this_user_likes, episode.this_user_archived, episode.result_slug);
+                    self.updateEpisode(episode.slug, response.data.stats);
                 }, function (response) {
-                    //alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         unlikeEpisode: function unlikeEpisode(episode) {
             var self = this;
             this.$http.post('/api/episodes/unlike', {slug: episode.slug})
                 .then(function (response) {
-                    //slug, total_recommendations, total_likes, total_playlists, this_user_likes, this_user_archived, result_slug
-                    self.updateEpisode(episode.slug, episode.total_recommendations, response.data.total_likes, episode.total_playlists, response.data.this_user_likes, episode.this_user_archived, episode.result_slug);
+                    self.updateEpisode(episode.slug, response.data.stats);
                 }, function (response) {
-                    //alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
     }
@@ -23378,13 +23384,13 @@ Vue.component('episode', {
                     }, 8000);
                 });
         },
-        updateEpisode: function updateEpisode(slug, total_recommendations, total_likes, total_playlists, this_user_likes, this_user_archived, result_slug){
-            this.selectedEpisode.total_recommendations = total_recommendations;
-            this.selectedEpisode.total_likes = total_likes;
-            this.selectedEpisode.total_playlists = total_playlists;
-            this.selectedEpisode.this_user_likes = this_user_likes;
-            this.selectedEpisode.this_user_archived = this_user_archived;
-            this.selectedEpisode.result_slug = result_slug;
+        updateEpisode: function updateEpisode(slug, stats){
+            this.selectedEpisode.result_slug = stats.result_slug;
+            this.selectedEpisode.this_user_archived = stats.this_user_archived;
+            this.selectedEpisode.this_user_likes = stats.this_user_likes;
+            this.selectedEpisode.total_likes = stats.total_likes;
+            this.selectedEpisode.total_playlists = stats.total_playlists;
+            this.selectedEpisode.total_recommendations = stats.total_recommendations;
             $('.btn-archive-episode .icon-container').attr('data-original-title', this_user_archived ? 'Unarchive' : 'Archive');
         },
     }
@@ -23433,6 +23439,10 @@ Vue.component('home', {
     },
     created: function created(){
         this.loadPopularEpisodes();
+        if (this.user){
+            this.getRecentRecommendees();
+            this.getPlaylists();
+        }
     },
     methods:{
         loadPopularEpisodes: function loadPopularEpisodes() {
@@ -23450,8 +23460,33 @@ Vue.component('home', {
                     }, 8000);
                 });
         },
-        updateEpisode: function updateEpisode(slug, total_recommendations, total_likes, total_playlists, this_user_likes, this_user_archived, result_slug){
-            this.loadPopularEpisodes();
+        getLikers: function getLikers(episode){
+            var self = this;
+            this.$http.get('/api/episodes/' + episode.slug + '/likers')
+                .then(function (response) {
+                    for(var e in self.episodes){
+                        if (self.episodes[e].slug == episode.slug){
+                            self.episodes[e].likers = response.data;
+                        }
+                    }
+                }, function (response) {
+                    //do nothing - nbd
+                });
+        },
+        updateEpisode: function updateEpisode(slug, stats){
+            var this$1 = this;
+
+            for(var e in this.episodes){
+                if (this$1.episodes[e].slug == slug){
+                    this$1.episodes[e].result_slug = stats.result_slug;
+                    this$1.episodes[e].this_user_archived = stats.this_user_archived;
+                    this$1.episodes[e].this_user_likes = stats.this_user_likes;
+                    this$1.episodes[e].total_likes = stats.total_likes;
+                    this$1.episodes[e].total_playlists = stats.total_playlists;
+                    this$1.episodes[e].total_recommendations = stats.total_recommendations;
+                    this$1.getLikers(this$1.episodes[e]);
+                }
+            }
         },
     }
 });
@@ -23623,17 +23658,17 @@ Vue.component('playlist', {
                     }, 8000);
                 });
         },
-        updateEpisode: function updateEpisode(slug, total_recommendations, total_likes, total_playlists, this_user_likes, this_user_archived, result_slug){
+        updateEpisode: function updateEpisode(slug, stats){
             var this$1 = this;
 
             for(var e in this.playlist.episodes){
                 if (this$1.playlist.episodes[e].slug == slug){
-                    this$1.playlist.episodes[e].total_recommendations = total_recommendations;
-                    this$1.playlist.episodes[e].total_likes = total_likes;
-                    this$1.playlist.episodes[e].total_playlists = total_playlists;
-                    this$1.playlist.episodes[e].this_user_likes = this_user_likes;
-                    this$1.playlist.episodes[e].this_user_archived = this_user_archived;
-                    this$1.playlist.episodes[e].result_slug = result_slug;
+                    this$1.playlist.episodes[e].result_slug = stats.result_slug;
+                    this$1.playlist.episodes[e].this_user_archived = stats.this_user_archived;
+                    this$1.playlist.episodes[e].this_user_likes = stats.this_user_likes;
+                    this$1.playlist.episodes[e].total_likes = stats.total_likes;
+                    this$1.playlist.episodes[e].total_playlists = stats.total_playlists;
+                    this$1.playlist.episodes[e].total_recommendations = stats.total_recommendations;
                     $('[data-slug=' + slug + '] .btn-archive-episode .icon-container').attr('data-original-title', this_user_archived ? 'Unarchive' : 'Archive');
                 }
             }
@@ -24028,18 +24063,18 @@ Vue.component('show', {
             this.show.total_likes = total_likes;
             this.show.this_user_likes = this_user_likes;
         },
-        updateEpisode: function updateEpisode(slug, total_recommendations, total_likes, total_playlists, this_user_likes, this_user_archived, result_slug){
+        updateEpisode: function updateEpisode(slug, stats){
             var this$1 = this;
 
             for(var e in this.show.episodes){
                 if (this$1.show.episodes[e].slug == slug){
-                    this$1.show.episodes[e].total_recommendations = total_recommendations;
-                    this$1.show.episodes[e].total_likes = total_likes;
-                    this$1.show.episodes[e].total_playlists = total_playlists;
-                    this$1.show.episodes[e].this_user_likes = this_user_likes;
-                    this$1.show.episodes[e].this_user_archived = this_user_archived;
-                    this$1.show.episodes[e].result_slug = result_slug;
-                    $('[data-slug=' + slug + '] .btn-archive-episode .icon-container').attr('data-original-title', this_user_archived ? 'Unarchive' : 'Archive');
+                    this$1.show.episodes[e].result_slug = stats.result_slug;
+                    this$1.show.episodes[e].this_user_archived = stats.this_user_archived;
+                    this$1.show.episodes[e].this_user_likes = stats.this_user_likes;
+                    this$1.show.episodes[e].total_likes = stats.total_likes;
+                    this$1.show.episodes[e].total_playlists = stats.total_playlists;
+                    this$1.show.episodes[e].total_recommendations = stats.total_recommendations;
+                    this$1.getLikers(this$1.episodes[e]);
                 }
             }
         },
@@ -24397,14 +24432,58 @@ Vue.component('view-user', {
                 return ret;
             }
         },
-        updateEpisode: function updateEpisode(episode){
-            if ($("#episodes-liked:visible").length > 0){
-                this.getEpisodesLiked()
+        updateEpisode: function updateEpisode(slug, stats){
+            var this$1 = this;
+
+            //episodes_liked
+            var found = false;
+            for(var e in this.episodes_liked){
+                if (this$1.episodes_liked[e].slug == slug){
+                    found = true;
+                    if (stats.this_user_likes != this$1.episodes_liked[e].this_user_likes){
+                        this$1.getEpisodesLiked();
+                    }else{
+                        this$1.episodes_liked[e].result_slug = stats.result_slug;
+                        this$1.episodes_liked[e].this_user_archived = stats.this_user_archived;
+                        this$1.episodes_liked[e].this_user_likes = stats.this_user_likes;
+                        this$1.episodes_liked[e].total_likes = stats.total_likes;
+                        this$1.episodes_liked[e].total_playlists = stats.total_playlists;
+                        this$1.episodes_liked[e].total_recommendations = stats.total_recommendations;
+                    }
+                }
             }
-            if ($("#recommendations-accepted:visible").length > 0){
-                this.getRecommendationsAccepted()
+            if (!found){
+                this.getEpisodesLiked();
             }
-            if ($("#archived-episodes:visible").length > 0){
+            //recommendations_accepted
+            for(var e in this.recommendations_accepted){
+                if (this$1.recommendations_accepted[e].slug == slug){
+                    this$1.recommendations_accepted[e].result_slug = stats.result_slug;
+                    this$1.recommendations_accepted[e].this_user_archived = stats.this_user_archived;
+                    this$1.recommendations_accepted[e].this_user_likes = stats.this_user_likes;
+                    this$1.recommendations_accepted[e].total_likes = stats.total_likes;
+                    this$1.recommendations_accepted[e].total_playlists = stats.total_playlists;
+                    this$1.recommendations_accepted[e].total_recommendations = stats.total_recommendations;
+                }
+            }
+            //episodes_archived
+            found = false;
+            for(var e in this.episodes_archived){
+                if (this$1.episodes_archived[e].slug == slug){
+                    found = true;
+                    if (stats.this_user_archived != this$1.episodes_archived[e].this_user_archived){
+                        this$1.getArchivedEpisodes();
+                    }else{
+                        this$1.episodes_archived[e].result_slug = stats.result_slug;
+                        this$1.episodes_archived[e].this_user_archived = stats.this_user_archived;
+                        this$1.episodes_archived[e].this_user_likes = stats.this_user_likes;
+                        this$1.episodes_archived[e].total_likes = stats.total_likes;
+                        this$1.episodes_archived[e].total_playlists = stats.total_playlists;
+                        this$1.episodes_archived[e].total_recommendations = stats.total_recommendations;
+                    }
+                }
+            }
+            if (!found){
                 this.getArchivedEpisodes();
             }
         }

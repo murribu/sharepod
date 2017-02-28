@@ -196,14 +196,56 @@ Vue.component('view-user', {
                 return ret;
             }
         },
-        updateEpisode(episode){
-            if ($("#episodes-liked:visible").length > 0){
-                this.getEpisodesLiked()
+        updateEpisode(slug, stats){
+            //episodes_liked
+            var found = false;
+            for(var e in this.episodes_liked){
+                if (this.episodes_liked[e].slug == slug){
+                    found = true;
+                    if (stats.this_user_likes != this.episodes_liked[e].this_user_likes){
+                        this.getEpisodesLiked();
+                    }else{
+                        this.episodes_liked[e].result_slug = stats.result_slug;
+                        this.episodes_liked[e].this_user_archived = stats.this_user_archived;
+                        this.episodes_liked[e].this_user_likes = stats.this_user_likes;
+                        this.episodes_liked[e].total_likes = stats.total_likes;
+                        this.episodes_liked[e].total_playlists = stats.total_playlists;
+                        this.episodes_liked[e].total_recommendations = stats.total_recommendations;
+                    }
+                }
             }
-            if ($("#recommendations-accepted:visible").length > 0){
-                this.getRecommendationsAccepted()
+            if (!found){
+                this.getEpisodesLiked();
             }
-            if ($("#archived-episodes:visible").length > 0){
+            //recommendations_accepted
+            for(var e in this.recommendations_accepted){
+                if (this.recommendations_accepted[e].slug == slug){
+                    this.recommendations_accepted[e].result_slug = stats.result_slug;
+                    this.recommendations_accepted[e].this_user_archived = stats.this_user_archived;
+                    this.recommendations_accepted[e].this_user_likes = stats.this_user_likes;
+                    this.recommendations_accepted[e].total_likes = stats.total_likes;
+                    this.recommendations_accepted[e].total_playlists = stats.total_playlists;
+                    this.recommendations_accepted[e].total_recommendations = stats.total_recommendations;
+                }
+            }
+            //episodes_archived
+            found = false;
+            for(var e in this.episodes_archived){
+                if (this.episodes_archived[e].slug == slug){
+                    found = true;
+                    if (stats.this_user_archived != this.episodes_archived[e].this_user_archived){
+                        this.getArchivedEpisodes();
+                    }else{
+                        this.episodes_archived[e].result_slug = stats.result_slug;
+                        this.episodes_archived[e].this_user_archived = stats.this_user_archived;
+                        this.episodes_archived[e].this_user_likes = stats.this_user_likes;
+                        this.episodes_archived[e].total_likes = stats.total_likes;
+                        this.episodes_archived[e].total_playlists = stats.total_playlists;
+                        this.episodes_archived[e].total_recommendations = stats.total_recommendations;
+                    }
+                }
+            }
+            if (!found){
                 this.getArchivedEpisodes();
             }
         }

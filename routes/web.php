@@ -78,6 +78,7 @@ Route::get('/api/shows/search', 'ShowsController@apiSearch');
 Route::get('/api/shows/{slug}', 'ShowsController@apiShow');
 Route::get('/api/episodes/popular', 'EpisodesController@apiGetPopular');
 Route::get('/api/episodes/{slug}', 'EpisodesController@apiGetEpisode');
+Route::get('/api/episodes/{slug}/likers', 'EpisodesController@apiGetEpisodeLikers');
 Route::get('/api/users/{slug}', 'UsersController@apiGetUser');
 Route::get('/api/playlists/popular', 'PlaylistController@apiGetPopularPlaylists');
 Route::get('/api/playlists/{slug}', 'PlaylistController@apiGetPlaylist');

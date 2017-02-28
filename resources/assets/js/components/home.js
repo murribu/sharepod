@@ -22,6 +22,10 @@ Vue.component('home', {
     },
     created(){
         this.loadPopularEpisodes();
+        if (this.user){
+            this.getRecentRecommendees();
+            this.getPlaylists();
+        }
     },
     methods:{
         loadPopularEpisodes() {
@@ -39,8 +43,31 @@ Vue.component('home', {
                     }, 8000);
                 });
         },
-        updateEpisode(slug, total_recommendations, total_likes, total_playlists, this_user_likes, this_user_archived, result_slug){
-            this.loadPopularEpisodes();
+        getLikers(episode){
+            var self = this;
+            this.$http.get('/api/episodes/' + episode.slug + '/likers')
+                .then(response => {
+                    for(var e in self.episodes){
+                        if (self.episodes[e].slug == episode.slug){
+                            self.episodes[e].likers = response.data;
+                        }
+                    }
+                }, response => {
+                    //do nothing - nbd
+                });
+        },
+        updateEpisode(slug, stats){
+            for(var e in this.episodes){
+                if (this.episodes[e].slug == slug){
+                    this.episodes[e].result_slug = stats.result_slug;
+                    this.episodes[e].this_user_archived = stats.this_user_archived;
+                    this.episodes[e].this_user_likes = stats.this_user_likes;
+                    this.episodes[e].total_likes = stats.total_likes;
+                    this.episodes[e].total_playlists = stats.total_playlists;
+                    this.episodes[e].total_recommendations = stats.total_recommendations;
+                    this.getLikers(this.episodes[e]);
+                }
+            }
         },
     }
 });

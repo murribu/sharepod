@@ -33,7 +33,7 @@ module.exports = {
                         setTimeout(function(){
                             $("#modal-archive-result").modal('hide');
                         }, 10000);
-                        self.updateEpisode(episode.slug, episode.total_recommendations, episode.total_likes, episode.total_playlists, episode.this_user_likes, 1, episode.result_slug);
+                        self.updateEpisode(episode.slug, response.data.stats);
                     }, response => {
                         $("#modal-error").modal('show');
                         setTimeout(function(){
@@ -51,7 +51,7 @@ module.exports = {
             this.$http.post('/api/episodes/unarchive', sent)
                 .then(response => {
                     $("#modal-unarchive-are-you-sure").modal('hide');
-                    self.updateEpisode(episode.slug, episode.total_recommendations, episode.total_likes, episode.total_playlists, episode.this_user_likes, 0, null);
+                    self.updateEpisode(self.selectedEpisode.slug, response.data.stats);
                     $("#modal-unarchive-success").modal('show');
                     setTimeout(function(){
                         $("#modal-unarchive-success").modal('hide');
@@ -93,13 +93,14 @@ module.exports = {
                 slug: episode.slug,
             };
             this.selectedPlaylist = playlist;
+            $("#modal-select-playlist").modal('hide');
             this.$http.post('/api/playlists/' + playlist.slug + '/add_episode', sent)
                 .then(response => {
                     $("#modal-add-to-playlist-success").modal('show');
                     setTimeout(function(){
                         $("#modal-add-to-playlist-success").modal('hide');
                     }, 7000);
-                    self.updateEpisode(episode.slug, episode.total_recommendations, episode.total_likes, response.data.total_playlists, episode.this_user_likes, episode.this_user_archived, episode.result_slug);
+                    self.updateEpisode(episode.slug, response.data.stats);
                 }, response => {
                     $("#modal-error").modal('show');
                     setTimeout(function(){
@@ -126,8 +127,8 @@ module.exports = {
                 .then(response => {
                     self.recommendForm.busy = false;
                     self.showSuccessModal();
+                    self.updateEpisode(self.selectedEpisode.slug, response.data.stats);
                     self.getRecentRecommendees();
-                    self.selectedEpisode.total_recommendations = response.data.total_recommendations;
                 }, response => {
                     $("#modal-error").modal('show');
                     setTimeout(function(){
@@ -152,11 +153,13 @@ module.exports = {
             $('#modal-recommend-episode-2').modal('show');
         },
         sendRecommendation(){
+            var self = this;
             this.$http.post('/recommend', {slug: this.selectedEpisode.slug, email_address: this.recommendEmail, twitter_handle: this.recommendTwitter})
                 .then(response => {
-                    this.recommendForm.busy = false;
-                    this.showSuccessModal();
-                    this.getRecentRecommendees();
+                    self.recommendForm.busy = false;
+                    self.showSuccessModal();
+                    self.getRecentRecommendees();
+                    self.updateEpisode(self.selectedEpisode.slug, response.data.stats);
                 }, response => {
                     $("#modal-error").modal('show');
                     setTimeout(function(){
@@ -183,19 +186,24 @@ module.exports = {
             var self = this;
             this.$http.post('/api/episodes/like', {slug: episode.slug})
                 .then(response => {
-                    self.updateEpisode(episode.slug, episode.total_recommendations, response.data.total_likes, episode.total_playlists, response.data.this_user_likes, episode.this_user_archived, episode.result_slug);
+                    self.updateEpisode(episode.slug, response.data.stats);
                 }, response => {
-                    //alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
         unlikeEpisode(episode) {
             var self = this;
             this.$http.post('/api/episodes/unlike', {slug: episode.slug})
                 .then(response => {
-                    //slug, total_recommendations, total_likes, total_playlists, this_user_likes, this_user_archived, result_slug
-                    self.updateEpisode(episode.slug, episode.total_recommendations, response.data.total_likes, episode.total_playlists, response.data.this_user_likes, episode.this_user_archived, episode.result_slug);
+                    self.updateEpisode(episode.slug, response.data.stats);
                 }, response => {
-                    //alert('error');
+                    $("#modal-error").modal('show');
+                    setTimeout(function(){
+                        $("#modal-error").modal('hide');
+                    }, 8000);
                 })
         },
     }

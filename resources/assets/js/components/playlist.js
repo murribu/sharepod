@@ -148,15 +148,15 @@ Vue.component('playlist', {
                     }, 8000);
                 });
         },
-        updateEpisode(slug, total_recommendations, total_likes, total_playlists, this_user_likes, this_user_archived, result_slug){
+        updateEpisode(slug, stats){
             for(var e in this.playlist.episodes){
                 if (this.playlist.episodes[e].slug == slug){
-                    this.playlist.episodes[e].total_recommendations = total_recommendations;
-                    this.playlist.episodes[e].total_likes = total_likes;
-                    this.playlist.episodes[e].total_playlists = total_playlists;
-                    this.playlist.episodes[e].this_user_likes = this_user_likes;
-                    this.playlist.episodes[e].this_user_archived = this_user_archived;
-                    this.playlist.episodes[e].result_slug = result_slug;
+                    this.playlist.episodes[e].result_slug = stats.result_slug;
+                    this.playlist.episodes[e].this_user_archived = stats.this_user_archived;
+                    this.playlist.episodes[e].this_user_likes = stats.this_user_likes;
+                    this.playlist.episodes[e].total_likes = stats.total_likes;
+                    this.playlist.episodes[e].total_playlists = stats.total_playlists;
+                    this.playlist.episodes[e].total_recommendations = stats.total_recommendations;
                     $('[data-slug=' + slug + '] .btn-archive-episode .icon-container').attr('data-original-title', this_user_archived ? 'Unarchive' : 'Archive');
                 }
             }

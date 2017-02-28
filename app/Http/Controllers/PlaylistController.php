@@ -106,12 +106,8 @@ class PlaylistController extends Controller {
         $user = Auth::user();
         if ($playlist && $episode && $user && $playlist->user_id == $user->id){
             $p = PlaylistEpisode::firstOrCreate(['episode_id' => $episode->id, 'playlist_id' => $playlist->id]);
-            $pe = PlaylistEpisode::join('playlists', 'playlists.id', '=', 'playlist_episodes.playlist_id')
-                ->where('episode_id', $episode->id)
-                ->selectRaw('count(distinct playlist_episodes.id) c')
-                ->first();
             if ($p){
-                return ['success' => 1, 'total_playlists' => $pe->c];
+                return ['success' => 1, 'stats' => $episode->stats($user)];
             }else{
                 return response()->json('There was a problem adding this episode to this playlist', 500);
             }

@@ -67,6 +67,7 @@
                 @include('partials.episode-footer')
             </div>
         </div>
+        @include('modals.episode-modals')
     </div>
 </home>
 @endsection

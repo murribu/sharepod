@@ -10,7 +10,7 @@
                         <div class="">
                             Add this episode to:
                         </div>
-                        <button class="btn btn-primary btn-separate-from-other-buttons" v-for="playlist in playlists" @click.prevent="addepisodeToPlaylist(playlist)">@{{playlist.name}}</button>
+                        <button class="btn btn-primary btn-separate-from-other-buttons" v-for="playlist in playlists" @click.prevent="addSelectedEpisodeToPlaylist(playlist)">@{{playlist.name}}</button>
                     </div>
                 </div>
             </div>

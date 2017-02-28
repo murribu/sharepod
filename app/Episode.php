@@ -27,7 +27,7 @@ class Episode extends Model {
         ->where('user_id', $user->id)
         ->update(['active' => 0]);
         
-        return ['success' => 1];
+        return ['stats' => $this->stats(Auth::user())];
     }
     
     public function request_archive($user){
@@ -56,9 +56,9 @@ class Episode extends Model {
                 $aeu = $ae->create_archived_episode_user($user);
                 if ($ae->result_slug){
                     //ok
-                    return ['success' => 1, 'header' => 'Episode archived!', 'message' => 'You have archived this episode. When you add it to a playlist, you don\'t have to worry about the original site taking this episode down.'];
+                    return ['success' => 1, 'header' => 'Episode archived!', 'message' => 'You have archived this episode. When you add it to a playlist, you don\'t have to worry about the original site taking this episode down.', 'stats' => $this->stats(Auth::user())];
                 }else{
-                    return ['success' => 1, 'message' => 'We have received your request to archive this episode. When your request has been processed, you will get a notification (click on the little bell on the top-right of this page).', 'header' => 'Archive Requested'];
+                    return ['success' => 1, 'message' => 'We have received your request to archive this episode. When your request has been processed, you will get a notification (click on the little bell on the top-right of this page).', 'header' => 'Archive Requested', 'stats' => $this->stats(Auth::user())];
                 }
             }
         }else{
@@ -77,7 +77,7 @@ class Episode extends Model {
                     $ae->slug = ArchivedEpisode::findSlug();
                     $ae->save();
                     $aeu = $ae->create_archived_episode_user($user);
-                    return ['success' => 1, 'message' => 'We have received your request to archive this episode. When your request has been processed, you will get a notification (click on the little bell on the top-right of this page).', 'header' => 'Archive Requested'];
+                    return ['success' => 1, 'message' => 'We have received your request to archive this episode. When your request has been processed, you will get a notification (click on the little bell on the top-right of this page).', 'header' => 'Archive Requested', 'stats' => $this->stats(Auth::user())];
                 }
             }
         }
@@ -169,6 +169,29 @@ class Episode extends Model {
         }
     }
     
+    public function stats($user = null){
+        $user_id = $user ? $user->id : -1;
+
+        $ret = Episode::selectRaw("ae.result_slug, count(distinct total_likes.id) as total_likes, count(distinct this_user_likes.id) as this_user_likes, count(distinct recommendations.id) total_recommendations, count(distinct pe.playlist_id) total_playlists, count(distinct ae.id) this_user_archived")
+            ->leftJoin('likes as total_likes', function($join){
+                $join->on('total_likes.fk', '=', 'episodes.id');
+                $join->on('total_likes.type', '=', DB::raw("'episode'"));
+            })
+            ->leftJoin('likes as this_user_likes', function($join) use ($user_id){
+                $join->on('this_user_likes.user_id', '=', DB::raw($user_id));
+                $join->on('this_user_likes.fk', '=', 'episodes.id');
+                $join->on('this_user_likes.type', '=', DB::raw("'episode'"));
+            })
+            ->leftJoin('playlist_episodes as pe', 'pe.episode_id', '=', 'episodes.id')
+            ->leftJoin(DB::raw('(select archived_episodes.id, url, slug, filesize, result_slug, episode_id from archived_episodes inner join archived_episode_users on archived_episodes.id = archived_episode_users.archived_episode_id where (result_slug is null or result_slug = \'ok\') and user_id = '.$user_id.' and active = 1) ae'), 'ae.episode_id', '=', 'episodes.id')
+            ->leftJoin('recommendations', 'recommendations.episode_id', '=', 'episodes.id')
+            ->where('episodes.id', $this->id)
+            ->groupBy('ae.result_slug')
+            ->first();
+        
+        return $ret;
+    }
+    
     public static function popular($limit = 10){
         $user_id = Auth::user() ? Auth::user()->id : -1;
         $vars = [$user_id, $user_id, $limit];
@@ -217,7 +240,7 @@ class Episode extends Model {
             $join->on('this_user_likes.type', '=', DB::raw("'episode'"));
         })
         ->leftJoin('playlist_episodes as pe', 'pe.episode_id', '=', 'episodes.id')
-        ->leftJoin(DB::raw('(select archived_episodes.id, url, slug, filesize, result_slug, episode_id from archived_episodes inner join archived_episode_users on archived_episodes.id = archived_episode_users.archived_episode_id where (result_slug is null or result_slug = \'ok\') and user_id = '.$user_id.' and active = 1 limit 1) ae'), 'ae.episode_id', '=', 'episodes.id')
+        ->leftJoin(DB::raw('(select archived_episodes.id, url, slug, filesize, result_slug, episode_id from archived_episodes inner join archived_episode_users on archived_episodes.id = archived_episode_users.archived_episode_id where (result_slug is null or result_slug = \'ok\') and user_id = '.$user_id.' and active = 1) ae'), 'ae.episode_id', '=', 'episodes.id')
         ->leftJoin('recommendations', 'recommendations.episode_id', '=', 'episodes.id')
         ->groupBy('episodes.id')
         ->groupBy('episodes.name')
@@ -234,7 +257,6 @@ class Episode extends Model {
         ->orderBy('score', 'desc')
         ->limit($limit)
         ->get();
-        
         
         foreach($episodes as $e){
             $e->likers = $e->likers(Auth::user());

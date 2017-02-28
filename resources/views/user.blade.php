@@ -189,7 +189,7 @@
                         </div>
                         <div class="tab-pane" role="tabpanel" id="archived-episodes">
                             <h3 class="centered" v-if="viewed_user.name">@{{viewed_user_name({possessive: true})}} Archived Episodes</h3>
-                            <h4 class="centered" v-if="viewed_user.name">@{{viewed_user_name({verbs: verbs.to_have})}} used @{{percentStorageUsed}}% of your alloted storage<br><small v-if="viewed_user.name">@{{formatStorage(viewed_user.storage_used)}} out of @{{formatStorage(viewed_user.plan_storage_limit)}}</small><br><small v-if="viewed_user.name">This does not include any pending Archive Requests</small></h4>
+                            <h4 class="centered" v-if="viewed_user.name">@{{viewed_user_name({verbs: verbs.to_have})}} used @{{percentStorageUsed}}% of your alloted storage<br><small v-if="viewed_user.name">@{{formatStorage(viewed_user.storage_used)}} out of @{{formatStorage(viewed_user.plan_storage_limit)}}</small></h4>
                             <div class="panel panel-default panel-list-item episode-container" v-for="episode in episodes_archived" :key="episode.slug">
                                 <div class="panel-heading">
                                     <a :href="'/episodes/' + episode.slug">
