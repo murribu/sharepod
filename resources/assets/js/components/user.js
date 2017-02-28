@@ -67,21 +67,21 @@ Vue.component('view-user', {
             if (parseInt(this.viewed_user.plan_storage_limit) == 0){
                 return 0;
             }else{
-                return Math.ceil(parseInt(this.viewed_user.storage_used)*10 / parseInt(this.viewed_user.plan_storage_limit)) / 10;
+                return Math.ceil(parseInt(this.viewed_user.storage_used)*1000 / parseInt(this.viewed_user.plan_storage_limit))/10;
             }
         }
     },
     methods: {
         formatStorage(s){
             s = parseInt(s);
-            if (s > 1000000000){
-                return Math.ceil(s/10000000)/100 + ' GB';
+            if (s > Math.pow(2,30)){ //1 GB
+                return Math.ceil((s*100)/Math.pow(2,30))/100 + ' GB';
             }
-            if (s > 1000000){
-                return Math.ceil(s/10000)/100 + ' MB';
+            if (s > Math.pow(2,20)){
+                return Math.ceil((s*100)/Math.pow(2,20))/100 + ' MB';
             }
-            if (s > 1000){
-                return Math.ceil(s/10)/100 + ' KB';
+            if (s > Math.pow(2,10)){
+                return Math.ceil((s*100)/Math.pow(2,10))/100 + ' KB';
             }
             return s + ' Bytes';
         },
