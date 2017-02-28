@@ -242,6 +242,7 @@ class Episode extends Model {
         ->leftJoin('playlist_episodes as pe', 'pe.episode_id', '=', 'episodes.id')
         ->leftJoin(DB::raw('(select archived_episodes.id, url, slug, filesize, result_slug, episode_id from archived_episodes inner join archived_episode_users on archived_episodes.id = archived_episode_users.archived_episode_id where (result_slug is null or result_slug = \'ok\') and user_id = '.$user_id.' and active = 1) ae'), 'ae.episode_id', '=', 'episodes.id')
         ->leftJoin('recommendations', 'recommendations.episode_id', '=', 'episodes.id')
+        ->where('episodes.created_at', '>', DB::raw('date_sub(now(), interval 1 week)'))
         ->groupBy('episodes.id')
         ->groupBy('episodes.name')
         ->groupBy('episodes.slug')
@@ -257,7 +258,6 @@ class Episode extends Model {
         ->orderBy('score', 'desc')
         ->limit($limit)
         ->get();
-        
         foreach($episodes as $e){
             $e->likers = $e->likers(Auth::user());
             if (Auth::user()){

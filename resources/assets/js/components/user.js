@@ -64,7 +64,11 @@ Vue.component('view-user', {
             return this.user && this.viewed_user.id == this.user.id;
         },
         percentStorageUsed(){
-            return Math.ceil(parseInt(this.viewed_user.storage_used)*10 / parseInt(this.viewed_user.plan_storage_limit)) / 10;
+            if (parseInt(this.viewed_user.plan_storage_limit) == 0){
+                return 0;
+            }else{
+                return Math.ceil(parseInt(this.viewed_user.storage_used)*10 / parseInt(this.viewed_user.plan_storage_limit)) / 10;
+            }
         }
     },
     methods: {
