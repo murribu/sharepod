@@ -26,6 +26,7 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Episode::class, function(Faker\Generator $faker){
     return [
+        'name' => $faker->name,
         'slug' => App\Episode::findSlug(),
         'show_id' => function() {
             return factory(App\Show::class)->create()->id;
@@ -35,6 +36,7 @@ $factory->define(App\Episode::class, function(Faker\Generator $faker){
 
 $factory->define(App\Show::class, function(Faker\Generator $faker){
     return [
+        'name' => 'The '.$faker->name.' Podcast',
         'slug' => App\Show::findSlug(),
         'feed' => $faker->url
     ];

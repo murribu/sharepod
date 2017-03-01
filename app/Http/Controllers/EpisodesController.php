@@ -37,6 +37,8 @@ class EpisodesController extends Controller
             $e->{$key} = $s;
         }
         $e = $e->prepare();
+        $e->show_name = $e->show->name;
+        $e->show_slug = $e->show->slug;
         unset($e->show);
         return $e;
     }
