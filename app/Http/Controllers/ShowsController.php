@@ -47,7 +47,8 @@ class ShowsController extends Controller
         $show = Show::where('slug', $slug)->first();
         if ($show){
             $activelink = 'shows';
-            return view('show', compact('show', 'activelink'));
+            $title = $show->name;
+            return view('show', compact('title', 'activelink'));
         }else{
             redirect('/');
         }

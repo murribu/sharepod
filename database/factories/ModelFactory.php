@@ -69,7 +69,7 @@ $factory->define(App\Playlist::class, function(Faker\Generator $faker){
         'name' => $faker->name,
         'description' => $faker->sentence,
         'user_id' => function() {
-            return factory(App\User::class)->create()->id;
+            return factory(App\User::class)->create(['verified' => 1])->id;
         }
     ];
 });

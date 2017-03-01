@@ -24,8 +24,9 @@ class EpisodesController extends Controller
         return Episode::where('slug', $slug)->first()->likers(Auth::user());
     }
     
-    public function getEpisode(){
-        return view('episode', ['activelink' => 'shows']);
+    public function getEpisode($slug){
+        $ep = Episode::where('slug', $slug)->first();
+        return view('episode', ['activelink' => 'shows', 'title' => $ep->show->name.' / '.$ep->name]);
     }
     
     public function apiGetEpisode($slug){

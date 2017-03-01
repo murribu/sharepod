@@ -22,7 +22,8 @@ class UsersController extends Controller
     public function getUser($slug){
         $user = User::where('slug', $slug)->first();
         $activelink = Auth::user() && Auth::user()->slug == $slug ? 'me' : '';
-        return view('user', compact('user', 'activelink'));
+        $title = $user->name;
+        return view('user', compact('title', 'activelink'));
     }
     
     public function apiGetUser($slug){

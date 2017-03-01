@@ -1,5 +1,9 @@
 @extends('spark::layouts.app')
 
+@section('title')
+{{config('app.name').' - '.$title}}
+@endsection
+
 @section('content')
 <playlist :user="user" inline-template>
     <div>

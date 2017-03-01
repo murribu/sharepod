@@ -4,9 +4,6 @@ namespace Tests;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Faker\Factory as Faker;
 
-use Tests\Traits\MockSocialite;
-use Laravel\Socialite\Contracts\Factory as Socialite;
-
 use App\Episode;
 use App\Show;
 use App\SocialUser;
@@ -15,39 +12,38 @@ use App\User;
 class ShowTest extends TestCase
 {
     use DatabaseTransactions;
-    use MockSocialite;
     
-    public function test_create_a_new_user_and_like_an_episode()
-    {
-        $faker = Faker::create();
-        $show = new Show;
-        $show->feed = $faker->url;
-        $show->slug = Show::findSlug();
-        $show->save();
+    protected $free_user;
+    protected $ep;
+    
+    public function setUp(){
+        parent::setUp();
+        $this->free_user = factory(\App\User::class)->create(['verified' => '1']);
         
-        $episode = new Episode;
-        $episode->slug = Episode::findSlug();
-        $episode->show_id = $show->id;
-        $episode->save();
-        
-        $userId = $faker->randomNumber(5);
-
-        $this->mockSocialiteFacadeFacebook($faker->email, $userId);
-
-        $code = $faker->randomNumber();
-        $state = $faker->randomNumber();
-        $this->visit('auth/facebook/callback?code='.$code.'&state='.$state);
-
-        $facebook_user = SocialUser::where('type', 'facebook')->where('social_id', $userId)->first();
-
-        $user = $facebook_user->user;
-        $this->assertNotEmpty($user, 'User was not created');
-        $this->assertNotEmpty($user->facebook_user(), 'User was not linked to a Facebook SocialUser');
-
-        $this->actingAs($user)
-            ->post('/api/shows/like', ['slug' => $show->slug])
+        $this->show = factory(\App\Show::class)->create();
+    }
+    
+    public function test_like_a_show(){
+        $this->actingAs($this->free_user)
+            ->post('/api/shows/like', ['slug' => $this->show->slug])
             ->seeJson(['success' => '1'], 'Error in liking a show')
-            ->post('/api/shows/unlike', ['slug' => $show->slug])
+            ->post('/api/shows/unlike', ['slug' => $this->show->slug])
             ->seeJson(['success' => '1'], 'Error in unliking a show');
+    }
+    
+    public function test_viewing_a_show(){
+        $this->visit('/api/shows/'.$this->show->slug)
+            ->seeJson(['name' => $this->show->name])
+            ->seeJson(['slug' => $this->show->slug]);
+    }
+    
+    public function test_title(){
+        $ret = $this->visit('/shows/'.$this->show->slug);
+
+        $content = $ret->response->getContent();
+        $res = preg_match("/<title>(.*)<\/title>/siU", $content, $title_matches);
+        $title = preg_replace('/\s+/', ' ', $title_matches[1]);
+        $title = trim($title);
+        $this->assertContains($this->show->name, $title);
     }
 }

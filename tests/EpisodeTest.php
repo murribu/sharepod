@@ -4,9 +4,6 @@ namespace Tests;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Faker\Factory as Faker;
 
-use Tests\Traits\MockSocialite;
-use Laravel\Socialite\Contracts\Factory as Socialite;
-
 use App\Episode;
 use App\Show;
 use App\SocialUser;
@@ -15,7 +12,6 @@ use App\User;
 class EpisodeTest extends TestCase
 {
     use DatabaseTransactions;
-    use MockSocialite;
     
     protected $free_user;
     protected $ep;
@@ -27,8 +23,7 @@ class EpisodeTest extends TestCase
         $this->ep = factory(\App\Episode::class)->create();
     }
     
-    public function test_create_a_new_user_and_like_an_episode()
-    {
+    public function test_like_an_episode(){
         $this->actingAs($this->free_user)
             ->post('/api/episodes/like', ['slug' => $this->ep->slug])
             ->seeJson(['success' => '1'], 'Error in liking an episode')
@@ -43,5 +38,15 @@ class EpisodeTest extends TestCase
             ->seeJson(['show_name' => $this->ep->show->name])
             ->seeJson(['show_slug' => $this->ep->show->slug])
             ;
+    }
+    
+    public function test_title(){
+        $ret = $this->visit('/episodes/'.$this->ep->slug);
+
+        $content = $ret->response->getContent();
+        $res = preg_match("/<title>(.*)<\/title>/siU", $content, $title_matches);
+        $title = preg_replace('/\s+/', ' ', $title_matches[1]);
+        $title = trim($title);
+        $this->assertContains($this->ep->name, $title);
     }
 }

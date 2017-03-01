@@ -1,5 +1,9 @@
 @extends('spark::layouts.app')
 
+@section('title')
+{{config('app.name').' - '.$title}}
+@endsection
+
 @section('scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mousetrap/1.4.6/mousetrap.min.js"></script>
 @endsection

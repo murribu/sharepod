@@ -21,7 +21,8 @@ class PlaylistController extends Controller {
     public function getPlaylist($slug){
         $playlist = Playlist::where('slug', $slug)->first();
         $activelink = 'playlists';
-        return view('playlist', compact('playlist', 'activelink'));
+        $title = $playlist->name;
+        return view('playlist', compact('title', 'activelink'));
     }
     
     public function getEdit($slug = null){

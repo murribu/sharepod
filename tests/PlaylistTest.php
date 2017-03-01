@@ -25,6 +25,7 @@ class PlaylistTest extends TestCase
     protected $free_user;
     protected $basic_user;
     protected $playlist_info;
+    protected $playlist;
 
     public function setUp(){
         parent::setUp();
@@ -42,6 +43,7 @@ class PlaylistTest extends TestCase
             'name'          => $faker->name,
             'description'   => $faker->sentence
         ];
+        $this->playlist = factory(\App\Playlist::class)->create();
     }
     
     public function test_create_a_playlist(){
@@ -74,8 +76,18 @@ class PlaylistTest extends TestCase
             
         $this->assertNotNull($pe);
         
-        $this->visit('/playlists/'.$p->slug)
+        $this->visit('/api/playlists/'.$p->slug)
             ->see($pe->episode->name);
+    }
+    
+    public function test_title(){
+        $ret = $this->visit('/playlists/'.$this->playlist->slug);
+
+        $content = $ret->response->getContent();
+        $res = preg_match("/<title>(.*)<\/title>/siU", $content, $title_matches);
+        $title = preg_replace('/\s+/', ' ', $title_matches[1]);
+        $title = trim($title);
+        $this->assertContains($this->playlist->name, $title);
     }
     
 }
