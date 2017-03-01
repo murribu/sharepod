@@ -116,9 +116,12 @@ class Show extends Model {
             $i = 0;
 			foreach($content->channel->item as $item){
 				$guid = (string)$item->guid;
-			    $exists = Episode::where('guid', $guid)->first();
+			    $exists = Episode::join('shows', 'shows.id', '=', 'episodes.show_id')
+                    ->where('shows.active', '1')
+                    ->where('episodes.guid', $guid)
+                    ->first();
 			    if ($exists){
-			        return ['error' => 1, 'message' => 'It looks like we already have this show in our database. Check out <a href="/shows/'.$exists->show->slug.'">'.$exists->show->name.'</a>. If this is wrong, please let us know at <a href="https://twitter.com/'.env('TWITTER_HANDLE').'">@'.env('TWITTER_HANDLE').'</a>.'];
+			        return ['error' => 'already_exists', 'slug' => $exists->show->slug, 'name' => $exists->show->name];
 			    }
 			    if ($i++ == 10){
 			        return ['success' => 1];

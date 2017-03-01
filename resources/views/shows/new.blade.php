@@ -32,7 +32,15 @@
                 @{{errorMessage}}
             </div>
         </div>
-        <div class="panel panel-default" v-if="!processing && !error && newShow">
+        <div class="panel panel-default" v-if="!processing && already_exists">
+            <div class="panel-heading">
+                Error
+            </div>
+            <div class="panel-body">
+                It looks like we already have this show in our database. Check out <a :href="'/shows/' + already_exists_show.slug">@{{already_exists_show.name}}</a>. If this is wrong, please let us know at <a href="https://twitter.com/{{env('TWITTER_HANDLE')}}">{{env('TWITTER_HANDLE')}}</a>.
+            </div>
+        </div>
+        <div class="panel panel-default" v-if="!processing && !error && !already_exists &&  newShow">
             <div class="panel-heading">
                 Show Added!
             </div>

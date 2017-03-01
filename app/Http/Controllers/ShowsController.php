@@ -56,11 +56,11 @@ class ShowsController extends Controller
     
     public function postNew(){
         if (Input::get('feed') != ""){
-            $show = Show::where('feed', Input::get('feed'))->first();
+            $show = Show::where('feed', Input::get('feed'))->where('active', 1)->first();
             if (!$show){
                 $test_result = Show::testFeed(Input::get('feed'));
                 if (isset($test_result['error'])){
-                    return response()->json($test_result['message'], 400);
+                    return response()->json($test_result, 400);
                 }else{
                     $show = new Show;
                     $show->feed = Input::get('feed');
