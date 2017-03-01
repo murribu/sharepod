@@ -70,7 +70,7 @@ class SparkServiceProvider extends ServiceProvider
             ->features([
                 'Send up to '.env('PLAN_BASIC_RECOMMENDATION_COUNT').' recommendations per 24 hours', 
                 'Create up to '.env('PLAN_BASIC_PLAYLIST_COUNT').' playlists',
-                'Archive episodes (up to '.(intval(env('PLAN_BASIC_STORAGE_LIMIT'))/pow(2,20)).' MB)',
+                'Archive episodes (up to '.(intval(env('PLAN_BASIC_STORAGE_LIMIT'))/pow(2,30)).' GB)',
             ]);
             
         Spark::plan('Premium', 'premium-1')
