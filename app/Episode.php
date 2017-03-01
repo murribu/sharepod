@@ -256,6 +256,7 @@ class Episode extends Model {
         ->groupBy('episodes.show_id')
         ->groupBy('ae.result_slug')
         ->orderBy('score', 'desc')
+        ->orderBy('episodes.created_at', 'desc')
         ->limit($limit)
         ->get();
         foreach($episodes as $e){
