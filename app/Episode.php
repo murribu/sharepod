@@ -101,9 +101,6 @@ class Episode extends Model {
         $this->howLongAgo = self::howLongAgo($this->pubdate);
         $this->pubdate_str = date('g:i A - j M Y', $this->pubdate);
         
-        $search = array('&#8222;', '&#8220;', '&#146;', '’');
-        $replace = array('"', '"', "'", "'");
-        $this->description = str_replace($search, $replace, $this->description);
         $this->description = self::treat_tags($this->description);
         $this->img_url = $this->img_url_default();
         if (isset($this->likeddate)){
@@ -315,7 +312,7 @@ class Episode extends Model {
             'body' => [],
         ];
         $dom = new \DOMDocument();
-        $dom->loadHTML($input);
+        $dom->loadHTML(mb_convert_encoding($input , 'HTML-ENTITIES', 'UTF-8'));
         $xpath = new \DOMXPath($dom);
         $nodes = $xpath->query('//*');
         foreach ($nodes as $node) {
