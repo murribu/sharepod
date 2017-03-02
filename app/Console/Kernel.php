@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         \App\Console\Commands\RefreshFeed::class,
         \App\Console\Commands\ArchiveOneEpisode::class,
+        \App\Console\Commands\CleanOutTmp::class,
     ];
 
     /**

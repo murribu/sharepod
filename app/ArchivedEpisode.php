@@ -14,18 +14,6 @@ class ArchivedEpisode extends Model {
     
     public static function archive_one_episode(NotificationRepository $notifications){
         //meant to be called from a cronjob
-        $ret = [];
-        $lockfile = "/tmp/episode_archive.lock";
-
-        if(!file_exists($lockfile))
-            $fh = fopen($lockfile, "w");
-        else
-            $fh = fopen($lockfile, "r");
-
-        if($fh === FALSE) return ['error' => "Unable to open lock file"];
-
-        if(!flock($fh, LOCK_EX)) // another process is running
-            return [];
             
         $ae = ArchivedEpisode::whereNull('processed_at')
             ->whereNull('result_slug')
@@ -138,8 +126,6 @@ class ArchivedEpisode extends Model {
                 $notifications->create($n['user'], $n['notification']);
             }
         }
-
-        flock($fh, LOCK_UN);
         
         return $ret;
     }
