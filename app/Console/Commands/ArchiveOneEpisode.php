@@ -11,7 +11,6 @@ class ArchiveOneEpisode extends Command{
     protected $signature = 'archive_one_episode';
     
     public function handle(NotificationRepository $notifications) {
-        $ret = [];
         $lockfile = "/tmp/episode_archive.lock";
 
         if(!file_exists($lockfile))

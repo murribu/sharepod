@@ -14,6 +14,7 @@ class ArchivedEpisode extends Model {
     
     public static function archive_one_episode(NotificationRepository $notifications){
         //meant to be called from a cronjob
+        $ret = [];
             
         $ae = ArchivedEpisode::whereNull('processed_at')
             ->whereNull('result_slug')
