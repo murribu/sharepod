@@ -100,7 +100,11 @@ class Episode extends Model {
     public function prepare(){
         $this->howLongAgo = self::howLongAgo($this->pubdate);
         $this->pubdate_str = date('g:i A - j M Y', $this->pubdate);
-        $this->description = strip_tags($this->description,"<p></p>");
+        
+        $search = array('&#8222;', '&#8220;', '&#146;', '’');
+        $replace = array('"', '"', "'", "'");
+        $this->description = str_replace($search, $replace, $this->description);
+        $this->description = self::treat_tags($this->description);
         $this->img_url = $this->img_url_default();
         if (isset($this->likeddate)){
             $this->likedHowLongAgo = self::howLongAgo(strtotime($this->likeddate));
@@ -280,5 +284,73 @@ class Episode extends Model {
                   1 * slikes
               ) * (9999999999 - TIMESTAMPDIFF(SECOND, '2000-1-1', e.created_at)) score
         **/
+    }
+    
+    public function treat_tags($input){
+        $tags = [
+            'a' => [
+                'allow_attr' => [
+                    'href' => [
+                        'allow_to_begin_with' => ['http', 'mailto']
+                    ],
+                    'target' => []
+                ],
+                'insert_attr' => [
+                    'target' => '_new'
+                ]
+            ],
+            'br' => [
+                'allow_attr' => []
+            ],
+            'p' => [
+                'allow_attr' => []
+            ],
+            'strong' => [
+                'allow_attr' => []
+            ],
+            'em' => [
+                'allow_attr' => []
+            ],
+            'html' => [],
+            'body' => [],
+        ];
+        $dom = new \DOMDocument();
+        $dom->loadHTML($input);
+        $xpath = new \DOMXPath($dom);
+        $nodes = $xpath->query('//*');
+        foreach ($nodes as $node) {
+            $tagName = $node->tagName;
+            $nodeName = $node->nodeName;
+            $nodeValue = $node->nodeValue;
+            if (isset($tags[$tagName])){
+                foreach ($node->attributes as $attr){
+                    if (isset($tags[$tagName]['allow_attr'][$attr->name])){
+                        $protocol_is_ok = false;
+                        if (isset($tags[$tagName]['allow_attr'][$attr->name]['allow_to_begin_with'])){
+                            foreach($tags[$tagName]['allow_attr'][$attr->name]['allow_to_begin_with'] as $proto){
+                                if ($proto == substr($attr->value, 0, strlen($proto))){
+                                    $protocol_is_ok = true;
+                                }
+                            }
+                            if (!$protocol_is_ok){
+                                $node->removeAttribute($attr->name);
+                            }
+                        }
+                        foreach($tags[$tagName]['insert_attr'] as $attr=>$val){
+                            $node->setAttribute($attr, $val);
+                        }
+                    }else{
+                        $node->removeAttribute($attr->name);
+                    }
+                }
+            }else{
+                $node->parentNode->removeChild($node);
+            }
+        }
+        $output = $dom->saveHTML($dom->getElementsByTagName('html')->item(0)->getElementsByTagName('body')->item(0)->getElementsByTagName('p')->item(0));
+        
+        $output = substr($output, 3, count($output) - 5);
+
+        return $output;
     }
 }
