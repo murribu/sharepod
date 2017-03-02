@@ -166,6 +166,7 @@ return [
         
         Laravel\Socialite\SocialiteServiceProvider::class,
         Jrean\UserVerification\UserVerificationServiceProvider::class,
+        BackupManager\Laravel\Laravel5ServiceProvider::class,
         /*
          * Package Service Providers...
          */
