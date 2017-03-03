@@ -213,7 +213,8 @@
                                     Well, <a target="_new" href="https://en.wikipedia.org/wiki/RSS">here is the wikipedia page</a>.<br><br>
                                     If that's too much, here's a short version:<br><br>
                                     A Show's RSS Feed is a way for the Show to describe itself and list its episodes.<br><br>
-                                    It uses <a href="https://en.wikipedia.org/wiki/XML">XML</a>, which is a language that a computer will understand. <a target="_new" href="/playlists/me/feed">Click here to see an example.</a><br><br>Yeah, it's pretty ugly. But to a podcatcher, it makes total sense.
+                                    It uses <a href="https://en.wikipedia.org/wiki/XML">XML</a>, which is a language that a computer will understand. <a target="_new" href="/playlists/me/feed">Click here to see an example.</a><br><br>Yeah, it's pretty ugly. But to a podcatcher, it makes total sense.<br><br>
+                                    When you regsiter an RSS feed with your podcatcher, it periodically checks to see if there are any new items in the list. If so, it'll tell you about them.
                                 </div>
                             </div>
                         </div>
