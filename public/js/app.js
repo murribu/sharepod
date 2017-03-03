@@ -23451,6 +23451,23 @@ Vue.component('help', {
     mounted: function mounted() {
         this.usePushStateForTabs('.help-tabs');
     },
+    created: function created() {
+        var hash = window.location.hash.substring(2);
+        if (hash.substring(0,4) == 'what'){
+            var self = this;
+            Vue.nextTick(function(){
+                self.showStory(hash.substring(5));
+            });
+        }
+    },
+    methods:{
+        showStory: function showStory(length){
+            window.location.hash = '/what-' + length;
+            $(".story").hide();
+            $("#" + length + "-story").show();
+            $("[aria-controls='what']").parent().addClass('active');
+        }
+    }
 });
 
 /***/ },

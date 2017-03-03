@@ -7638,6 +7638,10 @@ input.fallback {
   position: absolute;
   right: 30px;
 }
+/** HELP SCREEN **/
+.story {
+  display: none;
+}
 /*
  * Social Buttons for Bootstrap
  *
