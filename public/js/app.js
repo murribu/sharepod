@@ -24278,17 +24278,20 @@ Vue.component('shows-search', {
             this.search();
         }
     },
+    computed: {
+        searchTextEncoded: function searchTextEncoded() {
+            return encodeURIComponent(this.searchText + ' rss');
+        }
+    },
     methods: {
         search: _.debounce(function(){
-            var this$1 = this;
-
             if (this.searchText != ''){
                 this.holdText = 'Searching...';
                 var self = this;
                 this.$http.get('/api/shows/search?s=' + this.searchText)
                     .then(function (response) {
                         self.shows = response.data;
-                        this$1.holdText = '';
+                        self.holdText = '';
                     }, function (response) {
                         $("#modal-error").modal('show');
                         setTimeout(function(){

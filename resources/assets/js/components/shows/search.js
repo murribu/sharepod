@@ -13,6 +13,11 @@ Vue.component('shows-search', {
             this.search();
         }
     },
+    computed: {
+        searchTextEncoded() {
+            return encodeURIComponent(this.searchText + ' rss');
+        }
+    },
     methods: {
         search: _.debounce(function(){
             if (this.searchText != ''){
@@ -21,7 +26,7 @@ Vue.component('shows-search', {
                 this.$http.get('/api/shows/search?s=' + this.searchText)
                     .then(response => {
                         self.shows = response.data;
-                        this.holdText = '';
+                        self.holdText = '';
                     }, response => {
                         $("#modal-error").modal('show');
                         setTimeout(function(){

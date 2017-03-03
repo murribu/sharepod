@@ -22,7 +22,7 @@
         </div>
         <div class="row" v-if="searchText != '' && holdText == '' && shows.length == 0">
             <div class="col-xs-12">
-                No results. <a target="_new" href="https://twitter.com/{{env('TWITTER_HANDLE')}}">Contact us on twitter</a> to tell us about a show.
+                No results. <a target="_new" :href="'https://www.google.com/search?q=' + searchTextEncoded">Find the show's RSS</a> and then <a href="/shows#/new">add it to {{env('APP_NAME')}}</a>.
             </div>
         </div>
     </div>
