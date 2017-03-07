@@ -5,6 +5,8 @@
         
         @include('spark::settings.profile.update-social-accounts')
         
+        @include('spark::settings.profile.update-slug')
+        
         <!-- Update Contact Information -->
         @include('spark::settings.profile.update-contact-information')
     </div>

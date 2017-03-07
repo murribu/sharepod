@@ -23,6 +23,7 @@ require('./settings/profile');
 require('./settings/profile/update-profile-photo');
 require('./settings/profile/update-contact-information');
 require('./settings/profile/update-social-accounts');
+require('./settings/profile/update-slug');
 
 /**
  * Teams Settings Components...

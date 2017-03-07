@@ -15,6 +15,22 @@ use App\User;
 
 class UsersController extends Controller
 {
+    public function apiSearchForSlug(){
+        return User::where('slug', Input::get('slug'))->select('slug')->first();
+    }
+    
+    public function apiUpdateSlug(){
+        $user = Auth::user();
+        $exists = User::where('slug', Input::get('slug'))->select('slug')->first();
+        if (!$exists){
+            $user->slug = Input::get('slug');
+            $user->save();
+            return ['success' => 1];
+        }else{
+            return ['success' => 0];
+        }
+    }
+    
     public function getMe(){
         return redirect('/users/' . Auth::user()->slug);
     }
@@ -42,6 +58,7 @@ class UsersController extends Controller
             $limit = intval(env('PLAN_PREMIUM_STORAGE_LIMIT'));
         }
         $u->plan_storage_limit = $limit;
+        unset($u->email);
         
         return $u;
     }

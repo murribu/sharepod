@@ -44,6 +44,10 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/playlists/{slug}/remove', 'PlaylistController@apiPostRemove');
     
     Route::get('/archived_episodes', 'UsersController@apiGetUserArchivedEpisodes');
+    
+    Route::post('/userslug/search', 'UsersController@apiSearchForSlug');
+    Route::post('/userslug/update', 'UsersController@apiUpdateSlug');
+    
 });
 
 Route::get('/users/{slug}/episodes_liked', 'UsersController@apiGetUserEpisodesLiked');
