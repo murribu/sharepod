@@ -313,6 +313,9 @@ class Episode extends Model {
             ],
             'html' => [],
             'body' => [],
+            'span' => [
+                'allow_attr' => []
+            ],
             'div' => [
                 'allow_attr' => []
             ],
@@ -326,6 +329,7 @@ class Episode extends Model {
                 $nodeName = $node->nodeName;
                 $nodeValue = $node->nodeValue;
                 if (isset($tags[$tagName])){
+                    $remove_attributes = [];
                     foreach ($node->attributes as $attr){
                         if (isset($tags[$tagName]['allow_attr'][$attr->name])){
                             $protocol_is_ok = false;
@@ -336,15 +340,18 @@ class Episode extends Model {
                                     }
                                 }
                                 if (!$protocol_is_ok){
-                                    $node->removeAttribute($attr->name);
+                                    $remove_attributes[] = $attr->name;
                                 }
                             }
                             foreach($tags[$tagName]['insert_attr'] as $attr=>$val){
                                 $node->setAttribute($attr, $val);
                             }
                         }else{
-                            $node->removeAttribute($attr->name);
+                            $remove_attributes[] = $attr->name;
                         }
+                    }
+                    foreach($remove_attributes as $attr){
+                        $node->removeAttribute($attr);
                     }
                 }else{
                     $node->parentNode->removeChild($node);

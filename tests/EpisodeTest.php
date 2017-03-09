@@ -23,6 +23,16 @@ class EpisodeTest extends TestCase
         $this->ep = factory(\App\Episode::class)->create();
     }
     
+    // public function test_treat_tags(){
+        // $treated = Episode::treat_tags($this->ep->decription);
+        // $this->assertEquals($this->ep->description, $treated);
+        
+        // $episode = Episode::find(597);
+        // if ($episode){
+            // $description = Episode::treat_tags($episode->description));
+        // }
+    // }
+    
     public function test_like_an_episode(){
         $this->actingAs($this->free_user)
             ->post('/api/episodes/like', ['slug' => $this->ep->slug])
