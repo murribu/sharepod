@@ -101,7 +101,7 @@ class Episode extends Model {
         $this->howLongAgo = self::howLongAgo($this->pubdate);
         $this->pubdate_str = date('g:i A - j M Y', $this->pubdate);
         
-        $this->description = self::treat_tags($this->description);
+        $this->description = Episode::treat_tags($this->description);
         $this->img_url = $this->img_url_default();
         if (isset($this->likeddate)){
             $this->likedHowLongAgo = self::howLongAgo(strtotime($this->likeddate));
@@ -283,7 +283,7 @@ class Episode extends Model {
         **/
     }
     
-    public function treat_tags($input){
+    public static function treat_tags($input){
         $tags = [
             'a' => [
                 'allow_attr' => [
@@ -310,6 +310,9 @@ class Episode extends Model {
             ],
             'html' => [],
             'body' => [],
+            'div' => [
+                'allow_attr' => []
+            ],
         ];
         $dom = new \DOMDocument();
         if (@$dom->loadHTML(mb_convert_encoding($input , 'HTML-ENTITIES', 'UTF-8'))){
@@ -324,8 +327,8 @@ class Episode extends Model {
                         if (isset($tags[$tagName]['allow_attr'][$attr->name])){
                             $protocol_is_ok = false;
                             if (isset($tags[$tagName]['allow_attr'][$attr->name]['allow_to_begin_with'])){
-                                foreach($tags[$tagName]['allow_attr'][$attr->name]['allow_to_begin_with'] as $proto){
-                                    if ($proto == substr($attr->value, 0, strlen($proto))){
+                                foreach($tags[$tagName]['allow_attr'][$attr->name]['allow_to_begin_with'] as $protocol){
+                                    if ($protocol == substr($attr->value, 0, strlen($protocol))){
                                         $protocol_is_ok = true;
                                     }
                                 }
@@ -344,13 +347,12 @@ class Episode extends Model {
                     $node->parentNode->removeChild($node);
                 }
             }
-            $output = $dom->saveHTML($dom->getElementsByTagName('html')->item(0)->getElementsByTagName('body')->item(0)->getElementsByTagName('p')->item(0));
-            
-            $output = substr($output, 3, count($output) - 5);
+            $output = $dom->saveHTML($dom->getElementsByTagName('html')->item(0)->getElementsByTagName('body')->item(0));
+            $output = str_replace('<body>','<div>',str_replace('</body>','</div>',$output));
 
             return $output;
         }else{
-            return strip_tags($this->description, '<p></p>');
+            return strip_tags($input, '<p></p>');
         }
     }
 }
