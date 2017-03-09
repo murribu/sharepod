@@ -24190,16 +24190,18 @@ Vue.component('show', {
         updateEpisode: function updateEpisode(slug, stats){
             var this$1 = this;
 
-            for(var e in this.episodeGroups.show.episodes){
-                if (this$1.episodeGroups.show.episodes[e].slug == slug){
-                    this$1.episodeGroups.show.episodes[e].result_slug = stats.result_slug;
-                    this$1.episodeGroups.show.episodes[e].this_user_archived = stats.this_user_archived;
-                    this$1.episodeGroups.show.episodes[e].this_user_likes = stats.this_user_likes;
-                    this$1.episodeGroups.show.episodes[e].total_likes = stats.total_likes;
-                    this$1.episodeGroups.show.episodes[e].total_playlists = stats.total_playlists;
-                    this$1.episodeGroups.show.episodes[e].total_recommendations = stats.total_recommendations;
-                    $('[data-slug=' + slug + '] .btn-archive-episode').attr('data-original-title', stats.this_user_archived ? 'Unarchive' : 'Archive');
-                    $('[data-slug=' + slug + '] .btn-episode-like').attr('data-original-title', stats.this_user_likes ? 'Unlike' : 'Like');
+            for(var g in this.episodeGroups){
+                for(var e in this.episodeGroups[g].episodes){
+                    if (this$1.episodeGroups[g].episodes[e].slug == slug){
+                        this$1.episodeGroups[g].episodes[e].result_slug = stats.result_slug;
+                        this$1.episodeGroups[g].episodes[e].this_user_archived = stats.this_user_archived;
+                        this$1.episodeGroups[g].episodes[e].this_user_likes = stats.this_user_likes;
+                        this$1.episodeGroups[g].episodes[e].total_likes = stats.total_likes;
+                        this$1.episodeGroups[g].episodes[e].total_playlists = stats.total_playlists;
+                        this$1.episodeGroups[g].episodes[e].total_recommendations = stats.total_recommendations;
+                        $('[data-slug=' + slug + '] .btn-archive-episode').attr('data-original-title', stats.this_user_archived ? 'Unarchive' : 'Archive');
+                        $('[data-slug=' + slug + '] .btn-episode-like').attr('data-original-title', stats.this_user_likes ? 'Unlike' : 'Like');
+                    }
                 }
             }
         },
