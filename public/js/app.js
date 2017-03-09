@@ -24050,10 +24050,24 @@ Vue.component('show', {
             episodeGroups: {
                 show: {
                     episodes: []
+                },
+                searchResults: {
+                    episodes: [],
+                    count: 0
                 }
             },
             selectedEpisode: {},
+            searchText: '',
+            holdText: '',
+            searching: false,
         };
+    },
+    watch: {
+        searchText: function(newText){
+            this.searching = true;
+            this.holdText = 'Waiting for you to stop typing...';
+            this.search();
+        }
     },
     computed: {
         slug: function slug() {
@@ -24074,7 +24088,11 @@ Vue.component('show', {
             return ret;
         },
         displayEpisodes: function displayEpisodes() {
-            if (this.episodeGroups.show.episodes){
+            if (this.searchText != ''){
+                return this.episodeGroups.searchResults.episodes.sort(function(a, b){
+                    return a.pubdate < b.pubdate ? 1 : -1;
+                });
+            }else if (this.episodeGroups.show.episodes){
                 return this.episodeGroups.show.episodes.sort(function(a, b){
                     return a.pubdate < b.pubdate ? 1 : -1;
                 });
@@ -24101,6 +24119,34 @@ Vue.component('show', {
         }
     },
     methods: {
+        search:
+            _.debounce(function(){
+                var self = this;
+                if (this.searchText != ''){
+                    this.holdText = 'Searching...';
+                    var self = this;
+                    this.$http.get('/api/shows/' + this.episodeGroups.show.slug + '/search?s=' + this.searchText)
+                        .then(function (response) {
+                            self.episodeGroups.searchResults.episodes = response.data.episodes;
+                            self.episodeGroups.searchResults.count = response.data.count;
+                            self.holdText = response.data.count + ' episodes found';
+                            if (parseInt(response.data.count) > 10){
+                                self.holdText += ' (showing the 10 most recent episodes)';
+                            }
+                            self.searching = false;
+                        }, function (response) {
+                            $("#modal-error").modal('show');
+                            setTimeout(function(){
+                                $("#modal-error").modal('hide');
+                            }, 8000);
+                            self.searching = false;
+                        })
+                }else{
+                    this.episodeGroups.searchResults.episodes = [];
+                    this.holdText = '';
+                }
+            }, 500)
+        , 
         likeShow: function likeShow() {
             var self = this;
             this.$http.post('/api/shows/like', {slug: this.episodeGroups.show.slug})

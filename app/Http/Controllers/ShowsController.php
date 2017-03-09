@@ -135,6 +135,17 @@ class ShowsController extends Controller
         return $show;
     }
     
+    public function apiShowSearch($slug){
+        $show = Show::where('slug', $slug)
+            ->where('active', 1)
+            ->first();
+        if ($show){
+            return $show->searchEpisodes(Auth::user(), Input::get('s'));
+        }else{
+            return [];
+        }
+    }
+    
     public function apiShowEpisodes($slug){
         $show = Show::where('slug', $slug)
             ->where('active', 1)

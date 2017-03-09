@@ -50,6 +50,15 @@
                             @{{episodeGroups.show.description}}
                         </div>
                     </div>
+                    <div v-if="episodeGroups.show.name" style="margin-bottom: 20px;">
+                        <input class="form-control has-button-inside-input" v-model="searchText" :placeholder="'Search ' + episodeGroups.show.name + ' episodes...'" />
+                        <button class="inside-input" @click.prevent="searchText = ''">
+                            <i class="fa fa-times"></i>
+                        </button>
+                        <div v-if="holdText != ''">
+                            @{{holdText}}
+                        </div>
+                    </div>
                 </div>
                 <div class="col-xs-12 col-lg-9 col-md-8">
                     <div class="panel panel-default panel-list-item episode-container" v-for="episode in displayEpisodes" :key="episode.slug" :data-slug="episode.slug">
@@ -63,9 +72,14 @@
                         <div class="panel-body" v-html="episode.description"></div>
                         @include('partials.episode-footer')
                     </div>
-                    <div class="panel panel-default panel-list-item clickable" v-if="episodeGroups.show.episodes && episodeGroups.show.episodeCount > episodeGroups.show.episodes.length" @click="showMore">
+                    <div class="panel panel-default panel-list-item clickable" v-if="episodeGroups.show.episodes && episodeGroups.show.episodeCount > episodeGroups.show.episodes.length && searchText == ''" @click="showMore">
                         <div class="panel-body centered">
                             Load more episodes...
+                        </div>
+                    </div>
+                    <div class="panel panel-default panel-list-item" v-if="searchText != '' && !searching && episodeGroups.searchResults.episodes.length == 0">
+                        <div class="panel-body centered">
+                            No search results
                         </div>
                     </div>
                 </div>

@@ -78,6 +78,62 @@ class Show extends Model {
         return $ret;
     }
     
+    public function searchEpisodes($user = null, $searchText){
+        $limit = 10;
+        
+        $episodes = Episode::leftJoin('likes as total_likes', function($join){
+                $join->on('total_likes.fk', '=', 'episodes.id');
+                $join->on('total_likes.type', '=', DB::raw("'episode'"));
+            })
+            ->leftJoin('likes as this_user_likes', function($join) use ($user){
+                $join->on('this_user_likes.user_id', '=', DB::raw($user ? $user->id : DB::raw("-1")));
+                $join->on('this_user_likes.fk', '=', 'episodes.id');
+                $join->on('this_user_likes.type', '=', DB::raw("'episode'"));
+            })
+            ->leftJoin('playlist_episodes as pe', 'pe.episode_id', '=', 'episodes.id')
+            ->leftJoin('recommendations', 'recommendations.episode_id', '=', 'episodes.id')
+            ->leftJoin(DB::raw('(select archived_episodes.id, url, slug, filesize, result_slug, episode_id from archived_episodes inner join archived_episode_users on archived_episodes.id = archived_episode_users.archived_episode_id where (result_slug is null or result_slug = \'ok\') and user_id = '.($user ? $user->id : DB::raw("-1")).' and active = 1) ae'), 'ae.episode_id', '=', 'episodes.id')
+            ->selectRaw('episodes.show_id, episodes.id, episodes.slug, episodes.name, episodes.description, episodes.duration, episodes.explicit, coalesce(ae.url, case when ae.result_slug is null then null else concat(\''.env('S3_URL').'/'.env('S3_BUCKET').'/episodes/\', ae.slug, \'.mp3\') end, episodes.url) url, coalesce(ae.filesize, episodes.filesize) filesize, episodes.img_url, episodes.pubdate, ae.result_slug, count(distinct total_likes.id) as total_likes, count(distinct this_user_likes.id) as this_user_likes, count(distinct recommendations.id) total_recommendations, count(distinct pe.playlist_id) total_playlists, count(distinct ae.id) this_user_archived')
+            ->where('episodes.active', 1)
+            ->where('show_id', $this->id)
+            ->where(function($query) use ($searchText){
+                $query->whereRaw('episodes.description like ?', ['%'.$searchText.'%']);
+                $query->orWhereRaw('episodes.name like ?', ['%'.$searchText.'%']);
+            })
+            ->orderBy('pubdate', 'desc')
+            ->groupBy('episodes.id')
+            ->groupBy('episodes.slug')
+            ->groupBy('episodes.name')
+            ->groupBy('episodes.description')
+            ->groupBy('episodes.duration')
+            ->groupBy('episodes.explicit')
+            ->groupBy('episodes.filesize')
+            ->groupBy('episodes.img_url')
+            ->groupBy('episodes.pubdate')
+            ->groupBy('episodes.show_id')
+            ->groupBy('episodes.url')
+            ->groupBy('ae.url')
+            ->groupBy('ae.slug')
+            ->groupBy('ae.filesize')
+            ->groupBy('ae.result_slug')
+            ->limit($limit)
+            ->get();
+            
+        foreach($episodes as $e){
+            $e = $e->prepare();
+            unset($e->show);
+        }
+        
+        $count = Episode::where('show_id', $this->id)
+            ->where(function($query) use ($searchText){
+                $query->whereRaw('episodes.description like ?', ['%'.$searchText.'%']);
+                $query->orWhereRaw('episodes.name like ?', ['%'.$searchText.'%']);
+            })
+            ->count();
+        
+        return compact('episodes', 'count');
+    }
+    
     public static function testFeed($url){
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
