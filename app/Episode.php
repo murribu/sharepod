@@ -196,7 +196,7 @@ class Episode extends Model {
     public static function popular($limit = 10){
         $user_id = Auth::user() ? Auth::user()->id : -1;
         $vars = [$user_id, $user_id, $limit];
-        $episodes = Episode::selectRaw("episodes.id, episodes.name, episodes.slug, episodes.description, episodes.img_url, episodes.pubdate, episodes.show_id, s.name show_name, s.slug show_slug, ae.result_slug, count(distinct total_likes.id) as total_likes, count(distinct this_user_likes.id) as this_user_likes, count(distinct recommendations.id) total_recommendations, count(distinct pe.playlist_id) total_playlists, count(distinct ae.id) this_user_archived, 
+        $episodes = Episode::selectRaw("coalesce(ae.url, case when ae.result_slug is null then null else concat('".env('S3_URL')."/".env('S3_BUCKET')."/episodes/', ae.slug, '.mp3') end, episodes.url) url, episodes.id, episodes.name, episodes.slug, episodes.description, episodes.img_url, episodes.pubdate, episodes.show_id, s.name show_name, s.slug show_slug, ae.result_slug, count(distinct total_likes.id) as total_likes, count(distinct this_user_likes.id) as this_user_likes, count(distinct recommendations.id) total_recommendations, count(distinct pe.playlist_id) total_playlists, count(distinct ae.id) this_user_archived, 
             (
             100 * (select count(id) from likes 
                 where fk = episodes.id 
@@ -255,7 +255,10 @@ class Episode extends Model {
         ->groupBy('s.slug')
         ->groupBy('episodes.created_at')
         ->groupBy('episodes.show_id')
+        ->groupBy('episodes.url')
+        ->groupBy('ae.url')
         ->groupBy('ae.result_slug')
+        ->groupBy('ae.slug')
         ->orderBy('score', 'desc')
         ->orderByRaw('least(episodes.created_at, from_unixtime(episodes.pubdate)) desc')
         ->limit($limit)

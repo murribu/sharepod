@@ -38,6 +38,13 @@
         </button>
     </div>
     <div class="episode-action">
+        <a class="btn-play" :href="episode.url" target="_new">
+            <div class="icon-container" title="Play">
+                <i class="fa fa-play"></i>
+            </div>
+        </a>
+    </div>
+    <div class="episode-action">
         <button :class="{'active': episode.this_user_archived}" class="btn-archive-episode" @click.prevent="toggleArchiveEpisode(episode)" :disabled="episode.archive_busy" :title="episode.this_user_archived ? 'Unarchive' : 'Archive'">
             <i class="fa fa-spinner fa-spin" v-if="episode.archive_busy"></i>
             <div class="icon-container" v-if="!episode.this_user_archived && !episode.archive_busy">
