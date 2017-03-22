@@ -313,6 +313,7 @@ class Show extends Model {
         }else{
             $show = Show::where('updated_at', '<', DB::raw('date_sub(now(), interval 1 hour)'))
                 ->where('active', '1')
+                ->where('hosted_here', '0')
                 ->orderBy('updated_at')
                 ->first();
         }

@@ -30,8 +30,7 @@ class ShowsController extends Controller
      *
      * @return Response
      */
-    public function show()
-    {
+    public function show(){
         return view('shows', ['activelink' => 'shows']);
     }
     
@@ -41,6 +40,14 @@ class ShowsController extends Controller
     
     public function search(){
         return view('shows.search', ['activelink' => 'shows']);
+    }
+    
+    public function getNewShow(){
+        return view('show_edit', ['activelink' => 'shows']);
+    }
+    
+    public function postNewShow(){
+        //do stuff here like PlaylistController::postEdit
     }
     
     public function display($slug){

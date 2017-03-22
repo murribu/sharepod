@@ -102,6 +102,20 @@ class UsersController extends Controller
         }
     }
     
+    public function apiGetUserShowsOwned($slug){
+        $user = User::where('slug', $slug)->first();
+        if ($user){
+            $shows = Show::where('owner_id', $user->id)
+            ->select('shows.name', 'shows.slug', 'shows.img_url', 'shows.description')
+            ->orderBy('created_at', 'desc')
+            ->get();
+            foreach($shows as $s){
+                $s = $s->prepare();
+            }
+            return $shows;
+        }
+    }
+    
     public function apiGetUserPlaylists($slug){
         $user = User::where('slug', $slug)->first();
         if ($user){

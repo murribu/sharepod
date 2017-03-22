@@ -26,6 +26,8 @@ Route::get('/home', 'HomeController@redirectToHome');
 Route::get('/shows', 'ShowsController@show');
 Route::get('/shows/list', 'ShowsController@listing');
 Route::get('/shows/search', 'ShowsController@search');
+Route::get('/shows/new', 'ShowsController@getNewShow');
+Route::post('/shows/new', 'ShowsController@postNewShow');
 Route::get('/shows/{slug}', 'ShowsController@display');
 Route::get('/shows/{slug}/feed', 'ShowsController@getFeed');
 

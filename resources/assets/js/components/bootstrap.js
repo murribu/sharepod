@@ -21,6 +21,7 @@ require('./playlist-edit');
 require('./recommendation');
 require('./recommendations');
 require('./show');
+require('./show-edit');
 require('./shows');
 require('./user');
 

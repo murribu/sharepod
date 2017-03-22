@@ -39,6 +39,11 @@
                                             @{{shows_liked.length}} Shows Liked
                                         </a>
                                     </li>
+                                    <li role="presentation" id="li-shows-owned">
+                                        <a href="#shows-owned" aria-controls="shows-owned" role="tab" data-toggle="tab">
+                                            @{{shows_owned.length}} Shows Owned
+                                        </a>
+                                    </li>
                                     <li role="presentation">
                                         <a href="#playlists" aria-controls="playlists" role="tab" data-toggle="tab">
                                             @{{playlists.length}} Playlists
@@ -146,6 +151,39 @@
                                     @{{viewed_user_name({verbs: verbs.to_have})}} not liked any shows yet.
                                 </div>
                             </div>
+                        </div>
+                        <div class="tab-pane" role="tabpanel" id="shows-owned">
+                            <h3 class="centered" v-if="viewed_user.name">@{{viewed_user_name({possessive: true})}} Owned Shows</h3>
+                            <div class="panel panel-default panel-list-item" v-for="show in shows_owned" :key="show.slug">
+                                <div class="panel-heading">
+                                    <a :href="'/shows/' + show.slug">
+                                        <img :src="show.img_url" class="episode-image" />
+                                        <strong>@{{show.name}}</strong>
+                                    </a>
+                                    <small v-tooltip :title="show.likeddate_str" class="liked-time">
+                                        <div class="icon-container">
+                                            <div class="heart-container">
+                                                <div class="heart" style="background-position: right;"></div>
+                                            </div>
+                                        </div>
+                                        @{{show.likedHowLongAgo}}
+                                    </small>
+                                </div>
+                                <div class="panel-body" v-html="show.description"></div>
+                            </div>
+                            <div class="panel panel-default panel-list-item" v-if="shows_owned.length == 0">
+                                <div class="panel-body">
+                                    @{{viewed_user_name({verbs: verbs.to_do})}} not own any shows.
+                                </div>
+                            </div>
+                            <br><br>
+                            <a href="/shows/new">
+                                <div class="panel panel-primary panel-list-item">
+                                    <div class="panel-heading centered">
+                                        Create a Podcast and host it on {{env('APP_NAME')}}
+                                    </div>
+                                </div>
+                            </a>
                         </div>
                         <div class="tab-pane" role="tabpanel" id="playlists">
                             <h3 class="centered" v-if="viewed_user.name">@{{viewed_user_name({possessive: true})}} Playlists</h3>
