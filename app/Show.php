@@ -12,6 +12,8 @@ class Show extends Model {
     use HasLikes;
     use HasFeed;
     
+    protected $fillable = ['name', 'description', 'category'];
+    
     protected static $slug_reserved_words = ['new', 'list', 'search', 'undefined', 'feed', 'popular'];
     public static $like_type = 'show';
     

@@ -15,7 +15,11 @@
                     <div class="panel-heading">
                         Shows
                     </div>
-
+                    @if (session('msg'))
+                        <div class="alert {{session('statusClass')}}">
+                            {!! session('msg') !!}
+                        </div>
+                    @endif
                     <div class="panel-body">
                         <div class="shows-tabs">
                             <ul class="nav left-stacked-tabs" role="tablist">
