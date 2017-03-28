@@ -65,16 +65,16 @@ class SparkServiceProvider extends ServiceProvider
                 'Create up to '.env('PLAN_FREE_PLAYLIST_COUNT').' playlists'
             ]);
 
-        Spark::plan('Basic', env('PLAN_BASIC_NAME'))
-            ->price(intval(env('PLAN_BASIC_PRICE')))
+        Spark::plan('Basic', 'basic-1')
+            ->price(10)
             ->features([
                 'Send up to '.env('PLAN_BASIC_RECOMMENDATION_COUNT').' recommendations per 24 hours', 
                 'Create up to '.env('PLAN_BASIC_PLAYLIST_COUNT').' playlists',
                 'Archive episodes (up to '.(intval(env('PLAN_BASIC_STORAGE_LIMIT'))/pow(2,30)).' GB)',
             ]);
             
-        Spark::plan('Premium', env('PLAN_PREMIUM_NAME'))
-            ->price(intval(env('PLAN_PREMIUM_PRICE')))
+        Spark::plan('Premium', 'premium-1')
+            ->price(20)
             ->features([
                 'Send unlimited recommendations', 
                 'Create unlimited playlists',
