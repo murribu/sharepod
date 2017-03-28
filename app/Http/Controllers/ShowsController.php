@@ -30,7 +30,8 @@ class ShowsController extends Controller
      *
      * @return Response
      */
-    public function show(){
+    public function show()
+    {
         return view('shows', ['activelink' => 'shows']);
     }
     
@@ -40,35 +41,6 @@ class ShowsController extends Controller
     
     public function search(){
         return view('shows.search', ['activelink' => 'shows']);
-    }
-    
-    public function getNewShow(){
-        $categories = Show::select('category')->whereNotNull('category')->orderBy('category')->distinct()->get();
-        return view('show_edit', ['activelink' => 'shows', 'categories' => $categories]);
-    }
-    
-    public function postNewShow($slug = null){
-        $show = Show::where('slug', $slug)->first();
-        $user = Auth::user();
-        if ($show){
-            if (!$user || $show->owner_id != $user->id){
-                return redirect('/');
-            }
-        }else{
-            $permissions = $user->plan_permissions();
-            if ($permissions['has_reached_archive_limit']){
-                $msg = 'You have reached your storage limit <a href="/settings#/subscription">Click here</a> to change your plan settings.';
-                $statusClass = 'alert-danger';
-                return redirect('/shows')->with(compact('msg', 'statusClass'));
-            }
-            $show = new Show;
-            $show->sbid = Show::findSlug(Input::get('name'));
-            $show->owner_id = $user->id;
-        }
-        $show->fill(Input::all());
-        $show->save();
-        
-        return redirect('/shows/'.$show->slug);
     }
     
     public function display($slug){

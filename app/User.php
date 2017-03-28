@@ -241,8 +241,6 @@ class User extends SparkUser
             $permissions = $this->plan_permissions();
             $this->canAddAPlaylist = $permissions['can_add_a_playlist'];
             $this->canRecommend = $permissions['can_recommend'];
-            $this->canArchiveEpisodes = $permissions['can_archive_episodes'];
-            $this->hasReachedArchiveLimit = $permissions['has_reached_archive_limit'];
         }
         return $this;
     }

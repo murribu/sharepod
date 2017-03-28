@@ -61,7 +61,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 280);
+/******/ 	return __webpack_require__(__webpack_require__.s = 279);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1882,7 +1882,7 @@ function loadLocale(name) {
             module && module.exports) {
         try {
             oldLocale = globalLocale._abbr;
-            __webpack_require__(268)("./" + name);
+            __webpack_require__(267)("./" + name);
             // because defineLocale currently also sets the global locale, we
             // want to undo that for lazy loaded locales
             getSetGlobalLocale(oldLocale);
@@ -17282,7 +17282,7 @@ module.exports = function(module) {
  | your components that you write while building your applications.
  */
 
-__webpack_require__(161);
+__webpack_require__(160);
 
 __webpack_require__(147);
 __webpack_require__(143);
@@ -17293,10 +17293,9 @@ __webpack_require__(150);
 __webpack_require__(148);
 __webpack_require__(151);
 __webpack_require__(152);
-__webpack_require__(154);
 __webpack_require__(153);
-__webpack_require__(155);
-__webpack_require__(158);
+__webpack_require__(154);
+__webpack_require__(157);
 
 __webpack_require__(144);
 
@@ -17310,11 +17309,11 @@ __webpack_require__(5);
 /*
  * Load various JavaScript modules that assist Spark.
  */
-window.URI = __webpack_require__(277);
-window._ = __webpack_require__(276);
+window.URI = __webpack_require__(276);
+window._ = __webpack_require__(275);
 window.moment = __webpack_require__(0);
-window.Promise = __webpack_require__(269);
-window.Cookies = __webpack_require__(267);
+window.Promise = __webpack_require__(268);
+window.Cookies = __webpack_require__(266);
 
 /*
  * Define Moment locales
@@ -17343,7 +17342,7 @@ window.moment.locale('en');
  * Load jQuery and Bootstrap jQuery, used for front-end interaction.
  */
 if (window.$ === undefined || window.jQuery === undefined) {
-    window.$ = window.jQuery = __webpack_require__(266);
+    window.$ = window.jQuery = __webpack_require__(265);
 }
 
 __webpack_require__(130);
@@ -17352,7 +17351,7 @@ __webpack_require__(130);
  * Load Vue if this application is using Vue as its framework.
  */
 if ($('#spark-app').length > 0) {
-    __webpack_require__(265);
+    __webpack_require__(264);
 }
 
 
@@ -24038,15 +24037,6 @@ Vue.component('recommendations', {
 
 /***/ },
 /* 153 */
-/***/ function(module, exports) {
-
-Vue.component('show-edit', {
-    props: ['user'],
-});
-
-
-/***/ },
-/* 154 */
 /***/ function(module, exports, __webpack_require__) {
 
 var episodeActions = __webpack_require__(2);
@@ -24219,13 +24209,13 @@ Vue.component('show', {
 });
 
 /***/ },
-/* 155 */
+/* 154 */
 /***/ function(module, exports, __webpack_require__) {
 
 var Events = new Vue({});
 
-__webpack_require__(157);
 __webpack_require__(156);
+__webpack_require__(155);
 
 Vue.component('shows', {
     props: ['user'],
@@ -24282,7 +24272,7 @@ Vue.component('shows-browse', {
 
 
 /***/ },
-/* 156 */
+/* 155 */
 /***/ function(module, exports) {
 
 Vue.component('shows-new', {
@@ -24335,7 +24325,7 @@ Vue.component('shows-new', {
 
 
 /***/ },
-/* 157 */
+/* 156 */
 /***/ function(module, exports) {
 
 Vue.component('shows-search', {
@@ -24380,7 +24370,7 @@ Vue.component('shows-search', {
 
 
 /***/ },
-/* 158 */
+/* 157 */
 /***/ function(module, exports, __webpack_require__) {
 
 var copyFeed = __webpack_require__(5);
@@ -24409,8 +24399,6 @@ Vue.component('view-user', {
             },
             viewed_user: {},
             episodes_liked_loaded: false,
-            shows_owned: [],
-            shows_owned_loaded: false,
             shows_liked: [],
             shows_liked_loaded: false,
             playlists: [],
@@ -24498,22 +24486,6 @@ Vue.component('view-user', {
                     }, 8000);
                 });
         },
-        getShowsOwned: function getShowsOwned() {
-            var self = this;
-            this.$http.get('/api/users/' + this.slug + '/shows_owned')
-                .then(function (response) {
-                    self.shows_owned = response.data;
-                    self.shows_owned_loaded = true;
-                    if (self.shows_owned.length == 0){
-                        $("li-shows-owned").hide();
-                    }
-                }, function (response) {
-                    $("#modal-error").modal('show');
-                    setTimeout(function(){
-                        $("#modal-error").modal('hide');
-                    }, 8000);
-                });
-        },
         getPlaylists: function getPlaylists() {
             var self = this;
             this.$http.get('/api/users/' + this.slug + '/playlists')
@@ -24587,7 +24559,6 @@ Vue.component('view-user', {
                 });
             this.getEpisodesLiked();
             this.getShowsLiked();
-            this.getShowsOwned();
             this.getPlaylists();
             this.getRecommendationsAccepted();
         },
@@ -24686,10 +24657,10 @@ Vue.component('view-user', {
 });
 
 /***/ },
-/* 159 */
+/* 158 */
 /***/ function(module, exports, __webpack_require__) {
 
-var base = __webpack_require__(210);
+var base = __webpack_require__(209);
 
 Vue.component('spark-register-braintree', {
     mixins: [base]
@@ -24697,10 +24668,10 @@ Vue.component('spark-register-braintree', {
 
 
 /***/ },
-/* 160 */
+/* 159 */
 /***/ function(module, exports, __webpack_require__) {
 
-var base = __webpack_require__(211);
+var base = __webpack_require__(210);
 
 Vue.component('spark-register-stripe', {
     mixins: [base],
@@ -24724,103 +24695,114 @@ Vue.component('spark-register-stripe', {
 
 
 /***/ },
-/* 161 */
+/* 160 */
 /***/ function(module, exports, __webpack_require__) {
 
 
 /**
  * Layout Components...
  */
+__webpack_require__(167);
 __webpack_require__(168);
-__webpack_require__(169);
 
 /**
  * Authentication Components...
  */
-__webpack_require__(160);
 __webpack_require__(159);
+__webpack_require__(158);
 
 /**
  * Settings Component...
  */
-__webpack_require__(191);
+__webpack_require__(190);
 
 /**
  * Profile Settings Components...
  */
-__webpack_require__(182);
-__webpack_require__(184);
+__webpack_require__(181);
 __webpack_require__(183);
-__webpack_require__(186);
+__webpack_require__(182);
 __webpack_require__(185);
+__webpack_require__(184);
 
 /**
  * Teams Settings Components...
  */
+__webpack_require__(197);
 __webpack_require__(198);
+__webpack_require__(201);
 __webpack_require__(199);
+__webpack_require__(206);
+__webpack_require__(205);
+__webpack_require__(208);
+__webpack_require__(207);
+__webpack_require__(204);
 __webpack_require__(202);
 __webpack_require__(200);
-__webpack_require__(207);
-__webpack_require__(206);
-__webpack_require__(209);
-__webpack_require__(208);
-__webpack_require__(205);
 __webpack_require__(203);
-__webpack_require__(201);
-__webpack_require__(204);
 
 /**
  * Security Settings Components...
  */
-__webpack_require__(187);
-__webpack_require__(190);
+__webpack_require__(186);
 __webpack_require__(189);
 __webpack_require__(188);
+__webpack_require__(187);
 
 /**
  * API Settings Components...
  */
+__webpack_require__(169);
 __webpack_require__(170);
 __webpack_require__(171);
-__webpack_require__(172);
 
 /**
  * Subscription Settings Components...
  */
-__webpack_require__(192);
-__webpack_require__(196);
+__webpack_require__(191);
 __webpack_require__(195);
-__webpack_require__(197);
 __webpack_require__(194);
+__webpack_require__(196);
 __webpack_require__(193);
+__webpack_require__(192);
 
 /**
  * Payment Method Components...
  */
-__webpack_require__(177);
 __webpack_require__(176);
-__webpack_require__(181);
+__webpack_require__(175);
 __webpack_require__(180);
 __webpack_require__(179);
 __webpack_require__(178);
+__webpack_require__(177);
 
 /**
  * Billing History Components...
  */
-__webpack_require__(173);
-__webpack_require__(175);
+__webpack_require__(172);
 __webpack_require__(174);
+__webpack_require__(173);
 
 /**
  * Kiosk Components...
  */
-__webpack_require__(164);
 __webpack_require__(163);
-__webpack_require__(165);
-__webpack_require__(167);
-__webpack_require__(166);
 __webpack_require__(162);
+__webpack_require__(164);
+__webpack_require__(166);
+__webpack_require__(165);
+__webpack_require__(161);
+
+
+/***/ },
+/* 161 */
+/***/ function(module, exports, __webpack_require__) {
+
+var base = __webpack_require__(217);
+
+Vue.component('spark-kiosk-add-discount', {
+    mixins: [base]
+});
 
 
 /***/ },
@@ -24829,7 +24811,7 @@ __webpack_require__(162);
 
 var base = __webpack_require__(218);
 
-Vue.component('spark-kiosk-add-discount', {
+Vue.component('spark-kiosk-announcements', {
     mixins: [base]
 });
 
@@ -24840,7 +24822,7 @@ Vue.component('spark-kiosk-add-discount', {
 
 var base = __webpack_require__(219);
 
-Vue.component('spark-kiosk-announcements', {
+Vue.component('spark-kiosk', {
     mixins: [base]
 });
 
@@ -24851,7 +24833,7 @@ Vue.component('spark-kiosk-announcements', {
 
 var base = __webpack_require__(220);
 
-Vue.component('spark-kiosk', {
+Vue.component('spark-kiosk-metrics', {
     mixins: [base]
 });
 
@@ -24862,7 +24844,7 @@ Vue.component('spark-kiosk', {
 
 var base = __webpack_require__(221);
 
-Vue.component('spark-kiosk-metrics', {
+Vue.component('spark-kiosk-profile', {
     mixins: [base]
 });
 
@@ -24873,7 +24855,7 @@ Vue.component('spark-kiosk-metrics', {
 
 var base = __webpack_require__(222);
 
-Vue.component('spark-kiosk-profile', {
+Vue.component('spark-kiosk-users', {
     mixins: [base]
 });
 
@@ -24882,18 +24864,7 @@ Vue.component('spark-kiosk-profile', {
 /* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
-var base = __webpack_require__(223);
-
-Vue.component('spark-kiosk-users', {
-    mixins: [base]
-});
-
-
-/***/ },
-/* 168 */
-/***/ function(module, exports, __webpack_require__) {
-
-var base = __webpack_require__(225);
+var base = __webpack_require__(224);
 
 Vue.component('spark-navbar', {
     mixins: [base],
@@ -24916,12 +24887,23 @@ Vue.component('spark-navbar', {
 
 
 /***/ },
+/* 168 */
+/***/ function(module, exports, __webpack_require__) {
+
+var base = __webpack_require__(225);
+
+Vue.component('spark-notifications', {
+    mixins: [base]
+});
+
+
+/***/ },
 /* 169 */
 /***/ function(module, exports, __webpack_require__) {
 
 var base = __webpack_require__(226);
 
-Vue.component('spark-notifications', {
+Vue.component('spark-api', {
     mixins: [base]
 });
 
@@ -24932,7 +24914,7 @@ Vue.component('spark-notifications', {
 
 var base = __webpack_require__(227);
 
-Vue.component('spark-api', {
+Vue.component('spark-create-token', {
     mixins: [base]
 });
 
@@ -24943,7 +24925,7 @@ Vue.component('spark-api', {
 
 var base = __webpack_require__(228);
 
-Vue.component('spark-create-token', {
+Vue.component('spark-tokens', {
     mixins: [base]
 });
 
@@ -24954,7 +24936,7 @@ Vue.component('spark-create-token', {
 
 var base = __webpack_require__(229);
 
-Vue.component('spark-tokens', {
+Vue.component('spark-invoices', {
     mixins: [base]
 });
 
@@ -24965,7 +24947,7 @@ Vue.component('spark-tokens', {
 
 var base = __webpack_require__(230);
 
-Vue.component('spark-invoices', {
+Vue.component('spark-invoice-list', {
     mixins: [base]
 });
 
@@ -24976,7 +24958,7 @@ Vue.component('spark-invoices', {
 
 var base = __webpack_require__(231);
 
-Vue.component('spark-invoice-list', {
+Vue.component('spark-update-extra-billing-information', {
     mixins: [base]
 });
 
@@ -24987,7 +24969,7 @@ Vue.component('spark-invoice-list', {
 
 var base = __webpack_require__(232);
 
-Vue.component('spark-update-extra-billing-information', {
+Vue.component('spark-payment-method-braintree', {
     mixins: [base]
 });
 
@@ -24998,7 +24980,7 @@ Vue.component('spark-update-extra-billing-information', {
 
 var base = __webpack_require__(233);
 
-Vue.component('spark-payment-method-braintree', {
+Vue.component('spark-payment-method-stripe', {
     mixins: [base]
 });
 
@@ -25009,7 +24991,7 @@ Vue.component('spark-payment-method-braintree', {
 
 var base = __webpack_require__(234);
 
-Vue.component('spark-payment-method-stripe', {
+Vue.component('spark-redeem-coupon', {
     mixins: [base]
 });
 
@@ -25020,7 +25002,7 @@ Vue.component('spark-payment-method-stripe', {
 
 var base = __webpack_require__(235);
 
-Vue.component('spark-redeem-coupon', {
+Vue.component('spark-update-payment-method-braintree', {
     mixins: [base]
 });
 
@@ -25031,7 +25013,7 @@ Vue.component('spark-redeem-coupon', {
 
 var base = __webpack_require__(236);
 
-Vue.component('spark-update-payment-method-braintree', {
+Vue.component('spark-update-payment-method-stripe', {
     mixins: [base]
 });
 
@@ -25042,7 +25024,7 @@ Vue.component('spark-update-payment-method-braintree', {
 
 var base = __webpack_require__(237);
 
-Vue.component('spark-update-payment-method-stripe', {
+Vue.component('spark-update-vat-id', {
     mixins: [base]
 });
 
@@ -25053,7 +25035,7 @@ Vue.component('spark-update-payment-method-stripe', {
 
 var base = __webpack_require__(238);
 
-Vue.component('spark-update-vat-id', {
+Vue.component('spark-profile', {
     mixins: [base]
 });
 
@@ -25064,7 +25046,7 @@ Vue.component('spark-update-vat-id', {
 
 var base = __webpack_require__(239);
 
-Vue.component('spark-profile', {
+Vue.component('spark-update-contact-information', {
     mixins: [base]
 });
 
@@ -25075,24 +25057,13 @@ Vue.component('spark-profile', {
 
 var base = __webpack_require__(240);
 
-Vue.component('spark-update-contact-information', {
-    mixins: [base]
-});
-
-
-/***/ },
-/* 184 */
-/***/ function(module, exports, __webpack_require__) {
-
-var base = __webpack_require__(241);
-
 Vue.component('spark-update-profile-photo', {
     mixins: [base]
 });
 
 
 /***/ },
-/* 185 */
+/* 184 */
 /***/ function(module, exports) {
 
 Vue.component('spark-update-slug', {
@@ -25183,7 +25154,7 @@ Vue.component('spark-update-slug', {
 
 
 /***/ },
-/* 186 */
+/* 185 */
 /***/ function(module, exports) {
 
 Vue.component('update-social-accounts', {
@@ -25220,12 +25191,23 @@ Vue.component('update-social-accounts', {
 
 
 /***/ },
+/* 186 */
+/***/ function(module, exports, __webpack_require__) {
+
+var base = __webpack_require__(241);
+
+Vue.component('spark-security', {
+    mixins: [base]
+});
+
+
+/***/ },
 /* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
 var base = __webpack_require__(242);
 
-Vue.component('spark-security', {
+Vue.component('spark-disable-two-factor-auth', {
     mixins: [base]
 });
 
@@ -25236,7 +25218,7 @@ Vue.component('spark-security', {
 
 var base = __webpack_require__(243);
 
-Vue.component('spark-disable-two-factor-auth', {
+Vue.component('spark-enable-two-factor-auth', {
     mixins: [base]
 });
 
@@ -25247,7 +25229,7 @@ Vue.component('spark-disable-two-factor-auth', {
 
 var base = __webpack_require__(244);
 
-Vue.component('spark-enable-two-factor-auth', {
+Vue.component('spark-update-password', {
     mixins: [base]
 });
 
@@ -25258,7 +25240,7 @@ Vue.component('spark-enable-two-factor-auth', {
 
 var base = __webpack_require__(245);
 
-Vue.component('spark-update-password', {
+Vue.component('spark-settings', {
     mixins: [base]
 });
 
@@ -25269,7 +25251,7 @@ Vue.component('spark-update-password', {
 
 var base = __webpack_require__(246);
 
-Vue.component('spark-settings', {
+Vue.component('spark-subscription', {
     mixins: [base]
 });
 
@@ -25280,7 +25262,7 @@ Vue.component('spark-settings', {
 
 var base = __webpack_require__(247);
 
-Vue.component('spark-subscription', {
+Vue.component('spark-cancel-subscription', {
     mixins: [base]
 });
 
@@ -25291,7 +25273,7 @@ Vue.component('spark-subscription', {
 
 var base = __webpack_require__(248);
 
-Vue.component('spark-cancel-subscription', {
+Vue.component('spark-resume-subscription', {
     mixins: [base]
 });
 
@@ -25302,7 +25284,7 @@ Vue.component('spark-cancel-subscription', {
 
 var base = __webpack_require__(249);
 
-Vue.component('spark-resume-subscription', {
+Vue.component('spark-subscribe-braintree', {
     mixins: [base]
 });
 
@@ -25313,7 +25295,7 @@ Vue.component('spark-resume-subscription', {
 
 var base = __webpack_require__(250);
 
-Vue.component('spark-subscribe-braintree', {
+Vue.component('spark-subscribe-stripe', {
     mixins: [base]
 });
 
@@ -25324,7 +25306,7 @@ Vue.component('spark-subscribe-braintree', {
 
 var base = __webpack_require__(251);
 
-Vue.component('spark-subscribe-stripe', {
+Vue.component('spark-update-subscription', {
     mixins: [base]
 });
 
@@ -25335,7 +25317,7 @@ Vue.component('spark-subscribe-stripe', {
 
 var base = __webpack_require__(252);
 
-Vue.component('spark-update-subscription', {
+Vue.component('spark-teams', {
     mixins: [base]
 });
 
@@ -25346,7 +25328,7 @@ Vue.component('spark-update-subscription', {
 
 var base = __webpack_require__(253);
 
-Vue.component('spark-teams', {
+Vue.component('spark-create-team', {
     mixins: [base]
 });
 
@@ -25357,7 +25339,7 @@ Vue.component('spark-teams', {
 
 var base = __webpack_require__(254);
 
-Vue.component('spark-create-team', {
+Vue.component('spark-current-teams', {
     mixins: [base]
 });
 
@@ -25368,7 +25350,7 @@ Vue.component('spark-create-team', {
 
 var base = __webpack_require__(255);
 
-Vue.component('spark-current-teams', {
+Vue.component('spark-mailed-invitations', {
     mixins: [base]
 });
 
@@ -25379,7 +25361,7 @@ Vue.component('spark-current-teams', {
 
 var base = __webpack_require__(256);
 
-Vue.component('spark-mailed-invitations', {
+Vue.component('spark-pending-invitations', {
     mixins: [base]
 });
 
@@ -25390,7 +25372,7 @@ Vue.component('spark-mailed-invitations', {
 
 var base = __webpack_require__(257);
 
-Vue.component('spark-pending-invitations', {
+Vue.component('spark-send-invitation', {
     mixins: [base]
 });
 
@@ -25401,7 +25383,7 @@ Vue.component('spark-pending-invitations', {
 
 var base = __webpack_require__(258);
 
-Vue.component('spark-send-invitation', {
+Vue.component('spark-team-members', {
     mixins: [base]
 });
 
@@ -25412,7 +25394,7 @@ Vue.component('spark-send-invitation', {
 
 var base = __webpack_require__(259);
 
-Vue.component('spark-team-members', {
+Vue.component('spark-team-membership', {
     mixins: [base]
 });
 
@@ -25423,7 +25405,7 @@ Vue.component('spark-team-members', {
 
 var base = __webpack_require__(260);
 
-Vue.component('spark-team-membership', {
+Vue.component('spark-team-profile', {
     mixins: [base]
 });
 
@@ -25434,7 +25416,7 @@ Vue.component('spark-team-membership', {
 
 var base = __webpack_require__(261);
 
-Vue.component('spark-team-profile', {
+Vue.component('spark-team-settings', {
     mixins: [base]
 });
 
@@ -25445,7 +25427,7 @@ Vue.component('spark-team-profile', {
 
 var base = __webpack_require__(262);
 
-Vue.component('spark-team-settings', {
+Vue.component('spark-update-team-name', {
     mixins: [base]
 });
 
@@ -25456,24 +25438,13 @@ Vue.component('spark-team-settings', {
 
 var base = __webpack_require__(263);
 
-Vue.component('spark-update-team-name', {
-    mixins: [base]
-});
-
-
-/***/ },
-/* 209 */
-/***/ function(module, exports, __webpack_require__) {
-
-var base = __webpack_require__(264);
-
 Vue.component('spark-update-team-photo', {
     mixins: [base]
 });
 
 
 /***/ },
-/* 210 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
 module.exports = {
@@ -25618,7 +25589,7 @@ module.exports = {
 
 
 /***/ },
-/* 211 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 module.exports = {
@@ -25879,7 +25850,7 @@ module.exports = {
 
 
 /***/ },
-/* 212 */
+/* 211 */
 /***/ function(module, exports) {
 
 /**
@@ -25953,7 +25924,7 @@ Vue.filter('currency', function (value) {
 });
 
 /***/ },
-/* 213 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 /**
@@ -25969,21 +25940,21 @@ Spark.forms = {
 /**
  * Load the SparkForm helper class.
  */
-__webpack_require__(215);
+__webpack_require__(214);
 
 /**
  * Define the SparkFormError collection class.
  */
-__webpack_require__(214);
+__webpack_require__(213);
 
 /**
  * Add additional HTTP / form helpers to the Spark object.
  */
-$.extend(Spark, __webpack_require__(216));
+$.extend(Spark, __webpack_require__(215));
 
 
 /***/ },
-/* 214 */
+/* 213 */
 /***/ function(module, exports) {
 
 /**
@@ -26060,7 +26031,7 @@ window.SparkFormErrors = function () {
 
 
 /***/ },
-/* 215 */
+/* 214 */
 /***/ function(module, exports) {
 
 /**
@@ -26117,7 +26088,7 @@ window.SparkForm = function (data) {
 
 
 /***/ },
-/* 216 */
+/* 215 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -26180,7 +26151,7 @@ module.exports = {
 
 
 /***/ },
-/* 217 */
+/* 216 */
 /***/ function(module, exports) {
 
 module.exports = function (request, next) {
@@ -26213,7 +26184,7 @@ module.exports = function (request, next) {
 
 
 /***/ },
-/* 218 */
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
 function kioskAddDiscountForm () {
@@ -26284,7 +26255,7 @@ module.exports = {
 
 
 /***/ },
-/* 219 */
+/* 218 */
 /***/ function(module, exports) {
 
 var announcementsCreateForm = function () {
@@ -26414,7 +26385,7 @@ module.exports = {
 
 
 /***/ },
-/* 220 */
+/* 219 */
 /***/ function(module, exports, __webpack_require__) {
 
 module.exports = {
@@ -26453,7 +26424,7 @@ module.exports = {
 
 
 /***/ },
-/* 221 */
+/* 220 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -26758,7 +26729,7 @@ module.exports = {
 
 
 /***/ },
-/* 222 */
+/* 221 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -26916,7 +26887,7 @@ module.exports = {
 
 
 /***/ },
-/* 223 */
+/* 222 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -27047,7 +27018,7 @@ module.exports = {
 
 
 /***/ },
-/* 224 */
+/* 223 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -27083,7 +27054,7 @@ module.exports = {
 
 
 /***/ },
-/* 225 */
+/* 224 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -27113,7 +27084,7 @@ module.exports = {
 
 
 /***/ },
-/* 226 */
+/* 225 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -27199,7 +27170,7 @@ module.exports = {
 
 
 /***/ },
-/* 227 */
+/* 226 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -27261,7 +27232,7 @@ module.exports = {
 
 
 /***/ },
-/* 228 */
+/* 227 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -27408,7 +27379,7 @@ module.exports = {
 
 
 /***/ },
-/* 229 */
+/* 228 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -27521,7 +27492,7 @@ module.exports = {
 
 
 /***/ },
-/* 230 */
+/* 229 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -27576,7 +27547,7 @@ module.exports = {
 
 
 /***/ },
-/* 231 */
+/* 230 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -27597,7 +27568,7 @@ module.exports = {
 
 
 /***/ },
-/* 232 */
+/* 231 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -27648,7 +27619,7 @@ module.exports = {
 
 
 /***/ },
-/* 233 */
+/* 232 */
 /***/ function(module, exports, __webpack_require__) {
 
 module.exports = {
@@ -27731,7 +27702,7 @@ module.exports = {
 
 
 /***/ },
-/* 234 */
+/* 233 */
 /***/ function(module, exports, __webpack_require__) {
 
 module.exports = {
@@ -27780,7 +27751,7 @@ module.exports = {
 
 
 /***/ },
-/* 235 */
+/* 234 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -27829,7 +27800,7 @@ module.exports = {
 
 
 /***/ },
-/* 236 */
+/* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
 module.exports = {
@@ -27941,7 +27912,7 @@ module.exports = {
 
 
 /***/ },
-/* 237 */
+/* 236 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -28134,7 +28105,7 @@ module.exports = {
 
 
 /***/ },
-/* 238 */
+/* 237 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -28182,7 +28153,7 @@ module.exports = {
 
 
 /***/ },
-/* 239 */
+/* 238 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -28191,7 +28162,7 @@ module.exports = {
 
 
 /***/ },
-/* 240 */
+/* 239 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -28234,7 +28205,7 @@ module.exports = {
 
 
 /***/ },
-/* 241 */
+/* 240 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -28303,7 +28274,7 @@ module.exports = {
 
 
 /***/ },
-/* 242 */
+/* 241 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -28336,7 +28307,7 @@ module.exports = {
 
 
 /***/ },
-/* 243 */
+/* 242 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -28367,7 +28338,7 @@ module.exports = {
 
 
 /***/ },
-/* 244 */
+/* 243 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -28414,7 +28385,7 @@ module.exports = {
 
 
 /***/ },
-/* 245 */
+/* 244 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -28444,7 +28415,7 @@ module.exports = {
 
 
 /***/ },
-/* 246 */
+/* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
 module.exports = {
@@ -28478,7 +28449,7 @@ module.exports = {
 
 
 /***/ },
-/* 247 */
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
 module.exports = {
@@ -28536,7 +28507,7 @@ module.exports = {
 
 
 /***/ },
-/* 248 */
+/* 247 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -28590,7 +28561,7 @@ module.exports = {
 
 
 /***/ },
-/* 249 */
+/* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
 module.exports = {
@@ -28637,7 +28608,7 @@ module.exports = {
 
 
 /***/ },
-/* 250 */
+/* 249 */
 /***/ function(module, exports, __webpack_require__) {
 
 module.exports = {
@@ -28741,7 +28712,7 @@ module.exports = {
 
 
 /***/ },
-/* 251 */
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
 module.exports = {
@@ -28965,7 +28936,7 @@ module.exports = {
 
 
 /***/ },
-/* 252 */
+/* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
 module.exports = {
@@ -29065,7 +29036,7 @@ module.exports = {
 
 
 /***/ },
-/* 253 */
+/* 252 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -29074,7 +29045,7 @@ module.exports = {
 
 
 /***/ },
-/* 254 */
+/* 253 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -29237,7 +29208,7 @@ module.exports = {
 
 
 /***/ },
-/* 255 */
+/* 254 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -29328,7 +29299,7 @@ module.exports = {
 
 
 /***/ },
-/* 256 */
+/* 255 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -29350,7 +29321,7 @@ module.exports = {
 
 
 /***/ },
-/* 257 */
+/* 256 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -29429,7 +29400,7 @@ module.exports = {
 
 
 /***/ },
-/* 258 */
+/* 257 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -29557,7 +29528,7 @@ module.exports = {
 
 
 /***/ },
-/* 259 */
+/* 258 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -29709,7 +29680,7 @@ module.exports = {
 
 
 /***/ },
-/* 260 */
+/* 259 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -29756,7 +29727,7 @@ module.exports = {
 
 
 /***/ },
-/* 261 */
+/* 260 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -29765,7 +29736,7 @@ module.exports = {
 
 
 /***/ },
-/* 262 */
+/* 261 */
 /***/ function(module, exports, __webpack_require__) {
 
 module.exports = {
@@ -29828,7 +29799,7 @@ module.exports = {
 
 
 /***/ },
-/* 263 */
+/* 262 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -29870,7 +29841,7 @@ module.exports = {
 
 
 /***/ },
-/* 264 */
+/* 263 */
 /***/ function(module, exports) {
 
 module.exports = {
@@ -29948,7 +29919,7 @@ module.exports = {
 
 
 /***/ },
-/* 265 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
 /*
@@ -29957,36 +29928,36 @@ module.exports = {
  * Vue is the JavaScript framework used by Spark.
  */
 if (window.Vue === undefined) {
-    window.Vue = __webpack_require__(279);
+    window.Vue = __webpack_require__(278);
 
     window.Bus = new Vue();
 }
 
-__webpack_require__(278);
+__webpack_require__(277);
 
 /**
  * Load Vue HTTP Interceptors.
  */
-Vue.http.interceptors.push(__webpack_require__(217));
+Vue.http.interceptors.push(__webpack_require__(216));
 
 /**
  * Load Vue Global Mixin.
  */
-Vue.mixin(__webpack_require__(224));
+Vue.mixin(__webpack_require__(223));
 
 /**
  * Define the Vue filters.
  */
-__webpack_require__(212);
+__webpack_require__(211);
 
 /**
  * Load the Spark form utilities.
  */
-__webpack_require__(213);
+__webpack_require__(212);
 
 
 /***/ },
-/* 266 */
+/* 265 */
 /***/ function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -39806,7 +39777,7 @@ return jQuery;
 
 
 /***/ },
-/* 267 */
+/* 266 */
 /***/ function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -39968,7 +39939,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 
 
 /***/ },
-/* 268 */
+/* 267 */
 /***/ function(module, exports, __webpack_require__) {
 
 var map = {
@@ -40203,21 +40174,21 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 268;
+webpackContext.id = 267;
 
 
 /***/ },
-/* 269 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 'use strict';
 
-module.exports = __webpack_require__(273)
+module.exports = __webpack_require__(272)
 
 
 /***/ },
-/* 270 */
+/* 269 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40237,7 +40208,7 @@ Promise.prototype.done = function (onFulfilled, onRejected) {
 
 
 /***/ },
-/* 271 */
+/* 270 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40351,7 +40322,7 @@ Promise.prototype['catch'] = function (onRejected) {
 
 
 /***/ },
-/* 272 */
+/* 271 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40374,22 +40345,22 @@ Promise.prototype['finally'] = function (f) {
 
 
 /***/ },
-/* 273 */
+/* 272 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 'use strict';
 
 module.exports = __webpack_require__(4);
-__webpack_require__(270);
-__webpack_require__(272);
+__webpack_require__(269);
 __webpack_require__(271);
+__webpack_require__(270);
+__webpack_require__(273);
 __webpack_require__(274);
-__webpack_require__(275);
 
 
 /***/ },
-/* 274 */
+/* 273 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40526,7 +40497,7 @@ Promise.prototype.nodeify = function (callback, ctx) {
 
 
 /***/ },
-/* 275 */
+/* 274 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40595,7 +40566,7 @@ Promise.disableSynchronous = function() {
 
 
 /***/ },
-/* 276 */
+/* 275 */
 /***/ function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscore.js 1.8.3
@@ -42149,7 +42120,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
 
 
 /***/ },
-/* 277 */
+/* 276 */
 /***/ function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -44406,7 +44377,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
 /***/ },
-/* 278 */
+/* 277 */
 /***/ function(module, exports) {
 
 "use strict";
@@ -45930,7 +45901,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 module.exports = plugin;
 
 /***/ },
-/* 279 */
+/* 278 */
 /***/ function(module, exports, __webpack_require__) {
 
 /*!
@@ -53863,7 +53834,7 @@ return Vue$3;
 
 
 /***/ },
-/* 280 */
+/* 279 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";

@@ -24,8 +24,6 @@ Vue.component('view-user', {
             },
             viewed_user: {},
             episodes_liked_loaded: false,
-            shows_owned: [],
-            shows_owned_loaded: false,
             shows_liked: [],
             shows_liked_loaded: false,
             playlists: [],
@@ -113,22 +111,6 @@ Vue.component('view-user', {
                     }, 8000);
                 });
         },
-        getShowsOwned() {
-            var self = this;
-            this.$http.get('/api/users/' + this.slug + '/shows_owned')
-                .then(response => {
-                    self.shows_owned = response.data;
-                    self.shows_owned_loaded = true;
-                    if (self.shows_owned.length == 0){
-                        $("li-shows-owned").hide();
-                    }
-                }, response => {
-                    $("#modal-error").modal('show');
-                    setTimeout(function(){
-                        $("#modal-error").modal('hide');
-                    }, 8000);
-                });
-        },
         getPlaylists() {
             var self = this;
             this.$http.get('/api/users/' + this.slug + '/playlists')
@@ -200,7 +182,6 @@ Vue.component('view-user', {
                 });
             this.getEpisodesLiked();
             this.getShowsLiked();
-            this.getShowsOwned();
             this.getPlaylists();
             this.getRecommendationsAccepted();
         },
