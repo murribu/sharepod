@@ -23,7 +23,7 @@ Vue.component('shows-search', {
             if (this.searchText != ''){
                 this.holdText = 'Searching...';
                 var self = this;
-                this.$http.get('/api/shows/search?s=' + this.searchText)
+                axios.get('/api/shows/search?s=' + this.searchText)
                     .then(response => {
                         self.shows = response.data;
                         self.holdText = '';

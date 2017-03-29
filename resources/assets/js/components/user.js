@@ -87,7 +87,7 @@ Vue.component('view-user', {
         },
         getEpisodesLiked() {
             var self = this;
-            this.$http.get('/api/users/' + this.slug + '/episodes_liked')
+            axios.get('/api/users/' + this.slug + '/episodes_liked')
                 .then(response => {
                     self.episodeGroups.episodes_liked.episodes = response.data;
                     self.episodes_liked_loaded = true;
@@ -100,7 +100,7 @@ Vue.component('view-user', {
         },
         getShowsLiked() {
             var self = this;
-            this.$http.get('/api/users/' + this.slug + '/shows_liked')
+            axios.get('/api/users/' + this.slug + '/shows_liked')
                 .then(response => {
                     self.shows_liked = response.data;
                     self.shows_liked_loaded = true;
@@ -113,7 +113,7 @@ Vue.component('view-user', {
         },
         getPlaylists() {
             var self = this;
-            this.$http.get('/api/users/' + this.slug + '/playlists')
+            axios.get('/api/users/' + this.slug + '/playlists')
                 .then(response => {
                     self.playlists = response.data;
                     self.playlists_loaded = true;
@@ -126,7 +126,7 @@ Vue.component('view-user', {
         },
         getConnections() {
             var self = this;
-            this.$http.get('/api/users/' + this.slug + '/connections')
+            axios.get('/api/users/' + this.slug + '/connections')
                 .then(response => {
                     self.connections.accepted = response.data.accepted;
                     self.connections.pending = response.data.pending;
@@ -140,7 +140,7 @@ Vue.component('view-user', {
         },
         getRecommendationsAccepted() {
             var self = this;
-            this.$http.get('/api/users/' + this.slug + '/recommendations_accepted')
+            axios.get('/api/users/' + this.slug + '/recommendations_accepted')
                 .then(response => {
                     self.episodeGroups.recommendations_accepted.episodes = response.data;
                     self.recommendations_loaded = true;
@@ -153,7 +153,7 @@ Vue.component('view-user', {
         },
         getArchivedEpisodes() {
             var self = this;
-            this.$http.get('/api/archived_episodes')
+            axios.get('/api/archived_episodes')
                 .then(response => {
                     self.episodeGroups.episodes_archived.episodes = response.data;
                     self.episodes_archived_loaded = true;
@@ -166,7 +166,7 @@ Vue.component('view-user', {
         },
         getUser() {
             var self = this;
-            this.$http.get('/api/users/' + this.slug)
+            axios.get('/api/users/' + this.slug)
                 .then(response => {
                     self.viewed_user = response.data;
                     if (self.isMe){

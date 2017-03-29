@@ -10,7 +10,7 @@ Vue.component('spark-navbar', {
     methods: {
         sendVerificationEmail() {
             var vm = this;
-            this.$http.get('/send_verification_email').then(response => {
+            axios.get('/send_verification_email').then(response => {
                 vm.verification_email_sent = true;
             }, response => {
                 // alert('error');

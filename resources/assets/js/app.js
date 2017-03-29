@@ -24,3 +24,5 @@ Vue.use(VeeValidate);
 var app = new Vue({
     mixins: [require('spark')]
 });
+var axios = require('axios');
+Vue.prototype.$http = axios;

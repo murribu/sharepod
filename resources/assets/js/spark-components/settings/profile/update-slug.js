@@ -35,7 +35,7 @@ Vue.component('spark-update-slug', {
             var sent = {
                 slug: this.slug
             };
-            this.$http.post('/api/userslug/update', sent)
+            axios.post('/api/userslug/update', sent)
                 .then(response => {
                     self.busy = false;
                     if (response.data.success == '1'){
@@ -61,7 +61,7 @@ Vue.component('spark-update-slug', {
                 var sent = {
                     slug: this.slug
                 };
-                this.$http.post('/api/userslug/search', sent)
+                axios.post('/api/userslug/search', sent)
                     .then(response => {
                         self.busy = false;
                         if (response.data.slug){

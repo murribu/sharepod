@@ -60,7 +60,7 @@ Vue.component('show', {
     },
     created() {
         var self = this;
-        this.$http.get('/api/shows/' + this.slug)
+        axios.get('/api/shows/' + this.slug)
             .then(response => {
                 self.episodeGroups.show = response.data;
             },
@@ -82,7 +82,7 @@ Vue.component('show', {
                 if (this.searchText != ''){
                     this.holdText = 'Searching...';
                     var self = this;
-                    this.$http.get('/api/shows/' + this.episodeGroups.show.slug + '/search?s=' + this.searchText)
+                    axios.get('/api/shows/' + this.episodeGroups.show.slug + '/search?s=' + this.searchText)
                         .then(response => {
                             self.episodeGroups.searchResults.episodes = response.data.episodes;
                             self.episodeGroups.searchResults.count = response.data.count;
@@ -106,7 +106,7 @@ Vue.component('show', {
         , 
         likeShow() {
             var self = this;
-            this.$http.post('/api/shows/like', {slug: this.episodeGroups.show.slug})
+            axios.post('/api/shows/like', {slug: this.episodeGroups.show.slug})
                 .then(response => {
                     self.updateShow(response.data.total_likes, response.data.this_user_likes);
                 }, response => {
@@ -118,7 +118,7 @@ Vue.component('show', {
         },
         unlikeShow() {
             var self = this;
-            this.$http.post('/api/shows/unlike', {slug: this.episodeGroups.show.slug})
+            axios.post('/api/shows/unlike', {slug: this.episodeGroups.show.slug})
                 .then(response => {
                     self.updateShow(response.data.total_likes, response.data.this_user_likes);
                 }, response => {
@@ -130,7 +130,7 @@ Vue.component('show', {
         },
         showMore() {
             var self = this;
-            this.$http.get('/api/shows/' + this.slug + '/episodes?pubdate=' + this.oldestPubdate)
+            axios.get('/api/shows/' + this.slug + '/episodes?pubdate=' + this.oldestPubdate)
                 .then(response => {
                     self.episodeGroups.show.episodes = self.episodeGroups.show.episodes.concat(response.data);
                 }, response => {

@@ -27,7 +27,7 @@ Vue.component('playlists', {
         loadUserPlaylists() {
             var self = this;
             this.userPlaylistsLoaded = false;
-            this.$http.get('/api/playlists')
+            axios.get('/api/playlists')
                 .then(response => {
                     self.userPlaylists = response.data;
                     self.userPlaylistsLoaded = true;
@@ -41,7 +41,7 @@ Vue.component('playlists', {
         loadPopularPlaylists() {
             var self = this;
             this.popularPlaylistsLoaded = false;
-            this.$http.get('/api/playlists/popular')
+            axios.get('/api/playlists/popular')
                 .then(response => {
                     self.popularPlaylists = response.data;
                     self.popularPlaylistsLoaded = true;

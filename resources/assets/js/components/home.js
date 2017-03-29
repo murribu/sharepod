@@ -34,7 +34,7 @@ Vue.component('home', {
     methods:{
         loadPopularEpisodes() {
             var self = this;
-            this.$http.get('/api/episodes/popular')
+            axios.get('/api/episodes/popular')
                 .then(response => {
                     self.episodeGroups.popular.episodes = response.data;
                     for(var e in self.episodeGroups.popular.episodes){
@@ -51,7 +51,7 @@ Vue.component('home', {
         },
         getLikers(episode){
             var self = this;
-            this.$http.get('/api/episodes/' + episode.slug + '/likers')
+            axios.get('/api/episodes/' + episode.slug + '/likers')
                 .then(response => {
                     for(var e in self.episodeGroups.popular.episodes){
                         if (self.episodeGroups.popular.episodes[e].slug == episode.slug){

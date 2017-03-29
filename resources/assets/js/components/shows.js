@@ -41,7 +41,7 @@ Vue.component('shows-browse', {
             
             this.processing = true;
             this.error = false;
-            this.$http.get('api/shows')
+            axios.get('api/shows')
                 .then(response => {
                     self.processing = false;
                     self.shows = response.data.shows;

@@ -36,7 +36,7 @@ Vue.component('connections', {
         loadConnections() {
             var self = this;
             this.outstandingRequests++;
-            this.$http.get('/api/connections')
+            axios.get('/api/connections')
                 .then(response => {
                     if (--self.outstandingRequests == 0){
                         self.connections = response.data
@@ -83,7 +83,7 @@ Vue.component('connections', {
             var sent = {
                 connection_id: c.connection_id
             }
-            this.$http.post('/api/connections/approve', sent)
+            axios.post('/api/connections/approve', sent)
                 .then(response => {
                     self.loadConnections();
                 }, response => {
@@ -99,7 +99,7 @@ Vue.component('connections', {
             var sent = {
                 connection_id: c.connection_id
             }
-            this.$http.post('/api/connections/block', sent)
+            axios.post('/api/connections/block', sent)
                 .then(response => {
                     self.loadConnections();
                 }, response => {
@@ -115,7 +115,7 @@ Vue.component('connections', {
             var sent = {
                 connection_id: c.connection_id
             }
-            this.$http.post('/api/connections/make_pending', sent)
+            axios.post('/api/connections/make_pending', sent)
                 .then(response => {
                     self.loadConnections();
                 }, response => {

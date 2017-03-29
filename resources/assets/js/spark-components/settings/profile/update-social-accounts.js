@@ -12,7 +12,7 @@ Vue.component('update-social-accounts', {
         },
         unlinkWithFacebook() {
             var vm = this;
-            this.$http.get('/auth/facebook/unlink').then(response => {
+            axios.get('/auth/facebook/unlink').then(response => {
                 Bus.$emit('updateUser');
                 $('#modal-unlink-facebook').modal('hide');
             });
@@ -22,7 +22,7 @@ Vue.component('update-social-accounts', {
         },
         unlinkWithTwitter() {
             var vm = this;
-            this.$http.get('/auth/twitter/unlink').then(response => {
+            axios.get('/auth/twitter/unlink').then(response => {
                 Bus.$emit('updateUser');
                 $('#modal-unlink-twitter').modal('hide');
             });

@@ -28,7 +28,7 @@ module.exports = {
                 var new_e = {};
                 
                 this.setAttribute(episode.slug, 'archive_busy', true);
-                this.$http.post('/api/episodes/archive', sent)
+                axios.post('/api/episodes/archive', sent)
                     .then(response => {
                         $("#modal-archive-result").modal('show');
                         self.archiveResultHeader = response.data.header;
@@ -56,7 +56,7 @@ module.exports = {
             var new_e = {};
             
             this.setAttribute(episode.slug, 'archive_busy', true);
-            this.$http.post('/api/episodes/unarchive', sent)
+            axios.post('/api/episodes/unarchive', sent)
                 .then(response => {
                     $("#modal-unarchive-are-you-sure").modal('hide');
                     self.updateEpisode(self.selectedEpisode.slug, response.data.stats);
@@ -76,7 +76,7 @@ module.exports = {
         },
         getPlaylists() {
             var self = this;
-            this.$http.get('/api/playlists')
+            axios.get('/api/playlists')
                 .then(response => {
                     self.playlists = response.data;
                 }, response => {
@@ -104,7 +104,7 @@ module.exports = {
             };
             this.selectedPlaylist = playlist;
             $("#modal-select-playlist").modal('hide');
-            this.$http.post('/api/playlists/' + playlist.slug + '/add_episode', sent)
+            axios.post('/api/playlists/' + playlist.slug + '/add_episode', sent)
                 .then(response => {
                     $("#modal-add-to-playlist-success").modal('show');
                     setTimeout(function(){
@@ -120,7 +120,7 @@ module.exports = {
         },
         getRecentRecommendees(){
             var self = this;
-            this.$http.get('/api/recent_recommendees')
+            axios.get('/api/recent_recommendees')
                 .then(response => {
                     self.recentRecommendees = response.data;
                 }, response => {
@@ -133,7 +133,7 @@ module.exports = {
         recommendEpisodeToExistingUser(user_slug) {
             var self = this;
             this.recommendForm.busy = true;
-            this.$http.post('/recommend', {slug: this.selectedEpisode.slug, user_slug: user_slug, comment: this.recommendationComment})
+            axios.post('/recommend', {slug: this.selectedEpisode.slug, user_slug: user_slug, comment: this.recommendationComment})
                 .then(response => {
                     self.recommendForm.busy = false;
                     self.showSuccessModal();
@@ -164,7 +164,7 @@ module.exports = {
         },
         sendRecommendation(){
             var self = this;
-            this.$http.post('/recommend', {slug: this.selectedEpisode.slug, email_address: this.recommendEmail, twitter_handle: this.recommendTwitter})
+            axios.post('/recommend', {slug: this.selectedEpisode.slug, email_address: this.recommendEmail, twitter_handle: this.recommendTwitter})
                 .then(response => {
                     self.recommendForm.busy = false;
                     self.showSuccessModal();
@@ -198,7 +198,7 @@ module.exports = {
         },
         likeEpisode(episode) {
             var self = this;
-            this.$http.post('/api/episodes/like', {slug: episode.slug})
+            axios.post('/api/episodes/like', {slug: episode.slug})
                 .then(response => {
                     self.updateEpisode(episode.slug, response.data.stats);
                     self.setAttribute(episode.slug, 'like_busy', false);
@@ -212,7 +212,7 @@ module.exports = {
         },
         unlikeEpisode(episode) {
             var self = this;
-            this.$http.post('/api/episodes/unlike', {slug: episode.slug})
+            axios.post('/api/episodes/unlike', {slug: episode.slug})
                 .then(response => {
                     self.updateEpisode(episode.slug, response.data.stats);
                     self.setAttribute(episode.slug, 'like_busy', false);

@@ -25,7 +25,7 @@ Vue.component('shows-new', {
             this.error = false;
             this.already_exists = false;
             this.errorMessage = '';
-            this.$http.post('/shows/new', sent)
+            axios.post('/shows/new', sent)
                 .then(response => {
                     self.processing = false;
                     self.error = false;

@@ -32,7 +32,7 @@ Vue.component('episode', {
     methods: {
         loadEpisode() {
             var self = this;
-            this.$http.get('/api/episodes/' + this.slug)
+            axios.get('/api/episodes/' + this.slug)
                 .then(response => {
                     self.episodeGroups.one.episodes = [response.data];
                     self.show = {

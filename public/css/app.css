@@ -254,8 +254,8 @@ th {
 }
 @font-face {
   font-family: 'Glyphicons Halflings';
-  src: url('../fonts/glyphicons-halflings-regular.eot');
-  src: url('../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('../fonts/glyphicons-halflings-regular.woff') format('woff'), url('../fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+  src: url(/fonts/glyphicons-halflings-regular.eot?f4769f9bdb7466be65088239c12046d1);
+  src: url(/fonts/glyphicons-halflings-regular.eot?f4769f9bdb7466be65088239c12046d1?#iefix) format('embedded-opentype'), url(/fonts/glyphicons-halflings-regular.woff2?448c34a56d699c29117adc64c43affeb) format('woff2'), url(/fonts/glyphicons-halflings-regular.woff?fa2772327f55d8198301fdb8bcfc8158) format('woff'), url(/fonts/glyphicons-halflings-regular.ttf?e18bbf611f2a2e43afc071aa2f4e1512) format('truetype'), url(/fonts/glyphicons-halflings-regular.svg?89889688147bd7575d6327160d64e760#glyphicons_halflingsregular) format('svg');
 }
 .glyphicon {
   position: relative;
@@ -2977,7 +2977,8 @@ select[multiple].input-lg {
   font-weight: 300;
   text-align: center;
   vertical-align: middle;
-  touch-action: manipulation;
+  -ms-touch-action: manipulation;
+      touch-action: manipulation;
   cursor: pointer;
   background-image: none;
   border: 1px solid transparent;
@@ -7139,14 +7140,18 @@ fieldset[disabled] .btn-danger-outline.active {
 .hamburger {
   height: 70px;
   display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
   -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
-  flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
   -webkit-box-pack: center;
-  justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   -webkit-box-align: center;
-  align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 .navbar-icon {
   padding-top: 3px;
@@ -7163,14 +7168,14 @@ fieldset[disabled] .btn-danger-outline.active {
   -webkit-transition: all .15s;
   transition: all .15s;
   -webkit-transform: scale(0.85);
-  transform: scale(0.85);
+          transform: scale(0.85);
 }
 .navbar-icon .icon {
   font-size: 21px;
 }
 .has-activity-indicator:hover .activity-indicator {
   -webkit-transform: scale(1.1);
-  transform: scale(1.1);
+          transform: scale(1.1);
 }
 .navbar .dropdown-header {
   font-weight: bold;
@@ -7270,12 +7275,15 @@ fieldset[disabled] .btn-danger-outline.active {
 }
 #modal-notifications .notification-content .meta {
   display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  align-content: flex-end;
+  -ms-flex-line-pack: end;
+      align-content: flex-end;
 }
 #modal-notifications .notification-content .title {
   -webkit-box-flex: 1;
-  flex: 1;
+      -ms-flex: 1;
+          flex: 1;
   font-weight: bold;
   line-height: 1.2;
   margin: 2px 0 10px;
@@ -8973,5 +8981,3 @@ fieldset[disabled] .btn-yahoo.focus {
   color: #720e9e;
   background-color: #fff;
 }
-
-/*# sourceMappingURL=app.css.map */

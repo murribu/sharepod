@@ -22,7 +22,7 @@ Vue.component('recommendation', {
                 slugs: [this.recommendation.slug]
             };
             this.busy = true;
-            this.$http.post('/api/recommendations/accept', sent)
+            axios.post('/api/recommendations/accept', sent)
                 .then(response => {
                     self.loadRecommenation();
                     self.busy = false;
@@ -39,7 +39,7 @@ Vue.component('recommendation', {
                 slugs: [this.recommendation.slug]
             };
             this.busy = true;
-            this.$http.post('/api/recommendations/reject', sent)
+            axios.post('/api/recommendations/reject', sent)
                 .then(response => {
                     self.loadRecommenation();
                     self.busy = false;
@@ -56,7 +56,7 @@ Vue.component('recommendation', {
                 slugs: [this.recommendation.slug]
             };
             this.busy = true;
-            this.$http.post('/api/recommendations/make_pending', sent)
+            axios.post('/api/recommendations/make_pending', sent)
                 .then(response => {
                     self.loadRecommenation();
                     self.busy = false;
@@ -70,7 +70,7 @@ Vue.component('recommendation', {
         loadRecommenation() {
             var self = this;
             this.recommendation_loaded = false;
-            this.$http.get('/api/recommendations/' + this.slug)
+            axios.get('/api/recommendations/' + this.slug)
                 .then(response => {
                     self.recommendation = response.data;
                     self.recommendation_loaded = true;

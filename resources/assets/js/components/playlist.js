@@ -57,7 +57,7 @@ Vue.component('playlist', {
             var sent = {
                 slug: episode.slug
             };
-            this.$http.post('/api/playlists/' + this.slug + '/move_to_top', sent)
+            axios.post('/api/playlists/' + this.slug + '/move_to_top', sent)
                 .then(response => {
                     self.episodeGroups.playlist.episodes = response.data;
                     self.loaded = true;
@@ -74,7 +74,7 @@ Vue.component('playlist', {
             var sent = {
                 slug: episode.slug
             };
-            this.$http.post('/api/playlists/' + this.slug + '/move_up', sent)
+            axios.post('/api/playlists/' + this.slug + '/move_up', sent)
                 .then(response => {
                     self.episodeGroups.playlist.episodes = response.data;
                     self.loaded = true;
@@ -91,7 +91,7 @@ Vue.component('playlist', {
             var sent = {
                 slug: episode.slug
             };
-            this.$http.post('/api/playlists/' + this.slug + '/move_down', sent)
+            axios.post('/api/playlists/' + this.slug + '/move_down', sent)
                 .then(response => {
                     self.episodeGroups.playlist.episodes = response.data;
                     self.loaded = true;
@@ -108,7 +108,7 @@ Vue.component('playlist', {
             var sent = {
                 slug: episode.slug
             };
-            this.$http.post('/api/playlists/' + this.slug + '/move_to_bottom', sent)
+            axios.post('/api/playlists/' + this.slug + '/move_to_bottom', sent)
                 .then(response => {
                     self.episodeGroups.playlist.episodes = response.data;
                     self.loaded = true;
@@ -127,7 +127,7 @@ Vue.component('playlist', {
             var sent = {
                 slug: this.areYouSure.episode_slug
             };
-            this.$http.post('/api/playlists/' + this.slug + '/remove', sent)
+            axios.post('/api/playlists/' + this.slug + '/remove', sent)
                 .then(response => {
                     this.areYouSure.busy = false;
                     self.episodeGroups.playlist.episodes = response.data;
@@ -143,7 +143,7 @@ Vue.component('playlist', {
         loadPlaylist() {
             var self = this;
             this.loaded = false;
-            this.$http.get('/api/playlists/' + this.slug)
+            axios.get('/api/playlists/' + this.slug)
                 .then(response => {
                     self.episodeGroups.playlist = response.data;
                     self.loaded = true;

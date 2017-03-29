@@ -31,7 +31,7 @@ Vue.component('recommendations', {
             }
             this.updatePendingBusy = true;
             this.updateAcceptedBusy = true;
-            this.$http.post('/api/recommendations/accept', sent)
+            axios.post('/api/recommendations/accept', sent)
                 .then(response => {
                     self.loadRecommendationsPending();
                     self.loadRecommendationsAccepted();
@@ -52,7 +52,7 @@ Vue.component('recommendations', {
             }
             this.updatePendingBusy = true;
             this.updateAcceptedBusy = true;
-            this.$http.post('/api/recommendations/reject', sent)
+            axios.post('/api/recommendations/reject', sent)
                 .then(response => {
                     self.loadRecommendationsPending();
                     self.loadRecommendationsAccepted();
@@ -73,7 +73,7 @@ Vue.component('recommendations', {
             }
             this.updatePendingBusy = true;
             this.updateAcceptedBusy = true;
-            this.$http.post('/api/recommendations/make_pending', sent)
+            axios.post('/api/recommendations/make_pending', sent)
                 .then(response => {
                     self.loadRecommendationsPending();
                     self.loadRecommendationsAccepted();
@@ -87,7 +87,7 @@ Vue.component('recommendations', {
         loadRecommendationsPending(){
             var self = this;
             this.updatePendingBusy = true;
-            this.$http.get('/api/recommendations_pending')
+            axios.get('/api/recommendations_pending')
                 .then(response => {
                     self.recommendations_pending = response.data;
                     self.updatePendingBusy = false;
@@ -103,7 +103,7 @@ Vue.component('recommendations', {
         loadRecommendationsAccepted(){
             var self = this;
             this.updateAcceptedBusy = true;
-            this.$http.get('/api/recommendations_accepted')
+            axios.get('/api/recommendations_accepted')
                 .then(response => {
                     self.recommendations_accepted = response.data;
                     self.updateAcceptedBusy = false;
