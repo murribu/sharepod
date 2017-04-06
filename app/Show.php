@@ -206,7 +206,7 @@ class Show extends Model {
             $str = curl_exec($ch);
             curl_close($ch);
 
-            $str = mb_convert_encoding($str, 'UTF-8', 'UTF-8'); // This removes nasty characters
+            $str = self::stripInvalidXml($str); // This removes nasty characters
             $str = str_replace("itunes:","itunes_",$str);
             $str = str_replace("sy:","sy_",$str);
             if ($content = simplexml_load_string($str)){
@@ -319,7 +319,7 @@ class Show extends Model {
                 ->first();
         }
         if ($show){
-            //$ret = 'Attempting to update '.$show->name;
+            // var_dump([$show->name]);
             $ret = $show->parseFeed();
             return $ret;
         }
@@ -393,5 +393,42 @@ class Show extends Model {
                 }
             }
         }
+    }
+
+    /**
+     * Removes invalid XML
+     *
+     * @access public
+     * @param string $value
+     * @return string
+     */
+    public static function stripInvalidXml($value)
+    {
+        $ret = "";
+        $current;
+        if (empty($value)) 
+        {
+            return $ret;
+        }
+
+        $length = strlen($value);
+        for ($i=0; $i < $length; $i++)
+        {
+            $current = ord($value{$i});
+            if (($current == 0x9) ||
+                ($current == 0xA) ||
+                ($current == 0xD) ||
+                (($current >= 0x20) && ($current <= 0xD7FF)) ||
+                (($current >= 0xE000) && ($current <= 0xFFFD)) ||
+                (($current >= 0x10000) && ($current <= 0x10FFFF)))
+            {
+                $ret .= chr($current);
+            }
+            else
+            {
+                $ret .= " ";
+            }
+        }
+        return $ret;
     }
 }
